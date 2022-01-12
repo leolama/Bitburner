@@ -1,0 +1,42 @@
+//my first script don't bully me
+
+var targetServer = args[0];
+var serverMaxMoney = getServerMaxMoney(targetServer);
+var serverAvailable = getServerMoneyAvailable(targetServer);
+var serverSecurityLevel = getServerMinSecurityLevel(targetServer) + 5;
+var loopNumber = 0;
+
+//script
+function rootNuke() {
+	if (hasRootAccess(targetServer)) {
+		print("Hacking started");
+		hackServer();
+	}
+	else {
+		print("Opening ports and gaining root access");
+		brutessh(targetServer);
+		nuke(targetServer);
+		rootNuke();
+	}
+}
+
+function hackServer() {
+	while (true) {
+		if (getServerSecurityLevel(targetServer) > serverSecurityLevel) {
+			loopNumber = loopNumber + 1
+			tprint("Loop number " +loopNumber)
+			weaken(targetServer);
+		}
+		else if (serverAvailable < serverMaxMoney) {
+			loopNumber = loopNumber + 1
+			tprint("Loop number " +loopNumber)
+			grow(targetServer);
+		}
+		else {
+			loopNumber = loopNumber + 1
+			tprint("Loop number " +loopNumber)
+			hack(targetServer);
+		}
+	}
+}
+rootNuke()
