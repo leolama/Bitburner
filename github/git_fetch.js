@@ -1,4 +1,4 @@
-// from https://github.com/lethern/Bitburner_git_fetch
+// https://github.com/lethern/Bitburner_git_fetch
 
 // if your github is https://github.com/Bob/Bitburner_lib, owner is Bob and repo is Bitburner_lib
 let owner = "leolama";

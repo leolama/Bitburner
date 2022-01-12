@@ -1,3 +1,4 @@
+//https://github.com/leolama/Bitburner
 /** @param {NS} ns **/
 export async function main(ns) {
 	var count = 0;
@@ -6,7 +7,7 @@ export async function main(ns) {
 	var playerLevel = ns.getPlayer().hacking; //get hacking level
 	var programsLen = programs.length - 1;
 	ns.disableLog("ALL");
-	
+
 	while (count <= 4) {
 		for (let i = 0; i <= programsLen; ++i) {
 			//create the program

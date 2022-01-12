@@ -1,23 +1,18 @@
 //* @param {NS} ns **/
 export async function main(ns) {
     while (true) {
-        var allServers = await findAllServers(ns);  // finds all servers and clones grow hack and weaken files
-        var multiarray = await findHackable(ns, allServers);    // finds and nukes optimal, hackable, and rootale servers.
+        var allServers = await findAllServers(ns);
+        var multiarray = await findHackable(ns, allServers);
         var hackableServers = multiarray[0];
         var rootableServers = multiarray[1];
         var optimalServer = multiarray[2];
 
         var target = optimalServer;
-        var moneyThresh = ns.getServerMaxMoney(target) * 0.75;   //change thresholds to whatever values you prefer
+        var moneyThresh = ns.getServerMaxMoney(target) * 0.75;
         var securityThresh = ns.getServerMinSecurityLevel(target) + 8;
         let numThreads = 1;
         var numTimesToHack = 0.05;
 
-        //Number of times the code weakens/grows/hacks in a row once it decides on which one to do.
-        //Change to the value you prefer.
-        //Higher number means longer time without updating list of all servers and optimal server, but also less time lost in buffer time in between cycles.
-        //I would recommend having it at 1 at the start of the run and gradually increasing it as the rate at which you get more servers you can use decreases.
-        //Don't increase it too far tho, as weaken/hack/grow times also tend to increase throughout a run.
         numTimesToHack += 1;
 
         //weakens/grows/hacks the optimal server from all rootable servers except home
@@ -60,9 +55,7 @@ export async function main(ns) {
 
 }
 
-/**
-* Copies files in file list to all servers and returns an array of all servers
-*/
+//Copies files in file list to all servers and returns an array of all servers
 async function findAllServers(ns) {
     const fileList = ["hack.js", "weak.js", "grow.js"];   //These files just infinitely hack, weaken, and grow respectively.
     var q = [];
@@ -87,10 +80,7 @@ async function findAllServers(ns) {
     return Object.keys(serverDiscovered);
 }
 
-/**
-* Finds list of all hackable and all rootable servers. Also finds optimal server to hack.
-* Returns a 2d array with list of hackable, rootable, and the optimal server to hack
-*/
+//Finds list of all hackable and all rootable servers. Also finds optimal server to hack.
 async function findHackable(ns, allServers) {
     var hackableServers = [];
     var rootableServers = [];
@@ -118,9 +108,6 @@ async function findHackable(ns, allServers) {
         if (ns.getHackingLevel() >= ns.getServerRequiredHackingLevel(allServers[i]) && numPortsPossible >= ns.getServerNumPortsRequired(allServers[i])) {
             hackableServers.push(allServers[i]);
         }
-        //if it isn't home(this makes sure that you don't kill this script) and you either
-        //already have root access(this is useful for servers bought by the player as you have access to those even if the security is higher than you can nuke)
-        //  or you can open enough ports
         if (allServers[i] != "home" && (ns.hasRootAccess(allServers[i]) || (numPortsPossible >= ns.getServerNumPortsRequired(allServers[i])))) {
             rootableServers.push(allServers[i]);
             //if you don't have root access, open ports and nuke it
@@ -151,13 +138,7 @@ async function findHackable(ns, allServers) {
     return [hackableServers, rootableServers, optimalServer];
 }
 
-/**
- * Finds the best server to hack.
- * The algorithm works by assigning a value to each server and returning the max value server.
- * The value is the serverMaxMoney divided by the sum of the server's weaken time, grow time, and hack time.
- * You can easily change this function to choose a server based on whatever optimizing algorithm you want,
- * just return the server name to hack.
-*/
+//Finds the best server to hack
 async function findOptimal(ns, hackableServers) {
     let optimalServer = "n00dles";
     let optimalVal = 0;
