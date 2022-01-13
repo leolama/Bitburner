@@ -4,7 +4,7 @@
 export async function main(ns) {
 
 	var programs = ["/managers/hack-manager.js",
-		"/managers/autobuy.js",
+		"/autoexec/autobuy.js",
 		//"/autoexec/autofaction.js",
 		"/managers/stock-manager.js"
 		//"/autoexec/repl.js"

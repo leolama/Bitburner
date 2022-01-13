@@ -7,7 +7,7 @@ let numCycles = 2;   //Each cycle is 5 seconds
 let totalProfit = 0.0;
 let totalLosses = 0.0
 
-/** 
+/**
  * Refreshes stock data
  * @param {NS} ns Game namespace
  * @param {[]} stocks Stocks to be analyzed
@@ -122,7 +122,7 @@ function format(num, isMonetary) {
  * */
 export async function main(ns) {
     //Initialise
-    while (!ns.getPlayer().hasTixApiAccess + !ns.getPlayer().has4SDataTixAp) {
+    while (!ns.getPlayer().hasTixApiAccess + !ns.getPlayer().has4SDataTixApi) {
         ns.tprint("No access to TIX API and/or 4S Market Data!")
         await ns.sleep(3600000)
     }
