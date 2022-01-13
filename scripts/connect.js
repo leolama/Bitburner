@@ -1,6 +1,5 @@
 export async function main(ns) {
 //thanks to Tempest_42 on reddit for this script
-
     let target = ns.args[0];
     let paths = { "home": "" };
     let queue = Object.keys(paths);

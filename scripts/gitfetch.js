@@ -5,6 +5,7 @@ export async function main(ns) {
 	var repo = "Bitburner/"; //change this
 	var branch = "main/"; //probably keep this the same
 
+	//file list
 	var files = ["docs.js",
 		"grow.js",
 		"hack.js",

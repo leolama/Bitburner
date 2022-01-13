@@ -1,4 +1,5 @@
 /** @param {NS} ns **/
+//exploit
 export async function main(ns) {
 	let div = eval("document.getElementById('unclickable')");
 

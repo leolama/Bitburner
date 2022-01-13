@@ -1,4 +1,5 @@
 //https://github.com/leolama/Bitburner
+//alias start="run autoexec/autoexec.js"
 /** @param {NS} ns **/
 export async function main(ns) {
 
