@@ -3,7 +3,12 @@
 /** @param {NS} ns **/
 export async function main(ns) {
 
-	var programs = ["/autoexec/hack-manager.js","/managers/autobuy.js","/autoexec/autofaction.js","/managers/stock-manager.js","/autoexec/repl.js"];
+	var programs = ["/managers/hack-manager.js",
+		"/managers/autobuy.js",
+		//"/autoexec/autofaction.js",
+		"/managers/stock-manager.js"
+		//"/autoexec/repl.js"
+	];
 
 	for (let i = 0;i < programs.length; i++) {
 		if (ns.fileExists(programs[i])) {
