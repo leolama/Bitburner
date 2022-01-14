@@ -10,6 +10,7 @@ export async function main(ns) {
 		"grow.js",
 		"hack.js",
 		"weak.js",
+		"util.js";
 		"autoexec/autobuy.js",
 		"autoexec/autoexec.js",
 		"autoexec/autofaction.js",
