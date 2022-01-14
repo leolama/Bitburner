@@ -20,6 +20,8 @@ export function playerStats(ns) {
 	var dexterityLvl = ns.getPlayer().dexterity;
 	var agilityLvl = ns.getPlayer().agility;
 	var charismaLvl = ns.getPlayer().charisma;
+}
 
-
+export function hackServer(ns) {
+	//something useful
 }
