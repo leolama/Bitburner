@@ -1,6 +1,4 @@
 /** @param {NS} ns **/
-//alias serverinfo="run scripts/serverinfo.js"
-//serverinfo [host]
 export async function main(ns) {
 	var hostserver = ns.scan(ns.getHostname());
 	var targetServer = ns.args[0];

@@ -25,12 +25,13 @@ export async function main(ns) {
     "scripts/scan.js",
     "scripts/servercost.js",
     "scripts/serverinfo.js",
-    "scripts/unclickable.js"
+    "scripts/unclickable.js",
+		"gitfetch.js" //leave this last
 	];
 
 	for (let i = 0; i < files.length; ++i) {
 		await ns.wget(baseURL + owner + repo + branch + files[i], "/" + files[i]);
 		ns.tprint("Got " + baseURL + owner + repo + branch + files[i] + " to /" + files[i]);
-		await ns.sleep(200)
+		await ns.sleep(100)
 	}
 }
