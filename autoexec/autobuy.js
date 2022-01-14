@@ -50,6 +50,7 @@ export async function main(ns) {
 				ns.print("Cannot afford a TOR router");
 			}
 			await ns.sleep(10000);
+			playerLevel = ns.getPlayer().hacking; //get hacking level again
 		}
 	}
 }
