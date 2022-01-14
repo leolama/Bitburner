@@ -1,5 +1,5 @@
 /** @param {NS} ns **/
-import { countTools } from "util"
+import { hackTools } from "util"
 
 export async function main(ns) {
 	var factions = ["CyberSec", //hacking based factions (that I know of)
@@ -7,6 +7,6 @@ export async function main(ns) {
 		"The Black Hand",
 		"BitRunners"
 	]
-	var numTools = countTools(ns);
-	
+	var numTools = hackTools(ns);
+
 }

@@ -1,5 +1,5 @@
 /** @param {NS} ns **/
-export function countTools(ns) {
+export function hackTools(ns) {
 	var programs = ["brutessh.exe","ftpcrack.exe","relaysmtp.exe","httpworm.exe","sqlinject.exe"]
 	var numTools = 0
 
@@ -21,5 +21,5 @@ export function playerStats(ns) {
 	var agilityLvl = ns.getPlayer().agility;
 	var charismaLvl = ns.getPlayer().charisma;
 
-	
+
 }
