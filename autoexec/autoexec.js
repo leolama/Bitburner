@@ -7,10 +7,10 @@ export async function main(ns) {
 		"/managers/stock-manager.js"
 		//"/autoexec/repl.js"
 	];
-
-	if (await ns.prompt("Do you want to run gitfetch.js?") === true) {
+	var gitPrompt = await ns.prompt("Do you want to run gitfetch.js?") === true
+	if (gitPrompt === true) {
 		ns.exec("gitfetch.js");
-		if (await ns.prompt("Do you want to run gitfetch.js?") === true && !ns.isRunning("gitfetch.js")) {
+		if (gitPrompt === true && !ns.isRunning("gitfetch.js")) {
 			for (let i = 0;i < programs.length; i++) {
 				if (ns.fileExists(programs[i])) {
 					if (!ns.isRunning(programs[i], "home")) {
