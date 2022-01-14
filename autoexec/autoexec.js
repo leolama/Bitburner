@@ -1,5 +1,4 @@
 /** @param {NS} ns **/
-import { hackTools } from "util"
 export async function main(ns) {
 
 	var programs = ["/managers/hack-manager.js",
