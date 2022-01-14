@@ -1,8 +1,12 @@
-//https://github.com/leolama/Bitburner
-import { countTools } from "util"
 /** @param {NS} ns **/
-export async function main(ns) {
-	let numTools = countTools();
+import { countTools } from "util"
 
-	ns.tprint(numTools);
+export async function main(ns) {
+	var factions = ["CyberSec", //hacking based factions (that I know of)
+		"NiteSec",
+		"The Black Hand",
+		"BitRunners"
+	]
+	var numTools = countTools(ns);
+	
 }
