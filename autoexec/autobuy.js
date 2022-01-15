@@ -66,16 +66,19 @@ export async function main(ns) {
 			Server autobuy
 	*/
 
-	while (currentServers < maxServers) {
+	while (currentServers.length < maxServers) {
 		for (let i = 0; i < serverCost.length;++i) {
-			if (availMoney > availMoney[i]) {
+			if (availMoney > serverCost[i]) {
 				ns.run("scripts/buyserver.js",1,serverRam[i]);
+				ns.print("Bought a " + serverRam[i] + "GB server");
+				i = 0;
+				await ns.sleep(2000);
 			}
 			else {
-				ns.print("Can't afford a " + serverRam + "GB server");
+				ns.print("Can't afford a " + serverRam[i] + "GB server");
 			}
 		}
 		var currentServers = ns.getPurchasedServers();
-		await ns.sleep(5000);
+		await ns.sleep(10000);
 	}
 }
