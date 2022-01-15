@@ -27,8 +27,7 @@ export async function main(ns) {
 		"scripts/scan.js",
 		"scripts/servercost.js",
 		"scripts/serverinfo.js",
-		"scripts/unclickable.js",
-		"gitfetch.js" //leave this last
+		"scripts/unclickable.js"
 	];
 
 	if (await ns.prompt("This will overrite all files specified in gitfetch.js, do you want to continue?")) {
