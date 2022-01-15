@@ -1,10 +1,11 @@
 //* @param {NS} ns **/
+import { nukeServer, hackTools } from "util.js"
 export async function main(ns) {
     while (true) {
+        ns.disableLog("ALL");
+        ns.enableLog("sleep");
         var allServers = await findAllServers(ns);
         var multiarray = await findHackable(ns, allServers);
-        var hackableServers = multiarray[0];
-        var rootableServers = multiarray[1];
         var optimalServer = multiarray[2];
 
         var target = optimalServer;
@@ -18,35 +19,76 @@ export async function main(ns) {
         //weakens/grows/hacks the optimal server from all rootable servers except home
         if (ns.getServerSecurityLevel(target) > securityThresh) {
             ns.print("Weakening " + optimalServer)
-            for (let i = 0; i < rootableServers.length; i++) {
-                ns.killall(rootableServers[i]);
-                numThreads = (ns.getServerMaxRam(rootableServers[i]) - ns.getServerUsedRam(rootableServers[i])) //free ram
+            for (let i = 0; i < allServers.length; i++) {
+                if (allServers[i] = "home") {
+                    ns.scriptKill("weak.js", allServers[i]);
+                    ns.scriptKill("grow.js", allServers[i]);
+                    ns.scriptKill("hack.js", allServers[i]);
+                }
+                else {
+                    ns.killall(allServers[i]);
+                }
+                numThreads = (ns.getServerMaxRam(allServers[i]) - ns.getServerUsedRam(allServers[i])) //free ram
                 numThreads /= ns.getScriptRam("weak.js", "home");
                 numThreads = Math.floor(numThreads);
-                if (numThreads > 0) {
-                    ns.exec("weak.js", rootableServers[i], numThreads, target);
+                if (numThreads > 0 && allServers[i] != "home") {
+                    ns.exec("weak.js", allServers[i], numThreads, target);
+                }
+                else if (allServers[i] = "home") {
+                    numThreads = numThreads - 12;
+                    if (numThreads > 0) {
+                        ns.exec("weak.js", "home", numThreads, target);
+                    }
                 }
             }
             await ns.sleep(numTimesToHack * ns.getWeakenTime(target) + 300);
         } else if (ns.getServerMoneyAvailable(target) < moneyThresh) {
             ns.print("Growing " + optimalServer)
-            for (let i = 0; i < rootableServers.length; i++) {
-                ns.killall(rootableServers[i]);
-                numThreads = (ns.getServerMaxRam(rootableServers[i]) - ns.getServerUsedRam(rootableServers[i]))
+            for (let i = 0; i < allServers.length; i++) {
+                if (allServers[i] = "home") {
+                    ns.scriptKill("weak.js", allServers[i]);
+                    ns.scriptKill("grow.js", allServers[i]);
+                    ns.scriptKill("hack.js", allServers[i]);
+                }
+                else {
+                    ns.killall(allServers[i]);
+                }
+                numThreads = (ns.getServerMaxRam(allServers[i]) - ns.getServerUsedRam(allServers[i]))
                 numThreads /= ns.getScriptRam("grow.js", "home");
-                if (numThreads > 0) {
-                    ns.exec("grow.js", rootableServers[i], numThreads, target);
+                numThreads = Math.floor(numThreads);
+                if (numThreads > 0 && allServers[i] != "home") {
+                    ns.exec("grow.js", allServers[i], numThreads, target);
+                }
+                else if (allServers[i] = "home") {
+                    numThreads = numThreads - 12;
+                    if (numThreads > 0) {
+                        ns.exec("weak.js", "home", numThreads, target);
+                    }
                 }
             }
             await ns.sleep(numTimesToHack * ns.getGrowTime(target) + 300);
         } else {
             ns.print("Hacking " + optimalServer)
-            for (let i = 0; i < rootableServers.length; i++) {
-                ns.killall(rootableServers[i]);
-                numThreads = (ns.getServerMaxRam(rootableServers[i]) - ns.getServerUsedRam(rootableServers[i]))
+            for (let i = 0; i < allServers.length; i++) {
+                if (allServers[i] = "home") {
+                    ns.scriptKill("weak.js", allServers[i]);
+                    ns.scriptKill("grow.js", allServers[i]);
+                    ns.scriptKill("hack.js", allServers[i]);
+                }
+                else {
+                    ns.killall(allServers[i]);
+                }
+                numThreads = (ns.getServerMaxRam(allServers[i]) - ns.getServerUsedRam(allServers[i]))
                 numThreads /= ns.getScriptRam("hack.js", "home");
-                if (numThreads > 0) {
-                    ns.exec("hack.js", rootableServers[i], numThreads, target);
+                numThreads = Math.floor(numThreads);
+                if (numThreads > 0 && allServers[i] != "home") {
+                    ns.exec("hack.js", allServers[i], numThreads, target);
+                }
+                else if (allServers[i] = "home") {
+                    numThreads = numThreads - 12;
+                    if (numThreads > 0) {
+                        ns.exec("weak.js", "home", numThreads, target);
+                    }
                 }
             }
             await ns.sleep(numTimesToHack * ns.getHackTime(target) + 300);
@@ -84,24 +126,7 @@ async function findAllServers(ns) {
 async function findHackable(ns, allServers) {
     var hackableServers = [];
     var rootableServers = [];
-    var numPortsPossible = 0;
-
-    if (ns.fileExists("BruteSSH.exe", "home")) {
-        numPortsPossible += 1;
-    }
-    if (ns.fileExists("FTPCrack.exe", "home")) {
-        numPortsPossible += 1;
-    }
-    if (ns.fileExists("RelaySMTP.exe", "home")) {
-        numPortsPossible += 1;
-    }
-    if (ns.fileExists("HTTPWorm.exe", "home")) {
-        numPortsPossible += 1;
-    }
-    if (ns.fileExists("SQLInject.exe", "home")) {
-        numPortsPossible += 1;
-    }
-
+    var numPortsPossible = hackTools(ns);
 
     for (let i = 0; i < allServers.length; i++) {
         //if your hacking level is high enough and you can open enough ports, add it to hackable servers list
@@ -111,23 +136,7 @@ async function findHackable(ns, allServers) {
         if (allServers[i] != "home" && (ns.hasRootAccess(allServers[i]) || (numPortsPossible >= ns.getServerNumPortsRequired(allServers[i])))) {
             rootableServers.push(allServers[i]);
             //if you don't have root access, open ports and nuke it
-            if (!ns.hasRootAccess(allServers[i])) {
-                if (ns.fileExists("BruteSSH.exe")) {
-                    ns.brutessh(allServers[i]);
-                }
-                if (ns.fileExists("FTPCrack.exe")) {
-                    ns.ftpcrack(allServers[i]);
-                }
-                if (ns.fileExists("RelaySMTP.exe")) {
-                    ns.relaysmtp(allServers[i]);
-                }
-                if (ns.fileExists("HTTPWorm.exe")) {
-                    ns.httpworm(allServers[i]);
-                }
-                if (ns.fileExists("SQLInject.exe")) {
-                    ns.sqlinject(allServers[i]);
-                }
-                ns.nuke(allServers[i]);
+            nukeServer(ns, allServers[i]);
             }
         }
     }
