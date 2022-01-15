@@ -31,7 +31,7 @@ export async function main(ns) {
 			}
 		}
 	}
-	else if (await ns.prompt("Do you want to run gitfetch.js?") === false) {
+	else if (gitPrompt === false) {
 		for (let i = 0;i < programs.length; i++) {
 			if (ns.fileExists(programs[i])) {
 				if (!ns.isRunning(programs[i], "home")) {

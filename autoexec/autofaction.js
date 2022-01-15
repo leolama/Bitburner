@@ -1,6 +1,5 @@
 /** @param {NS} ns **/
 import { hackTools, hackServer } from "util.js"
-import { main } from "scripts/connect.js"
 
 export async function main(ns) {
 	var factionNames = ["CSEC","avmnite-02h","I.I.I.I","run4theh111z"]; //hacking based factions (that I know of so far)
