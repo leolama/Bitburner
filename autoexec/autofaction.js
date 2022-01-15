@@ -1,5 +1,5 @@
 /** @param {NS} ns **/
-import { hackTools, hackServer } from "util.js"
+import { hackTools, nukeServer } from "util.js"
 
 export async function main(ns) {
 	var factionNames = ["CSEC","avmnite-02h","I.I.I.I","run4theh111z"]; //hacking based factions (that I know of so far)
@@ -11,7 +11,7 @@ export async function main(ns) {
 
 	while (count < factionNames.length) {
 		if (factionHackLvl[count] <= hackingLvl && numTools >= factionProgs[count]) {
-			await hackServer(ns, factionNames[count]);
+			await nukeServer(ns, factionNames[count]);
 			++count;
 		}
 	}

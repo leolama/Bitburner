@@ -11,20 +11,12 @@ export function hackTools(ns) {
 	return numTools;
 }
 
-export async function hackServer(ns, server) {
+export async function nukeServer(ns, server) {
 	ns.brutessh(server);
 	ns.ftpcrack(server);
 	ns.relaysmtp(server);
 	ns.httpworm(server);
 	ns.sqlinject(server);
 	ns.nuke(server);
-
-	if (await ns.prompt("Do you want to install a backdoor on " + server + "?")) {
-		ns.run("scripts/connect.js", 1, server);
-		//ns.installBackdoor(); //SF 4.1
-		//ns.tprint("Got backdoor on " + server);
-	}
-	else {
-		ns.tprint("Got root on " + server);
-	}
+	ns.tprint("Got root on " + server);
 }
