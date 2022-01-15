@@ -44,7 +44,7 @@ export async function main(ns) {
 				ns.print("Cannot afford a TOR router");
 			}
 			//create the program if above failed
-			else if (playerLevel >= reqLevel[0] {
+			else if (playerLevel >= reqLevel[0]) {
 				ns.print("Busy? " + ns.isBusy());
 				if (!ns.fileExists(programs[0]) && !ns.isBusy()) { //check that the player isn't already busy
 					ns.createProgram(programs[0]);
