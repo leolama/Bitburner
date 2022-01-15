@@ -9,9 +9,9 @@ export async function main(ns) {
 	var count = 0;
 	var hackingLvl = ns.getPlayer().hacking;
 
-	while (count < factionNames.length - 1) {
+	while (count < factionNames.length) {
 		if (factionHackLvl[count] <= hackingLvl && numTools >= factionProgs[count]) {
-			hackServer(ns, factionNames[count]);
+			await hackServer(ns, factionNames[count]);
 			++count;
 		}
 	}

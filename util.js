@@ -11,9 +11,7 @@ export function hackTools(ns) {
 	return numTools;
 }
 
-export function hackServer(ns, server) {
-	var backdoorCheck = await ns.prompt("Do you want to install a backdoor on " + server + "?");
-
+export async function hackServer(ns, server) {
 	ns.brutessh(server);
 	ns.ftpcrack(server);
 	ns.relaysmtp(server);
@@ -21,10 +19,12 @@ export function hackServer(ns, server) {
 	ns.sqlinject(server);
 	ns.nuke(server);
 
-	if (backdoorCheck === true) {
-		ns.run("scripts/connect.js", 1, factionNames[count]);
-		ns.installBackdoor();
-		ns.tprint("Got backdoor on " + server);
+	if (await ns.prompt("Do you want to install a backdoor on " + server + "?")) {
+		ns.run("scripts/connect.js", 1, server);
+		//ns.installBackdoor(); //SF 4.1
+		//ns.tprint("Got backdoor on " + server);
 	}
-	ns.tprint("Got root on " + server);
+	else {
+		ns.tprint("Got root on " + server);
+	}
 }
