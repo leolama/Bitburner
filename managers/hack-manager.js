@@ -1,4 +1,5 @@
 /** @param {NS} ns **/
+import { hackTools } from "util.js"
 export async function main(ns) {
     ns.disableLog("ALL");
     ns.enableLog("sleep");

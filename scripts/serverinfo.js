@@ -1,3 +1,4 @@
+//1
 /** @param {NS} ns **/
 export async function main(ns) {
 	var hostserver = ns.scan(ns.getHostname());

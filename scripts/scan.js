@@ -1,3 +1,4 @@
+//1
 /** @param {NS} ns **/
 //thanks to Tempest_42 on reddit for this script
 let facServers = {
