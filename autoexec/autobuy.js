@@ -9,21 +9,6 @@ export async function main(ns) {
 
 	while (count <= 4) {
 		for (let i = 0; i <= programsLen; ++i) {
-			//create the program
-			if (playerLevel >= reqLevel[0]) {
-				ns.print("Busy? " + ns.isBusy());
-				if (!ns.fileExists(programs[0]) && !ns.isBusy()) {
-					ns.createProgram(programs[0]);
-					ns.tprint("Creating " + programs[0]);
-					programs.splice(0,1);
-					reqLevel.splice(0,1);
-					++count;
-				}
-			}
-			else {
-				ns.print("Need hacking level " + reqLevel[0] + " for " + programs[0]);
-			}
-
 			//purchase from darkweb
 			if (ns.getPlayer().tor === true) {
 				if (!ns.fileExists(programs[0])) {
@@ -47,6 +32,21 @@ export async function main(ns) {
 			}
 			else if (!ns.purchaseTor()){
 				ns.print("Cannot afford a TOR router");
+			}
+
+			//create the program
+			if (playerLevel >= reqLevel[0]) {
+				ns.print("Busy? " + ns.isBusy());
+				if (!ns.fileExists(programs[0]) && !ns.isBusy()) {
+					ns.createProgram(programs[0]);
+					ns.print("Creating " + programs[0]);
+					programs.splice(0,1);
+					reqLevel.splice(0,1);
+					++count;
+				}
+			}
+			else {
+				ns.print("Need hacking level " + reqLevel[0] + " for " + programs[0]);
 			}
 			await ns.sleep(10000);
 			playerLevel = ns.getPlayer().hacking; //get hacking level again

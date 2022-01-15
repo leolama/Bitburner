@@ -1,13 +1,15 @@
 /** @param {NS} ns **/
 export async function main(ns) {
 
-	var programs = ["/managers/hack-manager.js",
+	var programs = [
+		"/managers/hack-manager.js",
 		"/autoexec/autobuy.js",
-		//"/autoexec/autofaction.js",
+		"/autoexec/autofaction.js",
 		"/managers/stock-manager.js"
 		//"/autoexec/repl.js"
 	];
-	var gitPrompt = await ns.prompt("Do you want to run gitfetch.js?") === true
+	var gitPrompt = await ns.prompt("Do you want to run gitfetch.js?");
+
 	if (gitPrompt === true) {
 		ns.exec("gitfetch.js");
 		if (gitPrompt === true && !ns.isRunning("gitfetch.js")) {

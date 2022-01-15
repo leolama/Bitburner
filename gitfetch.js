@@ -6,27 +6,28 @@ export async function main(ns) {
 	var branch = "main/"; //probably keep this the same
 
 	//file list
-	var files = ["docs.js",
+	var files = [
+		"docs.js",
 		"grow.js",
 		"hack.js",
 		"weak.js",
-		"util.js";
+		"util.js",
 		"autoexec/autobuy.js",
 		"autoexec/autoexec.js",
 		"autoexec/autofaction.js",
 		"autoexec/repl.js",
 		"managers/hack-manager.js",
 		"managers/stock-manager.js",
-    "scripts/alter.js",
+		"scripts/alter.js",
 		"scripts/buyserver.js",
 		"scripts/connect.js",
 		"scripts/deleteserver.js",
-    "scripts/infiniteloop.js",
-    "scripts/removefolder.js",
-    "scripts/scan.js",
-    "scripts/servercost.js",
-    "scripts/serverinfo.js",
-    "scripts/unclickable.js",
+		"scripts/infiniteloop.js",
+		"scripts/removefolder.js",
+		"scripts/scan.js",
+		"scripts/servercost.js",
+		"scripts/serverinfo.js",
+		"scripts/unclickable.js",
 		"gitfetch.js" //leave this last
 	];
 

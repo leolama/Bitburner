@@ -1,34 +1,19 @@
 /** @param {NS} ns **/
-import { hackTools } from "util"
-import { playerStats } from "util"
-playerStats(ns);
+import { hackTools, hackServer } from "util.js"
+import { main } from "scripts/connect.js"
 
 export async function main(ns) {
-	var factionNames = ["CyberSec", //hacking based factions (that I know of so far)
-		"NiteSec",
-		"The Black Hand",
-		"BitRunners",
-		"Daedulus"
-	]
-	var factionHackLvl = ["54", //required hacking level
-		"203",
-		"358",
-		"511",
-		"2500"
-	]
-	var factionProgs = ["1",
-		"2",
-		"3",
-		"4",
-		"5"]
+	var factionNames = ["CSEC","avmnite-02h","I.I.I.I","run4theh111z"]; //hacking based factions (that I know of so far)
+	var factionHackLvl = ["54","203","358","511"]; //required hacking level
+	var factionProgs = ["1","2","3","4"];
 	var numTools = hackTools(ns);
-	var count = 0
+	var count = 0;
+	var hackingLvl = ns.getPlayer().hacking;
 
-	while (count <= 4) {
-		for (let i = 0; i < factionNames.length; ++i) {
-			if (factionHackLvl[i] <= hackingLvl && numTools >= factionProgs[i]) {
-				ns.tprint("testworkedpog")
-			}
+	while (count < factionNames.length - 1) {
+		if (factionHackLvl[count] <= hackingLvl && numTools >= factionProgs[count]) {
+			hackServer(ns, factionNames[count]);
+			++count;
 		}
 	}
 }
