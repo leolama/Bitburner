@@ -31,11 +31,11 @@ export async function main(ns) {
 	];
 
 	if (await ns.prompt("This will overrite all files specified in gitfetch.js, do you want to continue?")) {
-		for (let file of files) {
+		for (let i = 0; i < files.length; ++i) {
 			await ns.wget(baseURL + owner + repo + branch + files[i], "/" + files[i]);
 			ns.tprint("Got " + baseURL + owner + repo + branch + files[i] + " to /" + files[i]);
 			await ns.sleep(100)
 		}
 	}
-
+	ns.tprint("finished!");
 }
