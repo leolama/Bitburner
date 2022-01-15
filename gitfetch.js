@@ -18,6 +18,7 @@ export async function main(ns) {
 		"autoexec/autofaction.js",
 		"autoexec/repl.js",
 		"managers/hack-manager.js",
+		"managers/test-hack-manager.js",
 		"managers/stock-manager.js",
 		"scripts/alter.js",
 		"scripts/buyserver.js",
