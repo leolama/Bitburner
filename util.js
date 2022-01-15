@@ -18,5 +18,5 @@ export async function nukeServer(ns, server) {
 	ns.httpworm(server);
 	ns.sqlinject(server);
 	ns.nuke(server);
-	ns.tprint("Got root on " + server);
+	ns.print("Got root on " + server);
 }
