@@ -1,4 +1,4 @@
-//1
+//3
 /** @param {NS} ns **/
 import { hackTools, nukeServer } from "util.js"
 
@@ -13,7 +13,15 @@ export async function main(ns) {
 	while (count < factionNames.length) {
 		if (factionHackLvl[count] <= hackingLvl && numTools >= factionProgs[count]) {
 			await nukeServer(ns, factionNames[count]);
+				if (await ns.prompt("Do you want to connect to '" + factionNames[count] + "' to install a backdoor?")) {
+					ns.run("scripts/connect.js",1,factionNames[count]);
+				}
 			++count;
+			await ns.sleep(1000)
 		}
+		else {
+			await ns.sleep(2000)
+		}
+
 	}
 }
