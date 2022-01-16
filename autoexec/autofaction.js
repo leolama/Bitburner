@@ -1,4 +1,4 @@
-//3
+//4
 /** @param {NS} ns **/
 import { hackTools, nukeServer } from "util.js"
 
@@ -22,6 +22,7 @@ export async function main(ns) {
 		else {
 			await ns.sleep(2000)
 		}
-
+		var numTools = hackTools(ns);
+		var hackingLvl = ns.getPlayer().hacking;
 	}
 }

@@ -70,7 +70,6 @@ export async function main(ns) {
 		for (let i = 0; i < serverCost.length;++i) {
 			if (availMoney > serverCost[i]) {
 				ns.run("scripts/buyserver.js",1,serverRam[i]);
-				ns.print("Bought a " + serverRam[i] + "GB server");
 				i = 0;
 				await ns.sleep(2000);
 			}
