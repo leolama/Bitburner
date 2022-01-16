@@ -11,10 +11,19 @@ export async function main(ns) {
 
 	while (count < factionNames.length) {
 		if (factionHackLvl[count] <= hackingLvl && numTools >= factionProgs[count]) {
+			await ns.sleep(2000);
 			await nukeServer(ns, factionNames[count]);
-				if (await ns.prompt("Do you want to connect to '" + factionNames[count] + "' to install a backdoor?")) {
-					ns.run("scripts/connect.js",1,factionNames[count]);
-				}
+			ns.run("scripts/connect.js",1,factionNames[count]);
+			if (await ns.installBackdoor() === true) {
+				ns.tprint("Successful backdoor");
+				
+			}
+			else {
+				ns.run("scripts/connect.js",1,"home");
+				ns.tprint("Failed backdoor");
+				ns.tprint("Returning home, stopping script");
+				return;
+			}
 			++count;
 			await ns.sleep(1000)
 		}
