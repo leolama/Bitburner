@@ -8,8 +8,8 @@ export async function main(ns) {
 	var playerLevel = ns.getPlayer().hacking; //get hacking level
 
 	var availMoney = ns.getPlayer().money;
-	var serverRam = [1048576,16384,1024];
-	var serverCost = [1200000000000,5000000000,180000000]; //server cost & save money for stocks
+	var serverRam = [1024,16384,1048576];
+	var serverCost = [180000000,5000000000,1200000000000]; //server cost & save money for stocks
 	var maxServers = ns.getPurchasedServerLimit();
 	var currentServers = ns.getPurchasedServers();
 
@@ -69,10 +69,19 @@ export async function main(ns) {
 	while (currentServers.length < maxServers) {
 		for (let i = 0; i < serverCost.length;++i) {
 			if (availMoney > serverCost[i]) {
-				ns.run("scripts/buyserver.js",1,serverRam[i]);
-				i = 0;
-				await ns.sleep(2000);
-			}
+				if (serverRam[i] === 1024 || serverRam[i] === 16384) {
+					ns.run("scripts/buyserver.js",1,serverRam[i]);
+					i = 0;
+					serverRam.splice(0,1);
+					serverCost.splice(0,1);
+					await ns.sleep(2000);
+				}
+				else {
+					ns.run("scripts/buyserver.js",1,serverRam[i]);
+					i = 0;
+					await ns.sleep(2000);
+				}
+			}															
 			else {
 				ns.print("Can't afford a " + serverRam[i] + "GB server");
 			}
@@ -80,4 +89,5 @@ export async function main(ns) {
 		var currentServers = ns.getPurchasedServers();
 		await ns.sleep(10000);
 	}
+	
 }
