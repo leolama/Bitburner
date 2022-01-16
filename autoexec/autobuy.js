@@ -1,7 +1,6 @@
-//2
 /** @param {NS} ns **/
 export async function main(ns) {
-		ns.disableLog("ALL");
+	ns.disableLog("ALL");
 	var count = 0;
 	var programs = ["BruteSSH.exe","FTPCrack.exe","relaySMTP.exe","HTTPWorm.exe","SQLInject.exe"];
 	var reqLevel = [50,100,250,500,750]; //program unlock levels (except with darkweb)

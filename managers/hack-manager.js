@@ -1,4 +1,3 @@
-//2
 /** @param {NS} ns **/
 import { hackTools, nukeServer } from "util.js"
 export async function main(ns) {
@@ -54,7 +53,6 @@ export async function main(ns) {
             await ns.sleep(numTimesToHack * ns.getHackTime(target) + 300);
         }
     }
-
 }
 
 async function findAllServers(ns) {

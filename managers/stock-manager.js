@@ -141,7 +141,6 @@ export async function main(ns) {
     while (true) {
         //refresh equity at beginning of loop
         corpus = refresh(ns, stocks, myStocks);
-
         //Sell underperforming shares
         for (let i = 0; i < myStocks.length; i++) {
             //if a stock with a higher expected return is found,
@@ -166,7 +165,6 @@ export async function main(ns) {
         }
 
         //Buy shares with cash remaining in hand
-
         let cashToSpend = ns.getServerMoneyAvailable("home") - (fracH * corpus);
         //calculate max number of shares available
         let maxSharesAvailable = stocks[0].maxShares - stocks[0].shares;
@@ -176,13 +174,11 @@ export async function main(ns) {
         if ((numShares * stocks[0].expRet * stocks[0].price * numCycles) > commission) {
             buy(ns, stocks[0], numShares);
         }
-
         //calculate and display efficiency and profits/losses
         let efficiency = totalProfit / (totalProfit - totalLosses);
         if(isNaN(efficiency)) { efficiency = 0.0; }
         ns.print(`Efficiency: ${format(efficiency * 100)}%`);
         ns.print(`Profits: ${format(totalProfit, true)} Losses: ${format(totalLosses, true)}`)
-
         await ns.sleep(5 * 1000 * numCycles + 200);
     }
 }

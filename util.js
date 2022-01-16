@@ -1,4 +1,3 @@
-//2
 /** @param {NS} ns **/
 export function hackTools(ns) {
 	var programs = ["brutessh.exe","ftpcrack.exe","relaysmtp.exe","httpworm.exe","sqlinject.exe"]

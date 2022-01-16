@@ -1,4 +1,3 @@
-//4
 /** @param {NS} ns **/
 import { hackTools, nukeServer } from "util.js"
 
