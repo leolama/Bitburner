@@ -1,0 +1,14 @@
+{
+	"ns-template": {
+		"scope": "javascript",
+		"prefix": "ns-template",
+		"body": [
+		"/** @param {NS} ns **/",
+		"import { hackTools, nukeServer } from 'util.js'",
+		"",
+		"export async function main(ns) {",
+		"\t//",
+		"}"
+		]
+  	}
+}
