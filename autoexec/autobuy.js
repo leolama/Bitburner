@@ -9,7 +9,7 @@ export async function main(ns) {
 
 	var availMoney = ns.getPlayer().money;
 	var serverRam = [1048576,16384,1024];
-	var serverCost = [1200000000000,5000000000,180000000]; //save money for stocks
+	var serverCost = [1200000000000,5000000000,180000000]; //server cost & save money for stocks
 	var maxServers = ns.getPurchasedServerLimit();
 	var currentServers = ns.getPurchasedServers();
 
