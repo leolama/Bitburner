@@ -11,10 +11,14 @@ export async function main(ns) {
         var optimalServer = multiarray[2];
         var target = optimalServer;
         var moneyThresh = ns.getServerMaxMoney(target) * 0.9;
-        var securityThresh = ns.getServerMinSecurityLevel(target) + 3;
+        var securityThresh = ns.getServerMinSecurityLevel(target) + 5;
         let numThreads = 1;
         var numTimesToHack = 0.05;
         numTimesToHack += 1;
+
+        if (ns.args[0] != null) {
+            target = ns.args[0];
+        }
 
         //weak/grow/hack optimal
         if (ns.getServerSecurityLevel(target) > securityThresh) {
