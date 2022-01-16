@@ -1,4 +1,7 @@
 /** @param {NS} ns **/
 export async function main(ns) {
-    ns.alterReality();
+    while (true) {
+        ns.print(ns.args[0]);
+        await ns.sleep(5000);
+    }
 }
