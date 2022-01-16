@@ -8,8 +8,12 @@ export async function main(ns) {
     for (let i = 0; i < multipleOf.length; ++i) {
         if (ram === multipleOf[i]) { //if ram equals a multiple of 2
             ns.tprint("Buying " + ram + "GB server...");
-            ns.purchaseServer(hName, ram);
-            ns.tprint("Bought " + ram + "GB server");
+            if (ns.purchaseServer(hName, ram))  {
+                ns.tprint("Bought " + ram + "GB server");
+            }
+            else {
+                ns.tprint("Failed to buy a server");
+            }
             ns.scriptKill("buyserver.js", "home");
         }
     }
