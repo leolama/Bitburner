@@ -1,3 +1,4 @@
+//original from MurataMain on reddit
 /** @param {NS} ns **/
 import { hackTools, nukeServer } from "util.js"
 export async function main(ns) {

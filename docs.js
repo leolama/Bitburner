@@ -1,4 +1,3 @@
-//1
 /** @param {NS} ns **/
 export async function main(ns) {
     //thanks to Ivma#5498 on Discord for this
