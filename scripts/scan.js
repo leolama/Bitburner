@@ -1,6 +1,5 @@
-//1
-/** @param {NS} ns **/
 //thanks to Tempest_42 on reddit for this script
+/** @param {NS} ns **/
 let facServers = {
     "CSEC" : "yellow",
     "avmnite-02h" : "yellow",
