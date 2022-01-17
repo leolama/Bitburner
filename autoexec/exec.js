@@ -8,6 +8,7 @@ export async function main(ns) {
 		"/autoexec/autofaction.js",
 		"/managers/stock-manager.js"
 	];
+	var dataRefresh = await ns.prompt("Do you want to refresh all script data?");
 
 	/*
 	var gitPrompt = await ns.prompt("Do you want to run gitfetch.js?");
@@ -16,7 +17,15 @@ export async function main(ns) {
 		ns.exec("gitfetch.js");
 	}
 	*/
+
+	if (dataRefresh === true) {
+		ns.tprint("--");
+		ns.tprint("Refreshing script data");
+		await ns.write("/data/purchasedserver-data.txt","1024,16384,1048576,180000000,5000000000,1200000000000","w");
+		ns.tprint("Refreshed script data");
+	}
 	ns.tprint("--");
+
 	for (let i = 0;i < programs.length; i++) {
 		if (ns.fileExists(programs[i])) {
 			if (!ns.isRunning(programs[i], "home")) {
