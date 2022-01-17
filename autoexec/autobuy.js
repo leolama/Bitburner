@@ -10,18 +10,20 @@ export async function main(ns) {
 	var maxServers = ns.getPurchasedServerLimit();
 	var currentServers = ns.getPurchasedServers();
 
-    let data = ns.read("/data/purchasedserver-data.txt"); //read data file and split it into an array
-	let dataSplit = data.split(',').map(Number);
+    let ramData = ns.read("/data/serverram-data.txt"); //read data file and split it into an array
+	let costData = ns.read("/data/servercost-data.txt"); //read data file and split it into an array
+	let ramDataSplit = ramData.split(',').map(Number);
+	let costDataSplit = costData.split(',').map(Number);
 
 	var serverRam = []; //push the array into vars
-    serverRam.push(dataSplit[0]);
-    serverRam.push(dataSplit[1]);
-    serverRam.push(dataSplit[2]);
+    serverRam.push(ramDataSplit[0]);
+    serverRam.push(ramDataSplit[1]);
+    serverRam.push(ramDataSplit[2]);
 
     var serverCost = []; //push the array into vars
-    serverCost.push(dataSplit[3]);
-    serverCost.push(dataSplit[4]);
-    serverCost.push(dataSplit[5]);	
+    serverCost.push(costDataSplit[0]);
+    serverCost.push(costDataSplit[1]);
+    serverCost.push(costDataSplit[2]);	
 
 	/*
 			Hacking program autobuy
@@ -69,6 +71,8 @@ export async function main(ns) {
 			}
 			await ns.sleep(2000);
 			playerLevel = ns.getPlayer().hacking; //refresh hacking level
+			availMoney = ns.getPlayer().money;
+
 		}
 	}
 
@@ -80,14 +84,16 @@ export async function main(ns) {
 		if (availMoney > serverCost[0]) {
 			if (serverRam[0] === 1024) {
 			ns.run("scripts/buyserver.js",1,serverRam[0]);
-			await ns.write("/data/purchasedserver-data.txt","16384,1048576,5000000000,1200000000000","w"); 
+			await ns.write("/data/serverram-data.txt","16384,1048576","w");
+			await ns.write("/data/servercost-data.txt","5000000000,1200000000000","w");
 			serverRam.splice(0,1);
 			serverCost.splice(0,1);
 			await ns.sleep(2000);
 			}
 			if (serverRam[0] === 16384) {
-				ns.run("scripts/buyserver.js",1,serverRam[0]);					
-				await ns.write("/data/purchasedserver-data.txt","1048576,1200000000000","w");
+				ns.run("scripts/buyserver.js",1,serverRam[0]);
+				await ns.write("/data/serverram-data.txt","1048576","w");
+				await ns.write("/data/servercost-data.txt","1200000000000","w");
 				serverRam.splice(0,1);
 				serverCost.splice(0,1);
 				await ns.sleep(2000);
@@ -96,13 +102,15 @@ export async function main(ns) {
 				ns.run("scripts/buyserver.js",1,serverRam[0]);
 				await ns.sleep(2000);
 			}
-		}															
+		}
 		else {
 			ns.print("Can't afford a " + serverRam[0] + "GB server");
 			await ns.sleep(2000)
 		}
+		availMoney = ns.getPlayer().money;
+		maxServers = ns.getPurchasedServerLimit();
+		currentServers = ns.getPurchasedServers();
 	}
-	var currentServers = ns.getPurchasedServers();
 	await ns.sleep(10000);
 }
 	
