@@ -11,7 +11,7 @@ export function hackTools(ns) {
 	return numTools;
 }
 
-export async function nukeServer(ns, server) {
+export function nukeServer(ns, server) {
 	if (ns.fileExists("brutessh.exe")) {
 		ns.brutessh(server);
 	}
