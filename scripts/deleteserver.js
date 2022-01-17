@@ -3,5 +3,10 @@ export async function main(ns) {
 	var server = ns.args[0]
 
 	ns.killall(server);
-	ns.deleteServer(server);
+	if (ns.deleteServer(server)) {
+		ns.tprint("Deleted " + server);
+	}
+	else {
+		ns.tprint("Failed to delete " + server);
+	}
 }
