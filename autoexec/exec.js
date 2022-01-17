@@ -21,7 +21,8 @@ export async function main(ns) {
 	if (dataRefresh === true) {
 		ns.tprint("--");
 		ns.tprint("Refreshing script data");
-		await ns.write("/data/purchasedserver-data.txt","1024,16384,1048576,180000000,5000000000,1200000000000","w");
+		await ns.write("/data/servercost-data.txt","180000000,5000000000,1200000000000","w");
+		await ns.write("/data/serverram-data.txt","1024,16384,1048576","w");
 		ns.tprint("Refreshed script data");
 	}
 	ns.tprint("--");
