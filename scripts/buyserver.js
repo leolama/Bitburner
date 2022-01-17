@@ -4,8 +4,8 @@ export async function main(ns) {
     var ram = ns.args[0];
     var hName = "personal-server-" + ram;
 
-    for (let i = 0; i < multipleOf.length; ++i) {
-        if (ram === multipleOf[i]) { //if ram equals a multiple of 2
+    for (let multiple of multipleOf) {
+        if (ram === multiple) { //if ram equals a multiple of 2
             ns.tprint("Buying " + ram + "GB server...");
             if (ns.purchaseServer(hName, ram))  {
                 ns.tprint("Bought " + ram + "GB server");
