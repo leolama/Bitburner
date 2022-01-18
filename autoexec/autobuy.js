@@ -104,7 +104,9 @@ export async function main(ns) {
 			}
 		}
 		else {
-			ns.print("Can't afford a " + serverRam[0] + "GB server");
+			let neededMoney = serverCost[0] - availMoney
+			
+			ns.print("Need " + ns.nFormat(neededMoney, "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 			await ns.sleep(2000)
 		}
 		availMoney = ns.getPlayer().money;

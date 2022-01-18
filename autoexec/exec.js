@@ -25,8 +25,8 @@ export async function main(ns) {
 		await ns.write("/data/serverram-data.txt","1024,16384,1048576","w");
 		ns.tprint("Refreshed script data");
 	}
+	
 	ns.tprint("--");
-
 	for (let i = 0;i < programs.length; i++) {
 		if (ns.fileExists(programs[i])) {
 			if (!ns.isRunning(programs[i], "home")) {
