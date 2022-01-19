@@ -3,8 +3,8 @@ export async function main(ns) {
 	var hostserver = ns.scan(ns.getHostname());
 	var targetServer = ns.args[0];
 	ns.tprint("--" + targetServer + " stats--");
-	ns.tprint("Money available: " + ns.nFormat(ns.getServerMoneyAvailable(targetServer), ("$0.000a")));
-	ns.tprint("Maximum money: " + ns.nFormat(ns.getServerMaxMoney(targetServer), ("$0.000a")));
+	ns.tprint("Money available: " + ns.nFormat(ns.getServerMoneyAvailable(targetServer), "$0.000a"));
+	ns.tprint("Maximum money: " + ns.nFormat(ns.getServerMaxMoney(targetServer), "$0.000a"));
 	ns.tprint("Hacking level required: " + ns.getServerRequiredHackingLevel(targetServer));
 	ns.tprint("Current security level: " + ns.getServerSecurityLevel(targetServer));
 	ns.tprint("Minimum security level: " + ns.getServerMinSecurityLevel(targetServer));

@@ -1,7 +1,7 @@
 /** @param {NS} ns **/
 export function hackTools(ns) {
-	var programs = ["brutessh.exe","ftpcrack.exe","relaysmtp.exe","httpworm.exe","sqlinject.exe"]
-	var numTools = 0
+	var programs = ["brutessh.exe", "ftpcrack.exe", "relaysmtp.exe", "httpworm.exe", "sqlinject.exe"];
+	var numTools = 0;
 
 	for (let prog of programs) {
 		if (ns.fileExists(prog)) {
