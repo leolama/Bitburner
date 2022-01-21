@@ -19,11 +19,13 @@ export async function main(ns) {
 	serverRam.push(ramDataSplit[0]);
 	serverRam.push(ramDataSplit[1]);
 	serverRam.push(ramDataSplit[2]);
+	serverRam.push(ramDataSplit[3]);
 
 	var serverCost = []; //push the array into vars
 	serverCost.push(costDataSplit[0]);
 	serverCost.push(costDataSplit[1]);
 	serverCost.push(costDataSplit[2]);
+	serverCost.push(costDataSplit[3]);
 
 	/*
 			Hacking program autobuy
@@ -78,6 +80,14 @@ export async function main(ns) {
 
 	while (currentServers.length < maxServers) {
 		if (availMoney > serverCost[0]) {
+			if (serverRam[0] === 128) {
+				ns.run("scripts/buyserver.js", 1, serverRam[0]);
+				await ns.write("/data/serverram-data.txt", "1024,16384,1048576", "w");
+				await ns.write("/data/servercost-data.txt", "8448000,5000000000,1200000000000", "w");
+				serverRam.splice(0, 1);
+				serverCost.splice(0, 1);
+				await ns.sleep(2000);
+			}
 			if (serverRam[0] === 1024) {
 				ns.run("scripts/buyserver.js", 1, serverRam[0]);
 				await ns.write("/data/serverram-data.txt", "16384,1048576", "w");

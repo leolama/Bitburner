@@ -15,8 +15,8 @@ export async function main(ns) {
 	if (dataRefresh === true) {
 		ns.tprint("--");
 		ns.tprint("Refreshing script data");
-		await ns.write("/data/servercost-data.txt", "180000000,5000000000,1200000000000", "w");
-		await ns.write("/data/serverram-data.txt", "1024,16384,1048576", "w");
+		await ns.write("/data/servercost-data.txt", "8448000,180000000,5000000000,1200000000000", "w");
+		await ns.write("/data/serverram-data.txt", "128,1024,16384,1048576", "w");
 		ns.tprint("Refreshed script data");
 	}
 
@@ -27,15 +27,12 @@ export async function main(ns) {
 				if (args != null && programs[i] === "/managers/hack-manager.js") {
 					ns.run(programs[i], 1, args);
 					ns.tprint("Started " + programs[i] + " with args: " + args);
-					await ns.sleep(500);
 				} else {
 					ns.run(programs[i]);
 					ns.tprint("Started " + programs[i]);
-					await ns.sleep(500);
 				}
 			} else {
 				ns.tprint(programs[i] + " is already running");
-				await ns.sleep(500);
 			}
 		} else {
 			ns.tprint("No file called " + programs[i]);
