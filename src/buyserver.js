@@ -13,7 +13,7 @@ export async function main(ns) {
 			} else {
 				ns.tprint("Failed to buy a server");
 			}
-			ns.scriptKill("buyserver.js", "home");
+			return;
 		}
 	}
 }
