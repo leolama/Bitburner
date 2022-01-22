@@ -10,26 +10,31 @@ export async function main(ns) {
 	var hackingLvl = ns.getPlayer().hacking;
 
 	while (count < factionNames.length) {
-		if (factionHackLvl[count] <= hackingLvl && numTools >= factionProgs[count]) {
-			await nukeServer(ns, factionNames[count]);
-			ns.tprint("Installing a backdoor on " + factionNames[count] + " in 3 seconds");
-			await ns.sleep(3000);
-			ns.run("scripts/connect.js", 1, factionNames[count]);
-			await ns.installBackdoor();
-			if (ns.getServer(factionNames[count]).backdoorInstalled === true) {
-				ns.tprint("Successful backdoor");
-				ns.tprint("Returning home");
-				ns.run("scripts/connect.js", 1, "home");
+		if (ns.getServer(factionNames[count]).backdoorInstalled === false) {
+			if (factionHackLvl[count] <= hackingLvl && numTools >= factionProgs[count]) {
+				await nukeServer(ns, factionNames[count]);
+				ns.tprint("Installing a backdoor on " + factionNames[count] + " in 3 seconds");
+				await ns.sleep(3000);
+				ns.run("scripts/connect.js", 1, factionNames[count]);
+				await ns.sleep(100);
+				await ns.installBackdoor();
+				if (ns.getServer(factionNames[count]).backdoorInstalled === true) {
+					++count;
+					ns.tprint("Successful backdoor");
+					ns.tprint("Returning home");
+					ns.run("scripts/connect.js", 1, "home");
+				} else {
+					ns.tprint("Failed backdoor");
+					ns.tprint("Returning home, stopping script");
+					ns.run("scripts/connect.js", 1, "home");
+					return;
+				}
+				await ns.sleep(2000);
 			} else {
-				ns.tprint("Failed backdoor");
-				ns.tprint("Returning home, stopping script");
-				ns.run("scripts/connect.js", 1, "home");
-				return;
+				await ns.sleep(2000);
 			}
-			++count;
-			await ns.sleep(1000);
 		} else {
-			await ns.sleep(2000);
+			++count;
 		}
 		var numTools = hackTools(ns);
 		var hackingLvl = ns.getPlayer().hacking;
