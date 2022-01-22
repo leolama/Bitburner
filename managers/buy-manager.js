@@ -82,7 +82,7 @@ export async function main(ns) {
 	while (currentServers.length < maxServers) {
 		if (availMoney > serverCost[0]) {
 			if (serverRam[0] === 128) {
-				ns.run("scripts/buyserver.js", 1, serverRam[0]);
+				ns.run("src/buyserver.js", 1, serverRam[0]);
 				await ns.write("/data/serverram-data.txt", "1024,16384,1048576", "w");
 				await ns.write("/data/servercost-data.txt", "8448000,5000000000,1200000000000", "w");
 				serverRam.splice(0, 1);
@@ -90,7 +90,7 @@ export async function main(ns) {
 				await ns.sleep(2000);
 			}
 			if (serverRam[0] === 1024) {
-				ns.run("scripts/buyserver.js", 1, serverRam[0]);
+				ns.run("src/buyserver.js", 1, serverRam[0]);
 				await ns.write("/data/serverram-data.txt", "16384,1048576", "w");
 				await ns.write("/data/servercost-data.txt", "5000000000,1200000000000", "w");
 				serverRam.splice(0, 1);
@@ -98,14 +98,14 @@ export async function main(ns) {
 				await ns.sleep(2000);
 			}
 			if (serverRam[0] === 16384) {
-				ns.run("scripts/buyserver.js", 1, serverRam[0]);
+				ns.run("src/buyserver.js", 1, serverRam[0]);
 				await ns.write("/data/serverram-data.txt", "1048576", "w");
 				await ns.write("/data/servercost-data.txt", "1200000000000", "w");
 				serverRam.splice(0, 1);
 				serverCost.splice(0, 1);
 				await ns.sleep(2000);
 			} else {
-				ns.run("scripts/buyserver.js", 1, serverRam[0]);
+				ns.run("src/buyserver.js", 1, serverRam[0]);
 				await ns.sleep(2000);
 			}
 		} else {

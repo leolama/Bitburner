@@ -15,18 +15,18 @@ export async function main(ns) {
 				await nukeServer(ns, factionNames[count]);
 				ns.tprint("Installing a backdoor on " + factionNames[count] + " in 3 seconds");
 				await ns.sleep(3000);
-				ns.run("scripts/connect.js", 1, factionNames[count]);
+				ns.run("src/connect.js", 1, factionNames[count]);
 				await ns.sleep(100);
 				await ns.installBackdoor();
 				if (ns.getServer(factionNames[count]).backdoorInstalled === true) {
 					++count;
 					ns.tprint("Successful backdoor");
 					ns.tprint("Returning home");
-					ns.run("scripts/connect.js", 1, "home");
+					ns.run("src/connect.js", 1, "home");
 				} else {
 					ns.tprint("Failed backdoor");
 					ns.tprint("Returning home, stopping script");
-					ns.run("scripts/connect.js", 1, "home");
+					ns.run("src/connect.js", 1, "home");
 					return;
 				}
 				await ns.sleep(2000);

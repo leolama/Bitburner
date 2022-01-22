@@ -1,7 +1,7 @@
 /** @param {NS} ns **/
 export async function main(ns) {
 	var args = ns.args[0];
-	var programs = ["/managers/hack-manager.js", "/autoexec/autobuy.js", "/autoexec/autofaction.js", "/managers/stock-manager.js"];
+	var programs = ["/managers/hack-manager.js", "/managers/buy-manager.js","/managers/gang-manager.js","/managers/faction-manager.js", "/managers/stock-manager.js"];
 	var dataRefresh = await ns.prompt("Do you want to refresh all script data?");
 
 	/*

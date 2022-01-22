@@ -61,7 +61,7 @@ export async function main(ns) {
             onClick="(function()
             {
                 const terminalInput = document.getElementById('terminal-input');
-                terminalInput.value='home; run scripts/connect.js ${name}';
+                terminalInput.value='home; run src/connect.js ${name}';
                 const handler = Object.keys(terminalInput)[1];
                 terminalInput[handler].onChange({target:terminalInput});
                 terminalInput[handler].onKeyDown({keyCode:13,preventDefault:()=>null});
