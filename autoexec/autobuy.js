@@ -3,8 +3,8 @@ export async function main(ns) {
 	ns.disableLog("ALL");
 	var count = 0;
 	var programs = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
-	var reqLevel = [50, 100, 250, 500, 750]; //program unlock levels (except with darkweb)
-	var playerLevel = ns.getPlayer().hacking; //get hacking level
+	//var reqLevel = [50, 100, 250, 500, 750]; //program unlock levels (except with darkweb)
+	//var playerLevel = ns.getPlayer().hacking; //get hacking level
 
 	var availMoney = ns.getPlayer().money;
 	var maxServers = ns.getPurchasedServerLimit();
@@ -40,7 +40,7 @@ export async function main(ns) {
 					if (check === true) {
 						ns.print("Bought " + programs[0]);
 						programs.splice(0, 1);
-						reqLevel.splice(0, 1);
+						//reqLevel.splice(0, 1);
 						++count;
 					} else {
 						ns.print("Can't afford " + programs[0]);
@@ -48,17 +48,17 @@ export async function main(ns) {
 				} else if (ns.fileExists(programs[0])) {
 					ns.print("Already have " + programs[0]);
 					programs.splice(0, 1);
-					reqLevel.splice(0, 1);
+					//reqLevel.splice(0, 1);
 					++count;
 				}
 			} else if (!ns.purchaseTor()) {
 				ns.print("Cannot afford a TOR router");
 			}
 			//create the program if above failed
+			/*
 			if (playerLevel >= reqLevel[0]) {
 				ns.print("Busy? " + ns.isBusy());
-				if (!ns.fileExists(programs[0]) && !ns.isBusy()) {
-					//check that the player isn't already busy
+				if (!ns.fileExists(programs[0]) && !ns.isBusy()) { //check that the player isn't already busy
 					ns.createProgram(programs[0]);
 					ns.print("Creating " + programs[0]);
 					programs.splice(0, 1);
@@ -68,9 +68,10 @@ export async function main(ns) {
 			} else {
 				ns.print("Need hacking level " + reqLevel[0] + " for " + programs[0]);
 			}
+			*/
 			await ns.sleep(2000);
-			playerLevel = ns.getPlayer().hacking; //refresh hacking level
-			availMoney = ns.getPlayer().money;
+			//playerLevel = ns.getPlayer().hacking; //refresh hacking level
+			availMoney = ns.getPlayer().money; //refresh available money
 		}
 	}
 
