@@ -1,5 +1,5 @@
 {
-	"ns-template": {
+	"NS Template": {
 		"scope": "javascript",
 		"prefix": "ns-template",
 		"body": [
@@ -10,5 +10,28 @@
 		"\t//",
 		"}"
 		]
-  	}
+  	},
+	"ns.tprint": {
+		"scope": "javascript",
+		"prefix": "tprint",
+		"body": ["ns.tprint('')"]
+  	},
+	"while loop": {
+		"scope": "javascript",
+		"prefix": "while",
+		"body": [
+			"while () {",
+			"",
+			"}"
+		]
+  	},
+	"for loop": {
+		"scope": "javascript",
+		"prefix": "for",
+		"body": [
+			"for (let i = 0; i < .length; ++i) {",
+			"",
+			"}"
+		]
+  	},
 }
