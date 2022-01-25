@@ -1,5 +1,6 @@
 /** @param {NS} ns **/
 export async function main(ns) {
+	ns.print("Script started");
 	var hostserver = ns.scan(ns.getHostname());
 	var targetServer = ns.args[0];
 	ns.tprint("--" + targetServer + " stats--");

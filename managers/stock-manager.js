@@ -122,6 +122,7 @@ function format(num, isMonetary) {
  * @param {NS} ns Game namespace
  * */
 export async function main(ns) {
+	ns.print("Script started");
 	//Initialise
 	while (!ns.getPlayer().hasTixApiAccess + !ns.getPlayer().has4SDataTixApi) {
 		ns.tprint("No access to TIX API and/or 4S Market Data!");

@@ -30,6 +30,7 @@ export function getServers(ns) {
 }
 
 export async function main(ns) {
+    ns.print("Script started");
     let output = "Network:";
 
     getServers(ns).forEach(server => {

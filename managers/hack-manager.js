@@ -2,6 +2,7 @@
 /** @param {NS} ns **/
 import { hackTools, nukeServer } from "util.js";
 export async function main(ns) {
+	ns.print("Script started");
 	ns.disableLog("ALL");
 	ns.enableLog("sleep");
 	while (true) {

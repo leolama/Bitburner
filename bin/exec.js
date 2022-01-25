@@ -1,9 +1,8 @@
 /** @param {NS} ns **/
 export async function main(ns) {
+	ns.print("Script started");
 	var args = ns.args[0];
 	var programs = ["/managers/hack-manager.js", "/managers/buy-manager.js","/managers/gang-manager.js","/managers/faction-manager.js", "/managers/stock-manager.js"];
-	var dataRefresh = await ns.prompt("Do you want to refresh all script data?");
-
 	/*
 	var gitPrompt = await ns.prompt("Do you want to run gitfetch.js?");
 
@@ -11,14 +10,6 @@ export async function main(ns) {
 		ns.exec("gitfetch.js");
 	}
 	*/
-
-	if (dataRefresh === true) {
-		ns.tprint("--");
-		ns.tprint("Refreshing script data");
-		await ns.write("/data/servercost-data.txt", "8448000,180000000,5000000000,1200000000000", "w");
-		await ns.write("/data/serverram-data.txt", "128,1024,16384,1048576", "w");
-		ns.tprint("Refreshed script data");
-	}
 
 	ns.tprint("--");
 	for (let i = 0; i < programs.length; i++) {
