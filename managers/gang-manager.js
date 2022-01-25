@@ -77,7 +77,7 @@ export function autocomplete(data, _) {
 	return [];
 }
 
-/** @param {NS} ns **/
+/** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ownedSourceFiles = await getActiveSourceFiles(ns);
 	const sf2Level = ownedSourceFiles[2] || 0;

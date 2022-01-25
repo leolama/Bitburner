@@ -1,4 +1,4 @@
-/** @param {NS} ns **/
+/** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
 	var server = ns.args[0];

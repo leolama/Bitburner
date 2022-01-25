@@ -1,5 +1,5 @@
 //thanks to Tempest_42 on reddit for this script
-/** @param {NS} ns **/
+/** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
 	let target = ns.args[0];

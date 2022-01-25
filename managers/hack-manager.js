@@ -1,5 +1,5 @@
 //original from MurataMain on reddit
-/** @param {NS} ns **/
+/** @param {import("../.").NS} ns */
 import { hackTools, nukeServer } from "util.js";
 export async function main(ns) {
 	ns.print("Script started");
