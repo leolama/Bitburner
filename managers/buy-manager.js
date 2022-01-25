@@ -1,5 +1,6 @@
 /** @param {NS} ns **/
 export async function main(ns) {
+	ns.print("Script started");
 	ns.disableLog("ALL");
 	var count = 0;
 	var programs = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
@@ -9,23 +10,13 @@ export async function main(ns) {
 	var availMoney = ns.getPlayer().money;
 	var maxServers = ns.getPurchasedServerLimit();
 	var currentServers = ns.getPurchasedServers();
+	var serverRam = [128, 1024, 16384, 1048576];
+	var serverCost = [];
+	var cantAfford = false;
 
-	let ramData = ns.read("/data/serverram-data.txt"); //read data file and split it into an array
-	let costData = ns.read("/data/servercost-data.txt"); //read data file and split it into an array
-	let ramDataSplit = ramData.split(",").map(Number);
-	let costDataSplit = costData.split(",").map(Number);
-
-	var serverRam = []; //push the array into vars
-	serverRam.push(ramDataSplit[0]);
-	serverRam.push(ramDataSplit[1]);
-	serverRam.push(ramDataSplit[2]);
-	serverRam.push(ramDataSplit[3]);
-
-	var serverCost = []; //push the array into vars
-	serverCost.push(costDataSplit[0]);
-	serverCost.push(costDataSplit[1]);
-	serverCost.push(costDataSplit[2]);
-	serverCost.push(costDataSplit[3]);
+	for (let ram of serverRam) {
+		serverCost.push(ns.getPurchasedServerCost(ram));
+	}
 
 	/*
 			Hacking program autobuy
@@ -80,43 +71,52 @@ export async function main(ns) {
 	*/
 
 	while (currentServers.length < maxServers) {
-		if (availMoney > serverCost[0]) {
-			if (serverRam[0] === 128) {
-				ns.run("src/buyserver.js", 1, serverRam[0]);
-				await ns.write("/data/serverram-data.txt", "1024,16384,1048576", "w");
-				await ns.write("/data/servercost-data.txt", "8448000,5000000000,1200000000000", "w");
-				serverRam.splice(0, 1);
-				serverCost.splice(0, 1);
-				await ns.sleep(2000);
+		if (serverRam[0] === 1048576) {
+			while (currentServers.length < maxServers) {
+				if (availMoney > serverCost[0]) {
+					ns.run("src/buyserver.js", 1, serverRam[0]);
+					ns.print("Bought a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
+					await ns.sleep(10000);
+				} else {
+					ns.print("Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
+					cantAfford = true;
+					while (cantAfford === true) {
+						if (availMoney < serverCost[0]) cantAfford = false;
+						else {
+							await ns.sleep(100000);
+						}
+						await ns.sleep(500);
+					}
+				}
+				availMoney = ns.getPlayer().money;
+				maxServers = ns.getPurchasedServerLimit();
+				currentServers = ns.getPurchasedServers();
+				let prompt = await ns.prompt("Keep buying servers?");
+				if (prompt === false) {
+					return;
+				}
 			}
-			if (serverRam[0] === 1024) {
-				ns.run("src/buyserver.js", 1, serverRam[0]);
-				await ns.write("/data/serverram-data.txt", "16384,1048576", "w");
-				await ns.write("/data/servercost-data.txt", "5000000000,1200000000000", "w");
-				serverRam.splice(0, 1);
-				serverCost.splice(0, 1);
-				await ns.sleep(2000);
-			}
-			if (serverRam[0] === 16384) {
-				ns.run("src/buyserver.js", 1, serverRam[0]);
-				await ns.write("/data/serverram-data.txt", "1048576", "w");
-				await ns.write("/data/servercost-data.txt", "1200000000000", "w");
-				serverRam.splice(0, 1);
-				serverCost.splice(0, 1);
-				await ns.sleep(2000);
-			} else {
-				ns.run("src/buyserver.js", 1, serverRam[0]);
-				await ns.sleep(2000);
-			}
-		} else {
-			let neededMoney = serverCost[0] - availMoney;
+		}
 
-			ns.print("Need " + ns.nFormat(neededMoney, "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
-			await ns.sleep(2000);
+		if (availMoney > serverCost[0]) {
+			ns.run("src/buyserver.js", 1, serverRam[0]);
+			ns.print("Bought a " + ns.nFormat(serverRam[0], "0,0") + " server");
+			serverRam.splice(0, 1);
+			serverCost.splice(0, 1);
+			await ns.sleep(10000);
+		} else {
+			ns.print("Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
+			cantAfford = true;
+			while (cantAfford === true) {
+				if (availMoney < serverCost[0]) cantAfford = false;
+				else {
+					await ns.sleep(100000);
+				}
+				await ns.sleep(500);
+			}
 		}
 		availMoney = ns.getPlayer().money;
 		maxServers = ns.getPurchasedServerLimit();
 		currentServers = ns.getPurchasedServers();
 	}
-	await ns.sleep(10000);
 }
