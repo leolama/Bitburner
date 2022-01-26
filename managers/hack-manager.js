@@ -1,4 +1,5 @@
 //original from MurataMain on reddit
+//accepts an argument to specify target server
 /** @param {import("../.").NS} ns */
 import { hackTools, nukeServer } from "util.js";
 export async function main(ns) {
