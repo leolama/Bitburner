@@ -2,31 +2,41 @@
 export async function main(ns) {
 	ns.print("Script started");
 	var args = ns.args[0];
-	var programs = ["/managers/hack-manager.js", "/managers/buy-manager.js","/managers/gang-manager.js","/managers/faction-manager.js", "/managers/stock-manager.js"];
-	/*
-	var gitPrompt = await ns.prompt("Do you want to run gitfetch.js?");
+	var scripts = ["hack-manager.js", "buy-manager.js","gang-manager.js","faction-manager.js", "stock-manager.js", "crime-manager.js"]
+	var scriptsToStart = [];
+	var reqRam = 0;
 
-	if (gitPrompt === true) {
-		ns.exec("gitfetch.js");
+	for (let script of scripts) {
+		let ram = ns.getScriptRam("/managers/" + script);
+		reqRam += ram;
 	}
-	*/
+
+	if (await ns.prompt("Start all managers? (requires " + reqRam + "GB of home RAM)")) {
+		scriptsToStart = ["/managers/hack-manager.js", "/managers/buy-manager.js","/managers/gang-manager.js","/managers/faction-manager.js", "/managers/stock-manager.js", "/managers/crime-manager.js"];
+	} else {
+		for (let script of scripts) {
+			if (await ns.prompt("Start " + script + "?")) {
+				scriptsToStart.push("/managers/" + script);
+			}
+		}
+	}
 
 	ns.tprint("--");
-	for (let i = 0; i < programs.length; i++) {
-		if (ns.fileExists(programs[i])) {
-			if (!ns.isRunning(programs[i], "home")) {
-				if (args != null && programs[i] === "/managers/hack-manager.js") {
-					ns.run(programs[i], 1, args);
-					ns.tprint("Started " + programs[i] + " with args: " + args);
+	for (let i = 0; i < scriptsToStart.length; i++) {
+		if (ns.fileExists(scriptsToStart[i])) {
+			if (!ns.isRunning(scriptsToStart[i], "home")) {
+				if (args != null && scriptsToStart[i] === "/managers/hack-manager.js") {
+					ns.run(scriptsToStart[i], 1, args);
+					ns.tprint("Started " + scriptsToStart[i] + " with args: " + args);
 				} else {
-					ns.run(programs[i]);
-					ns.tprint("Started " + programs[i]);
+					ns.run(scriptsToStart[i]);
+					ns.tprint("Started " + scriptsToStart[i]);
 				}
 			} else {
-				ns.tprint(programs[i] + " is already running");
+				ns.tprint(scriptsToStart[i] + " is already running");
 			}
 		} else {
-			ns.tprint("No file called " + programs[i]);
+			ns.tprint("No file called /managers/" + scriptsToStart[i]);
 		}
 	}
 	ns.tprint("--");
