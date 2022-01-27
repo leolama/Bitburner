@@ -2,7 +2,7 @@
 export async function main(ns) {
 	ns.print("Script started");
 	var args = ns.args[0];
-	var scripts = ["hack-manager.js", "buy-manager.js","gang-manager.js","faction-manager.js", "stock-manager.js", "crime-manager.js"]
+	var scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "gang-manager.js", "stock-manager.js", "crime-manager.js"]
 	var scriptsToStart = [];
 	var reqRam = 0;
 
