@@ -1,5 +1,6 @@
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
+    ns.disableLog("ALL");
 	ns.print("Script started");
 	var faction = ns.args[0];
 	var availMoney = ns.getPlayer().money;
@@ -13,7 +14,6 @@ export async function main(ns) {
             ns.print(faction);
             if (ns.purchaseAugmentation(faction, "NeuroFlux Governor")) {
                 ++count;
-                ns.print("Bought " + count + " level of NeuroFlux");
             } else {
                 ns.print("Failed to buy NeuroFlux");
             }
@@ -26,4 +26,5 @@ export async function main(ns) {
 	} else {
         ns.print("Not enough money and/or reputation");
     }
+    ns.print("Bought " + count + " level(s) of NeuroFlux");
 }
