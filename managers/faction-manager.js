@@ -4,11 +4,15 @@ import { hackTools, nukeServer } from "util.js";
 export async function main(ns) {
 	ns.print("Script started");
 	const factionNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z"]; //hacking based factions (that I know of so far)
-	const factionHackLvl = ["54", "203", "358", "511"]; //required hacking level
+	const factionHackLvl = []; //required hacking level
 	const factionProgs = ["1", "2", "3", "4"]; //number of programs needed to root
 	var numTools = hackTools(ns);
 	var count = 0;
 	var hackingLvl = ns.getPlayer().hacking;
+
+	for (let faction of factionNames) {
+		factionHackLvl.push(ns.getServerRequiredHackingLevel(faction));//push server costs corrosponding to the ram into an array
+	}
 
 	while (count < factionNames.length) {
 		if (ns.getServer(factionNames[count]).backdoorInstalled === false) {
