@@ -10,6 +10,7 @@ export async function main(ns) {
 			//if ram equals a multiple of 2
 			ns.tprint("Buying " + ram + "GB server...");
 			if (ns.purchaseServer(hName, ram)) {
+				//check if we can buy the server
 				ns.tprint("Bought " + ram + "GB server");
 			} else {
 				ns.tprint("Failed to buy a server");

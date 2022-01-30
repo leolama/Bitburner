@@ -21,8 +21,10 @@ export async function main(ns) {
 	}
 	output = "home; ";
 
+	//get the route
 	pathToTarget.forEach((server) => (output += " connect " + server + ";"));
 
+	//terminal injection
 	const terminalInput = document.getElementById("terminal-input");
 	terminalInput.value = output;
 	const handler = Object.keys(terminalInput)[1];

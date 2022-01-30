@@ -14,6 +14,7 @@ export async function main(ns) {
 		var optimalServer = multiarray[2];
 		var target = optimalServer;
 		if (ns.args[0] != null) {
+			//override the algorithm
 			target = ns.args[0];
 		}
 		var moneyThresh = ns.getServerMaxMoney(target) * 0.9;
@@ -27,9 +28,9 @@ export async function main(ns) {
 			ns.print("Weakening " + target);
 			for (let i = 0; i < rootableServers.length; i++) {
 				ns.killall(rootableServers[i]);
-				numThreads = ns.getServerMaxRam(rootableServers[i]) - ns.getServerUsedRam(rootableServers[i]); //free ram
-				numThreads /= ns.getScriptRam("weak.js", "home");
-				numThreads = Math.floor(numThreads);
+				numThreads = ns.getServerMaxRam(rootableServers[i]) - ns.getServerUsedRam(rootableServers[i]); //free ram of the server
+				numThreads /= ns.getScriptRam("weak.js", "home"); //number of threads the script can use
+				numThreads = Math.floor(numThreads); //round the number down
 				if (numThreads > 0) {
 					ns.exec("weak.js", rootableServers[i], numThreads, target);
 				}

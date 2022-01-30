@@ -23,9 +23,7 @@ export async function main(ns) {
 		"shoplift",
 	];
 	const statNames = ["strength", "defense", "agility", "dexterity"];
-	const possibleArgs = ["money","karma"];
-
-
+	const possibleArgs = ["money", "karma"];
 
 	//test each crime with a 'special' thrown-together algorithm
 	function crime(arg) {
@@ -37,9 +35,9 @@ export async function main(ns) {
 
 		if (arg == "noArg") {
 			for (let i = 0; i < crimeList.length; ++i) {
-				ns.print("optimal: " + optimalCrime);
 				chance = ns.getCrimeChance(crimeList[i]);
-				if (chance < 0.80) { //if chance to do crime is under 80% then skip it
+				if (chance < 0.8) {
+					//if chance to do crime is under 80% then skip it
 					continue;
 				}
 				time = ns.getCrimeStats(crimeList[i]).time; //time to complete the crime
@@ -55,11 +53,10 @@ export async function main(ns) {
 				}
 			}
 			return optimalCrime;
-		}
-		else if (arg == "money") {
+		} else if (arg == "money") {
 			for (let i = 0; i < crimeList.length; ++i) {
 				chance = ns.getCrimeChance(crimeList[i]);
-				if (chance < 0.80) {
+				if (chance < 0.8) {
 					continue;
 				}
 				time = ns.getCrimeStats(crimeList[i]).time;
@@ -71,11 +68,10 @@ export async function main(ns) {
 				}
 			}
 			return optimalCrime;
-		}
-		else if (arg == "karma") {
+		} else if (arg == "karma") {
 			for (let i = 0; i < crimeList.length; ++i) {
 				chance = ns.getCrimeChance(crimeList[i]);
-				if (chance < 0.80) {
+				if (chance < 0.8) {
 					continue;
 				}
 				time = ns.getCrimeStats(crimeList[i]).time;
@@ -88,9 +84,8 @@ export async function main(ns) {
 			}
 			return optimalCrime;
 		}
-
 	}
-	
+
 	async function trainStats() {
 		//get player stats
 		var statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().agility, ns.getPlayer().dexterity];
@@ -100,7 +95,7 @@ export async function main(ns) {
 			ns.print("Training " + statNames[i]);
 			while (statLevels[i] < 15) {
 				ns.gymWorkout(gym, statNames[i]);
-				await ns.sleep(5000)
+				await ns.sleep(5000);
 				statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().agility, ns.getPlayer().dexterity];
 			}
 		}
@@ -122,14 +117,15 @@ export async function main(ns) {
 	}
 
 	//main
-	oldKarma = karma
+	oldKarma = karma;
 	while (true) {
-		if (possibleArgs.includes(ns.args[0])) { //checking for money or karma args
+		if (possibleArgs.includes(ns.args[0])) {
+			//checking for money or karma args
 			bestCrime = crime(ns.args[0]);
-		} else if (crimeList.includes(ns.args[0])) { //checking for heistname arg
+		} else if (crimeList.includes(ns.args[0])) {
+			//checking for heistname arg
 			bestCrime = ns.args[0];
-		}
-		else {
+		} else {
 			bestCrime = crime("noArg");
 		}
 
@@ -140,7 +136,9 @@ export async function main(ns) {
 		if (!ns.isBusy()) {
 			ns.print("Attempting to commit " + bestCrime + ". Expecting finish at " + time);
 			await ns.sleep(ns.commitCrime(bestCrime) - 500);
-			if (!ns.isBusy()) { //if the player cancels the crime, stop the script
+			if (!ns.isBusy()) {
+				//if the player cancels the crime, stop the script and print current karma into the terminal
+				ns.tprint("Karma: " + oldKarma); //script needs to loop at least once for this idk
 				ns.print("Cancelled by player");
 				return;
 			}
@@ -155,13 +153,14 @@ export async function main(ns) {
 			ns.print("Player is busy");
 			busy = 0;
 			while (busy < 1) {
-				if (!ns.isBusy()) ++busy; //if player is busy then wait a second and try again
+				if (!ns.isBusy()) ++busy;
+				//if player is busy then wait a second and try again
 				else {
 					await ns.sleep(1000);
 				}
 			}
 		}
 		await ns.sleep(500);
-		oldKarma = karma;//move karma into another var
+		oldKarma = karma; //move karma into another var
 	}
 }

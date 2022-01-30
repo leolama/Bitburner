@@ -10,16 +10,16 @@ export async function main(ns) {
 	ns.tprint("Current security level: " + ns.getServerSecurityLevel(targetServer));
 	ns.tprint("Minimum security level: " + ns.getServerMinSecurityLevel(targetServer));
 
-	await attackAll(hostserver, ns.getHostname());
+	await scan(hostserver, ns.getHostname());
 
-	async function attackAll(servers, host) {
+	async function scan(servers, host) {
 		for (const server of servers) {
 			if (server === targetServer) {
 				ns.tprint("Previous server: " + host);
 			}
 			var moreservs = ns.scan(server);
 			moreservs.splice(moreservs.indexOf(host), 1);
-			await attackAll(moreservs, server);
+			await scanl(moreservs, server);
 		}
 	}
 }

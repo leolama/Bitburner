@@ -14,9 +14,9 @@ const gangsByPower = [
 	"The Dark Army",
 	"The Syndicate",
 	"Slum Snakes",
-	/* Hack gangs don't scale as far */ 
-    "The Black Hand" 
-    /* "NiteSec" Been there, not fun. */,
+	/* Hack gangs don't scale as far */
+	"The Black Hand",
+	/* "NiteSec" Been there, not fun. */
 ];
 const territoryEngageThreshold = 0.7; // Minimum average win chance (of gangs with territory) before we engage other clans
 let territoryTickDetected = false;

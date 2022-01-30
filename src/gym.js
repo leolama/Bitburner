@@ -2,7 +2,8 @@
 
 export async function main(ns) {
     ns.disableLog("ALL");
-    //get player stats
+
+    //get player and city stats
 	var statNames = ["strength", "defense", "agility", "dexterity"];
 	var statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().agility, ns.getPlayer().dexterity];
     var cityNames = ["Sector-12","Aevum","Volhaven"];
@@ -13,6 +14,7 @@ export async function main(ns) {
     var noGymPrompt = false;
     var scriptArg = ns.args[0];
 
+    //check if we want to be in Sector-12
     if (ns.getPlayer().city != "Sector-12") {
         travelPrompt = await ns.prompt("Travel to Sector-12 for best gym?");
     } else if (noGymCities.includes(ns.getPlayer().city)) {
@@ -23,6 +25,7 @@ export async function main(ns) {
         }
     }
     
+    //travel to Sector-12
     if (travelPrompt == true) {
         ns.travelToCity("Sector-12")
     } else {
@@ -30,13 +33,16 @@ export async function main(ns) {
         gym = gymNames[index];
     }
 
+    //start to train stats
     for (let i = 0; i < statNames.length; ++i) {
         ns.print("Training " + statNames[i] + " to level " + scriptArg);
         while (statLevels[i] < scriptArg) {
             ns.gymWorkout(gym, statNames[i]);
             await ns.sleep(5000)
+            //check stats again every 5 seconds
             statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().agility, ns.getPlayer().dexterity];
             if (!ns.isBusy()) {
+                //if player has cancelled training then stop the script
                 ns.print("Cancelled by player");
                 return;
             }

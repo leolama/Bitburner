@@ -2,17 +2,25 @@
 export async function main(ns) {
 	ns.print("Script started");
 	var args = ns.args[0];
-	var scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "gang-manager.js", "stock-manager.js", "crime-manager.js"]
+	var scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "gang-manager.js", "stock-manager.js", "crime-manager.js"];
 	var scriptsToStart = [];
 	var reqRam = 0;
 
 	for (let script of scripts) {
 		let ram = ns.getScriptRam("/managers/" + script);
+		ns.print(script + " - " + ram + "GB");
 		reqRam += ram;
 	}
 
 	if (await ns.prompt("Start all managers? (requires " + reqRam + "GB of home RAM)")) {
-		scriptsToStart = ["/managers/hack-manager.js", "/managers/buy-manager.js","/managers/gang-manager.js","/managers/faction-manager.js", "/managers/stock-manager.js", "/managers/crime-manager.js"];
+		scriptsToStart = [
+			"/managers/hack-manager.js",
+			"/managers/buy-manager.js",
+			"/managers/gang-manager.js",
+			"/managers/faction-manager.js",
+			"/managers/stock-manager.js",
+			"/managers/crime-manager.js",
+		];
 	} else {
 		for (let script of scripts) {
 			if (await ns.prompt("Start " + script + "?")) {

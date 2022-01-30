@@ -11,7 +11,7 @@ export async function main(ns) {
 	var hackingLvl = ns.getPlayer().hacking;
 
 	for (let faction of factionNames) {
-		factionHackLvl.push(ns.getServerRequiredHackingLevel(faction));//push server costs corrosponding to the ram into an array
+		factionHackLvl.push(ns.getServerRequiredHackingLevel(faction)); //push server costs corrosponding to the ram into an array
 	}
 
 	while (count < factionNames.length) {

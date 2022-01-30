@@ -7,7 +7,39 @@ export async function main(ns) {
 	const handler = Object.keys(terminalInput)[1];
 	terminalInput[handler].onChange({ target: terminalInput });
 
-	var key = ["help", "h", "info", "i", "properties", "p", "methods", "m", "bladeburner", "b", "codingcontract", "cc", "corporation", "co", "formulas", "f", "gang", "g", "hacknet", "hn", "sleeve", "sl", "stanek", "sk", "stocks", "st", "userinterface", "u", "ui", "ns2.await", "n"];
+	var key = [
+		"help",
+		"h",
+		"info",
+		"i",
+		"properties",
+		"p",
+		"methods",
+		"m",
+		"bladeburner",
+		"b",
+		"codingcontract",
+		"cc",
+		"corporation",
+		"co",
+		"formulas",
+		"f",
+		"gang",
+		"g",
+		"hacknet",
+		"hn",
+		"sleeve",
+		"sl",
+		"stanek",
+		"sk",
+		"stocks",
+		"st",
+		"userinterface",
+		"u",
+		"ui",
+		"ns2.await",
+		"n",
+	];
 
 	var help = ["help", "h", "info", "i"];
 	var properties = ["properties", "p", "property"];
@@ -90,7 +122,9 @@ export async function main(ns) {
 		ns.tprintf(`- getScriptLogs(fn, host, args)               | Get all the logs of a script.`);
 		ns.tprintf(`- getScriptName()                             | Returns the current script name.`);
 		ns.tprintf(`- getScriptRam(script, host)                  | Get the ram cost of a script.`);
-		ns.tprintf(`- getServer(host)                             | Returns a server object for the given server. Defaults to the running script's server if host is not specified.`);
+		ns.tprintf(
+			`- getServer(host)                             | Returns a server object for the given server. Defaults to the running script's server if host is not specified.`
+		);
 		ns.tprintf(`- getServerGrowth(host)                       | Get a server growth parameter.`);
 		ns.tprintf(`- getServerMaxMoney(host)                     | Get maximum money available on a server.`);
 		ns.tprintf(`- getServerMaxRam(host)                       | Get the max RAM on a server.`);
@@ -322,7 +356,9 @@ export async function main(ns) {
 		ns.tprintf(`- cancelOrder(sym, shares, price, type, pos)  | Cancel order for stocks.`);
 		ns.tprintf(`- getAskPrice(sym)                            | Returns the ask price of that stock.`);
 		ns.tprintf(`- getBidPrice(sym)                            | Returns the bid price of that stock.`);
-		ns.tprintf(`- getForecast(sym)                            | Returns the probability that the specified stock’s price will increase (as opposed to decrease) during the next tick.`);
+		ns.tprintf(
+			`- getForecast(sym)                            | Returns the probability that the specified stock’s price will increase (as opposed to decrease) during the next tick.`
+		);
 		ns.tprintf(`- getMaxShares(sym)                           | Returns the maximum number of shares of a stock.`);
 		ns.tprintf(`- getOrders()                                 | Returns your order book for the stock market.`);
 		ns.tprintf(`- getPosition(sym)                            | Returns the player’s position in a stock.`);
