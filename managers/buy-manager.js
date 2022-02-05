@@ -8,10 +8,21 @@ export async function main(ns) {
 	var availMoney = ns.getPlayer().money;
 	var maxServers = ns.getPurchasedServerLimit();
 	var currentServers = ns.getPurchasedServers();
-	var serverRam = [128, 1024, 16384, 1048576];
 	var serverCost = [];
 	var cantAfford = false;
+	var buyPrompt;
+	var serverPrompt = await ns.prompt("Reset purchased server data?");
+	var serverRam = [];
 
+	if (serverPrompt === true) {
+		await ns.write("/data/purchasedservers.txt", "128,1024,16384,1048576", "w");
+	}
+	let ramData = ns.read("/data/purchasedservers.txt"); //read data file and split it into an array
+	let ramDataSplit = ramData.split(",").map(Number);
+	//push the array into a var
+	for (let split in ramDataSplit) {
+		serverRam.push(ramDataSplit[split]);
+	}
 	for (let ram of serverRam) {
 		serverCost.push(ns.getPurchasedServerCost(ram)); //push server costs corrosponding to the ram into an array
 	}
@@ -40,7 +51,7 @@ export async function main(ns) {
 			} else if (!ns.purchaseTor()) {
 				ns.print("Cannot afford a TOR router");
 			}
-			await ns.sleep(2000);
+			await ns.sleep(500);
 			availMoney = ns.getPlayer().money; //refresh available money
 		}
 	}
@@ -50,45 +61,51 @@ export async function main(ns) {
 	*/
 	while (currentServers.length < maxServers) {
 		if (serverRam[0] === 1048576) {
+			if (buyPrompt === false) {
+				return;
+			} else if (buyPrompt === true) {
+				continue;
+			}
+			await ns.write("/data/purchasedservers.txt", serverRam, "w");
 			while (currentServers.length < maxServers) {
 				if (availMoney > serverCost[0]) {
 					ns.run("src/buyserver.js", 1, serverRam[0]);
 					ns.print("Bought a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
-					await ns.sleep(10000);
+					if (buyPrompt == null) {
+						buyPrompt = await ns.prompt("Keep buying servers?");
+					}
+					await ns.sleep(1000);
 				} else {
 					ns.print("Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 					cantAfford = true;
 					while (cantAfford === true) {
-						if (availMoney < serverCost[0]) cantAfford = false;
+						if (availMoney > serverCost[0]) cantAfford = false;
 						else {
-							await ns.sleep(100000);
+							await ns.sleep(10000);
 						}
-						await ns.sleep(500);
+						await ns.sleep(1000);
 					}
 				}
 				availMoney = ns.getPlayer().money;
 				maxServers = ns.getPurchasedServerLimit();
 				currentServers = ns.getPurchasedServers();
-				let prompt = await ns.prompt("Keep buying servers?");
-				if (prompt === false) {
-					return;
-				}
 			}
 		}
 
 		if (availMoney > serverCost[0]) {
 			ns.run("src/buyserver.js", 1, serverRam[0]);
-			ns.print("Bought a " + ns.nFormat(serverRam[0], "0,0") + " server");
+			ns.print("Bought a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 			serverRam.splice(0, 1);
 			serverCost.splice(0, 1);
-			await ns.sleep(10000);
+			await ns.write("/data/purchasedservers.txt", serverRam, "w");
+			await ns.sleep(1000);
 		} else {
 			ns.print("Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 			cantAfford = true;
 			while (cantAfford === true) {
 				if (availMoney < serverCost[0]) cantAfford = false;
 				else {
-					await ns.sleep(100000);
+					await ns.sleep(10000);
 				}
 				await ns.sleep(500);
 			}
