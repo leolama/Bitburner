@@ -4,8 +4,8 @@ export async function main(ns) {
     ns.disableLog("ALL");
 
     //get player and city stats
-	var statNames = ["strength", "defense", "agility", "dexterity"];
-	var statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().agility, ns.getPlayer().dexterity];
+	var statNames = ["strength", "defense", "dexterity", "agility"];
+	var statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity,ns.getPlayer().agility];
     var cityNames = ["Sector-12","Aevum","Volhaven"];
 	var gymNames = ["powerhouse gym","snap fitness gym","millenium fitness gym"];
     var noGymCities = ["chongqing","new tokyo","ishima"]
@@ -38,9 +38,9 @@ export async function main(ns) {
         ns.print("Training " + statNames[i] + " to level " + scriptArg);
         while (statLevels[i] < scriptArg) {
             ns.gymWorkout(gym, statNames[i]);
-            await ns.sleep(5000)
+            await ns.sleep(1000)
             //check stats again every 5 seconds
-            statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().agility, ns.getPlayer().dexterity];
+            statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity,ns.getPlayer().agility];
             if (!ns.isBusy()) {
                 //if player has cancelled training then stop the script
                 ns.print("Cancelled by player");
