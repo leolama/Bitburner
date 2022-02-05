@@ -30,3 +30,7 @@ export async function main(ns) {
 	}
 	ns.print("Bought " + count + " level(s) of NeuroFlux");
 }
+
+export function autocomplete(data, args) {
+    return ["CyberSec", "NiteSec", "The Black Hand", "BitRunners", "Daedalus"];
+}
