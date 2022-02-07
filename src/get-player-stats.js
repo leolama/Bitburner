@@ -1,4 +1,4 @@
-/** @param {import('../.').NS} ns */
+/** @param {import('..').NS} ns */
 
 import { formatMoney, formatDuration } from "util.js"
 
