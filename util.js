@@ -31,7 +31,19 @@ export function nukeServer(ns, server) {
 	ns.print("Got root on " + server);
 }
 
-//L114 - L363 from https://github.com/alainbryden/bitburner-scripts
+export function findFile(ns, file) {
+	var file = ns.args[0];
+	var folders = ["","/bin/","/managers/","/src/","/src/achievements/"]
+
+	for (let folder of folders) {
+		if (ns.fileExists(folder + file)) {
+			return folder + file;
+		}
+	}
+	return false;
+}
+
+//rest of this from https://github.com/alainbryden/bitburner-scripts
 
 /**
  * Return a formatted representation of the monetary amount using scale sympols (e.g. $6.50M)
