@@ -23,7 +23,6 @@ export async function main(ns) {
 			augPrice = ns.getAugmentationPrice("NeuroFlux Governor");
 			augRep = ns.getAugmentationRepReq("NeuroFlux Governor");
 			playerFactionRep = ns.getFactionRep(faction);
-			await ns.sleep(100);
 		}
 	} else {
 		ns.print("Not enough money and/or reputation");
