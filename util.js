@@ -67,7 +67,7 @@ export function getServerPath(ns, target) {
 	return output;	
 }
 
-export function terminalInject(output) {
+export function terminalInput(output) {
 	const terminalInput = document.getElementById("terminal-input");
 	terminalInput.value = output;
 	const handler = Object.keys(terminalInput)[1];
