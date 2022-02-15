@@ -4,14 +4,14 @@ import { getServerPath } from 'util.js';
 export async function main(ns) {
 	ns.print("Script started");
 	var args = ns.args[0];
-	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "gang-manager.js", "stock-manager.js", "crime-manager.js"];
+	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "gang-manager.js", "corp-manager.js", "stock-manager.js"];
 	var scriptsToStart = [];
 	var reqRam = 0;
 
 	const factionPathsNeeded = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
 	var factionPaths = [];
 
-
+	//get required ram of each script
 	for (let script of scripts) {
 		let ram = ns.getScriptRam("/managers/" + script);
 		ns.print(script + " - " + ram + "GB");
@@ -26,6 +26,7 @@ export async function main(ns) {
 			"/managers/faction-manager.js",
 			"/managers/stock-manager.js",
 			"/managers/crime-manager.js",
+			"/managers/corp-manager.js"
 		];
 	} else {
 		for (let script of scripts) {
