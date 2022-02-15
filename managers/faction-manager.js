@@ -1,21 +1,12 @@
 /** @param {import("../.").NS} ns */
-import { hackTools, nukeServer, terminalInject, getServerPath } from 'util.js';
+import { hackTools, nukeServer, terminalInput, getServerPath } from 'util.js';
 
 export async function main(ns) {
 	ns.disableLog("ALL");
 	ns.print("Script started");
 
-	function checkTerminal() {
-		terminalCheck = document.getElementById("terminal-input");
-		return terminalCheck;
-	}
-
 	function checkRedPill() {
-		if (ns.getOwnedAugmentations().includes("The Red Pill")) {
-			return true;
-		} else {
-			return false;
-		}
+		return ns.getOwnedAugmentations().includes("The Red Pill");
 	}
 
 	function checkFactionInvites() {
@@ -31,6 +22,15 @@ export async function main(ns) {
 			if (ns.checkFactionInvitations().includes(fac)) {
 				ns.joinFaction(fac);
 				ns.print("Joined " + fac);
+			}
+		}
+	}
+
+	async function checkTerminal() {
+		if (document.getElementById("terminal-input") == null) {
+			ns.print("Player isn't on the terminal screen")
+			while (document.getElementById("terminal-input") == null) {
+				await ns.sleep(500);
 			}
 		}
 	}
@@ -67,7 +67,6 @@ export async function main(ns) {
 	var numTools = hackTools(ns); //number of hacking tools we have
 	var count = 0;
 	var hackingLvl = ns.getPlayer().hacking; //player hacking level
-	var terminalCheck;
 
 	for (let faction of factionServerNames) {
 		//get faction hacking level requirement
@@ -88,42 +87,21 @@ export async function main(ns) {
 					}
 				}
 				await nukeServer(ns, factionServerNames[count]);
-				for (let i = 3; i > 0;--i) {
-					//search for terminal-input and wait if null
-					if (checkTerminal() == null) {
-						ns.tprint("Player isn't on the terminal screen, delaying backdoor...")
-						while (checkTerminal() == null) {
-							checkFactionInvites();
-							await ns.sleep(500)
-						}
-						i = 3
-					}
-					//countdown to backdoor
-					ns.tprint("Installing a backdoor on " + factionServerNames[count] + " in " + i + " seconds");
-					await ns.sleep(1000);
-					if (checkTerminal() == null) {
-						ns.tprint("Player isn't on the terminal screen, delaying backdoor...")
-						while (checkTerminal() == null) {
-							checkFactionInvites();
-							await ns.sleep(500)
-						}
-						i = 3
-					}
-				}
-				terminalInject(factionPaths[count]);
+				await checkTerminal()
+				terminalInput(factionPaths[count]);
 				await ns.sleep(100);
 				ns.tprint("Installing backdoor...");
-				await ns.installBackdoor();
+				await checkTerminal();
+				terminalInput("backdoor");
 				if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
 					ns.tprint("Successful backdoor");
 					ns.tprint("Returning home");
-					terminalInject("home");
+					terminalInput("home");
 					++count;
 				} else {
 					ns.tprint("Failed backdoor");
-					ns.tprint("Returning home, stopping script");
-					terminalInject("home");
-					return;
+					ns.tprint("Returning home and retrying")
+					terminalInput("home");
 				}
 			}
 		} else {
