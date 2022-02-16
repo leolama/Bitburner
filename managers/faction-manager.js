@@ -1,7 +1,9 @@
 /** @param {import("../.").NS} ns */
+
 import { hackTools, nukeServer, terminalInput, getServerPath } from 'util.js';
 
 export async function main(ns) {
+	const doc = eval("document")
 	ns.disableLog("ALL");
 	ns.print("Script started");
 
@@ -27,9 +29,9 @@ export async function main(ns) {
 	}
 
 	async function checkTerminal() {
-		if (document.getElementById("terminal-input") == null) {
+		if (doc.getElementById("terminal-input") == null) {
 			ns.print("Player isn't on the terminal screen")
-			while (document.getElementById("terminal-input") == null) {
+			while (doc.getElementById("terminal-input") == null) {
 				await ns.sleep(500);
 			}
 		}
@@ -92,7 +94,7 @@ export async function main(ns) {
 				await ns.sleep(100);
 				ns.tprint("Installing backdoor...");
 				await checkTerminal();
-				terminalInput("backdoor");
+				await ns.installBackdoor();
 				if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
 					ns.tprint("Successful backdoor");
 					ns.tprint("Returning home");
