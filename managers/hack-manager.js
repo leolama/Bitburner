@@ -88,8 +88,14 @@ async function findHackable(ns, allServers) {
 	var hackableServers = [];
 	var rootableServers = [];
 	var numPortsPossible = hackTools(ns);
+	var hashnetServers = getHashnetServers();
+	var num = 0;
 
 	for (let i = 0; i < allServers.length; i++) {
+		if (allServers[i] == "hacknet-node-" + num) {
+			++num;
+			continue;
+		}
 		//if hacking level & hacking tools equal or higher then add to hackable
 		if (ns.getHackingLevel() >= ns.getServerRequiredHackingLevel(allServers[i]) && numPortsPossible >= ns.getServerNumPortsRequired(allServers[i])) {
 			hackableServers.push(allServers[i]);
@@ -122,4 +128,14 @@ async function findOptimal(ns, hackableServers) {
 		}
 	}
 	return optimalServer;
+}
+
+function getHashnetServers() {
+	let start = "hacknet-node-"
+	let servers = [];
+
+	for (let i = 0; i < 24; ++i) {
+		servers.push(start + i);
+	}
+	return servers;
 }
