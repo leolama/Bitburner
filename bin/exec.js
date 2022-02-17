@@ -4,7 +4,7 @@ import { getServerPath } from 'util.js';
 export async function main(ns) {
 	ns.print("Script started");
 	var args = ns.args[0];
-	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "gang-manager.js", "corp-manager.js", "stock-manager.js"];
+	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "gang-manager.js", "stock-manager.js"];
 	var scriptsToStart = [];
 	var reqRam = 0;
 
@@ -25,8 +25,7 @@ export async function main(ns) {
 			"/managers/gang-manager.js",
 			"/managers/faction-manager.js",
 			"/managers/stock-manager.js",
-			"/managers/crime-manager.js",
-			"/managers/corp-manager.js"
+			"/managers/crime-manager.js"
 		];
 	} else {
 		for (let script of scripts) {
