@@ -5,10 +5,10 @@ export async function main(ns) {
 	var serverNum = ns.getPurchasedServers();
 	var maxServers = ns.getPurchasedServerLimit()
 
-	ns.tprint("Bought | Limit");
-	ns.tprint(serverNum.length + "      | " + maxServers);
+	ns.tprintf("Bought | Limit");
+	ns.tprintf(serverNum.length + "      | " + maxServers);
 
 	for (let i = 0; i < 20; ++i) {
-		ns.tprint(ns.nFormat(multipleOf[i], "0,0") + "GB -- " + ns.nFormat(ns.getPurchasedServerCost(multipleOf[i]), "($0.000a)"));
+		ns.tprintf(ns.nFormat(multipleOf[i], "0,0") + "GB -- " + ns.nFormat(ns.getPurchasedServerCost(multipleOf[i]), "($0.000a)"));
 	}
 }
