@@ -1,13 +1,14 @@
-/** @param {import("../.").NS} ns */
-
 import { hackTools, nukeServer, terminalInput, getServerPath } from 'util.js';
 
+const doc = eval("document")
+
+/** @param {import("../.").NS} ns */
 export async function main(ns) {
-	const doc = eval("document")
 	ns.disableLog("ALL");
 	ns.print("Script started");
 
 	function checkRedPill() {
+		//check if we have The Red Pill
 		return ns.getOwnedAugmentations().includes("The Red Pill");
 	}
 
@@ -29,6 +30,7 @@ export async function main(ns) {
 	}
 
 	async function checkTerminal() {
+		//check if we're on the terminal screen
 		if (doc.getElementById("terminal-input") == null) {
 			ns.print("Player isn't on the terminal screen")
 			while (doc.getElementById("terminal-input") == null) {
@@ -61,14 +63,18 @@ export async function main(ns) {
 		"The Covenant",
 		"Illuminati",
 	]; //factions that don't stop us from joining other factions
-	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
-	var temp_factionPaths = ns.read('/data/faction-paths.txt');
-	const factionPaths = temp_factionPaths.split(",");
+	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"]; //backdoor based faction server names
 	const factionHackLvl = []; //required hacking levels
 	const factionTools = ["1", "2", "3", "4", "5"]; //number of programs needed to root
 	var numTools = hackTools(ns); //number of hacking tools we have
 	var count = 0;
 	var hackingLvl = ns.getPlayer().hacking; //player hacking level
+
+	//get the paths to the faction servers
+	ns.tprint("Getting faction server paths...");
+	var temp_factionPaths = ns.read('/data/faction-paths.txt');
+	var factionPaths = temp_factionPaths.split(",");
+	ns.tprint("Got faction server paths");
 
 	for (let faction of factionServerNames) {
 		//get faction hacking level requirement
@@ -76,42 +82,46 @@ export async function main(ns) {
 	}
 
 	while (count < factionServerNames.length) {
+		ns.print("Trying to backdoor " + factionServerNames[count] + ". Need hacking level " + factionHackLvl[count] + ", have " + hackingLvl + ". Need " + factionTools[count] + " tools, have " + numTools);
 		if (ns.getServer(factionServerNames[count]).backdoorInstalled === false) {
-			if (factionHackLvl[count] <= hackingLvl && numTools >= factionTools[count]) {
-				if (factionServerNames[count] == "w0r1d_d43m0n") {
-					if (checkRedPill() == false) {
+			//if backdoor hasn't been installed, start a loop
+			while (ns.getServer(factionServerNames[count]).backdoorInstalled === false) {
+				if (factionHackLvl[count] <= hackingLvl && numTools >= factionTools[count]) {
+					//if our hacking level and hacking tools are higher than the server needs
+					if (factionServerNames[count] == "w0r1d_d43m0n") {
+						//if we're waiting to backdoor world_daemon, check that we have The Red Pill
 						while (checkRedPill() == false) {
 							checkFactionInvites();
 							await ns.sleep(1000);
 						}
-						var temp = getServerPath(factionServerNames[count])
-						factionPaths.push(temp)
+					}
+					await nukeServer(ns, factionServerNames[count]); //make sure we have root access on the target
+					await checkTerminal()
+					terminalInput(factionPaths[count]);
+					await ns.sleep(100);
+					ns.tprint("Installing backdoor...");
+					await checkTerminal();
+					await ns.installBackdoor();
+					if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
+						ns.tprint("Successful backdoor");
+						ns.tprint("Returning home");
+						terminalInput("home");
+						++count;
+					} else {
+						ns.tprint("Failed backdoor");
+						ns.tprint("Returning home and retrying")
+						terminalInput("home");
 					}
 				}
-				await nukeServer(ns, factionServerNames[count]);
-				await checkTerminal()
-				terminalInput(factionPaths[count]);
-				await ns.sleep(100);
-				ns.tprint("Installing backdoor...");
-				await checkTerminal();
-				await ns.installBackdoor();
-				if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
-					ns.tprint("Successful backdoor");
-					ns.tprint("Returning home");
-					terminalInput("home");
-					++count;
-				} else {
-					ns.tprint("Failed backdoor");
-					ns.tprint("Returning home and retrying")
-					terminalInput("home");
-				}
+				//refresh vars
+				numTools = hackTools(ns);
+				hackingLvl = ns.getPlayer().hacking;
+				checkFactionInvites();
+				await ns.sleep(1000);
 			}
 		} else {
+			ns.print("Already backdoored " + factionServerNames[count]);
 			++count;
 		}
-		numTools = hackTools(ns);
-		hackingLvl = ns.getPlayer().hacking;
-		checkFactionInvites();
-		await ns.sleep(100);
 	}
 }

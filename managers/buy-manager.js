@@ -11,17 +11,13 @@ export async function main(ns) {
 	var serverCost = [];
 	var cantAfford = false;
 	var buyPrompt;
-	var serverPrompt = await ns.prompt("Reset purchased server data?");
 	var serverRam = [];
 
-	if (serverPrompt === true) {
-		await ns.write("/data/purchasedservers.txt", "128,1024,16384,1048576", "w");
-	}
 	let ramData = ns.read("/data/purchasedservers.txt"); //read data file and split it into an array
 	let ramDataSplit = ramData.split(",").map(Number);
-	//push the array into a var
+	
 	for (let split in ramDataSplit) {
-		serverRam.push(ramDataSplit[split]);
+		serverRam.push(ramDataSplit[split]); //push the array into a var
 	}
 	for (let ram of serverRam) {
 		serverCost.push(ns.getPurchasedServerCost(ram)); //push server costs corrosponding to the ram into an array
@@ -30,13 +26,14 @@ export async function main(ns) {
 	/*
 			Hacking program autobuy
 	*/
+	ns.print("Started program autobuy");
 	while (count < 5) {
 		for (let i = 0; i < programs.length; ++i) {
-			//buy tor router and purchase program from darkweb
+			//check if we have a tor router
 			if (ns.getPlayer().tor === true) {
 				if (!ns.fileExists(programs[0])) {
-					let check = ns.purchaseProgram(programs[0]);
-					if (check === true) {
+					if (ns.purchaseProgram(programs[0])) {
+						//if we don't have the program, try to buy it
 						ns.print("Bought " + programs[0]);
 						programs.splice(0, 1);
 						++count;
@@ -44,11 +41,13 @@ export async function main(ns) {
 						ns.print("Can't afford " + programs[0]);
 					}
 				} else if (ns.fileExists(programs[0])) {
+					//if we have the file, skip it
 					ns.print("Already have " + programs[0]);
 					programs.splice(0, 1);
 					++count;
 				}
 			} else if (!ns.purchaseTor()) {
+				//try to buy a tor router
 				ns.print("Cannot afford a TOR router");
 			}
 			await ns.sleep(500);
@@ -59,11 +58,13 @@ export async function main(ns) {
 	/*
 			Server autobuy
 	*/
+	ns.print("Started server autobuy");
 	while (currentServers.length < maxServers) {
-		if (serverRam[0] === 1048576) {
-			if (buyPrompt === false) {
+		if (serverRam[0] == 1048576) {
+			//highest ram server
+			if (buyPrompt == false) {
 				return;
-			} else if (buyPrompt === true) {
+			} else if (buyPrompt == true) {
 				continue;
 			}
 			await ns.write("/data/purchasedservers.txt", serverRam, "w");
@@ -78,7 +79,7 @@ export async function main(ns) {
 				} else {
 					ns.print("Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 					cantAfford = true;
-					while (cantAfford === true) {
+					while (cantAfford == true) {
 						if (availMoney > serverCost[0]) cantAfford = false;
 						else {
 							await ns.sleep(10000);
@@ -93,6 +94,7 @@ export async function main(ns) {
 		}
 
 		if (availMoney > serverCost[0]) {
+			//if we have more money than the server cost, buy it and update data file
 			ns.run("src/buyserver.js", 1, serverRam[0]);
 			ns.print("Bought a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 			serverRam.splice(0, 1);
@@ -102,14 +104,15 @@ export async function main(ns) {
 		} else {
 			ns.print("Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 			cantAfford = true;
-			while (cantAfford === true) {
+			while (cantAfford == true) {
 				if (availMoney < serverCost[0]) cantAfford = false;
 				else {
 					await ns.sleep(10000);
 				}
-				await ns.sleep(500);
+				await ns.sleep(1000);
 			}
 		}
+		//refresh vars
 		availMoney = ns.getPlayer().money;
 		maxServers = ns.getPurchasedServerLimit();
 		currentServers = ns.getPurchasedServers();

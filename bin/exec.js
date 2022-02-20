@@ -1,14 +1,14 @@
-/** @param {import("../.").NS} ns */
 import { getServerPath } from 'util.js';
 
+
+/** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
 	var args = ns.args[0];
+	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
 	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "gang-manager.js", "stock-manager.js"];
 	var scriptsToStart = [];
 	var reqRam = 0;
-
-	const factionPathsNeeded = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
 	var factionPaths = [];
 
 	//get required ram of each script
@@ -35,16 +35,23 @@ export async function main(ns) {
 		}
 	}
 
-	//path setup
-	if (await ns.prompt("Reset server paths?")) {
-		ns.tprint("Getting faction server paths...");
-		for (let faction of factionPathsNeeded) {
-			let path = getServerPath(ns, faction);
-			factionPaths.push(path);
+	if (scriptsToStart.includes("/managers/buy-manager.js")) {
+		if (await ns.prompt("Reset purchased server data?")) {
+			await ns.write("/data/purchasedservers.txt", "128,1024,16384,1048576", "w");
 		}
-		await ns.write("/data/faction-paths.txt",factionPaths, "w")
-		ns.tprint("Got faction server paths");
 	}
+
+	if (scriptsToStart.includes("/managers/faction-manager.js")) {
+		if (await ns.prompt("Reset server paths?")) {
+			for (let faction of factionServerNames) {		
+				let path = getServerPath(ns, faction);
+				factionPaths.push(path);
+			}
+			await ns.write("/data/faction-paths.txt",factionPaths, "w")	
+		}
+	}
+
+		
 
 	ns.tprint("--");
 	for (let i = 0; i < scriptsToStart.length; i++) {
