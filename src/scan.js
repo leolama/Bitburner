@@ -1,5 +1,5 @@
 //thanks to Tempest_42 on reddit for this script
-/** @param {import("../.").NS} ns */
+
 let facServers = {
     "CSEC" : "yellow",
     "avmnite-02h" : "yellow",
@@ -29,6 +29,7 @@ export function getServers(ns) {
     return result;
 }
 
+/** @param {import("../.").NS} ns */
 export async function main(ns) {
     ns.print("Script started");
     let output = "Network:";

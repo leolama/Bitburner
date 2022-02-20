@@ -1,7 +1,6 @@
-/** @param {import('../.').NS} ns */
-
 import { findFile } from 'util.js';
 
+/** @param {import('../.').NS} ns */
 export async function main(ns) {
 		var fileLocation = findFile(ns, ns.args[0]);
 		var ram = ns.getScriptRam(fileLocation)

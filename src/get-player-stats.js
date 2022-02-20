@@ -1,7 +1,6 @@
-/** @param {import('../.').NS} ns */
-
 import { formatMoney, formatDuration } from "util.js"
 
+/** @param {import('../.').NS} ns */
 export async function main(ns) {
     var playerFac = ns.getPlayer().factions
 
