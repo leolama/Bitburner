@@ -34,9 +34,7 @@ export async function main(ns) {
 	var agi = ns.getPlayer().agility;
 	var dex = ns.getPlayer().dexterity;
 	var oldKarma = 0;
-	var karma = 0;
 	var busy = 0;
-	var bestCrime;
 
 	//if player stats are under 15 then train at the gym until they aren't
 	if (str < 15 || def < 15 || agi < 15 || dex < 15) {
@@ -44,8 +42,18 @@ export async function main(ns) {
 	}
 
 	//main
-	while (karma < 54000) {
-		bestCrime = crime();
+	while (true) {
+		var karma = ns.heart.break();
+		var bestCrime = crime();
+
+		if (karma < -54000 && !ns.isRunning("/managers/gang-manager.js","home")) {
+			let pid = ns.run("/managers/gang-manager.js")
+			if (pid > 0) {
+				ns.print("Started /managers/gang-manager.js with PID " + pid)
+			} else {
+				ns.print("Failed to start /managers/gang-manager.js")
+			}
+		}
 		
 		//get and format the time into 24h
 		var date = new Date(Date.now() + ns.getCrimeStats(bestCrime).time);
@@ -56,11 +64,10 @@ export async function main(ns) {
 			await ns.sleep(ns.commitCrime(bestCrime) - 500);
 			if (!ns.isBusy()) {
 				//if the player cancels the crime, stop the script and print current karma into the terminal
-				ns.tprint("Karma: " + oldKarma); //script needs to loop at least once for this idk
+				ns.tprint("Karma: " + karma);
 				ns.print("Cancelled by player");
 				return;
 			}
-			karma = ns.heart.break(); //get karma value
 			if (oldKarma > karma) {
 				ns.print("Success!");
 				ns.print("Current karma " + karma);
