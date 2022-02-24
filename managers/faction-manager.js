@@ -1,4 +1,4 @@
-import { hackTools, nukeServer, terminalInput, getServerPath } from 'util.js';
+import { hackTools, nukeServer, terminalInput } from 'util.js';
 
 const doc = eval("document")
 
@@ -54,6 +54,7 @@ export async function main(ns) {
 		"Bachman & Associates",
 		"Clarke Incorporated",
 		"Fulcrum Secret Technologies",
+		"OmniTek Incorporated",
 		"Slum Snakes",
 		"Tetrads",
 		"Silhouette",
@@ -71,10 +72,12 @@ export async function main(ns) {
 	var hackingLvl = ns.getPlayer().hacking; //player hacking level
 
 	//get the paths to the faction servers
+	ns.tprint("--")
 	ns.tprint("Getting faction server paths...");
 	var temp_factionPaths = ns.read('/data/faction-paths.txt');
 	var factionPaths = temp_factionPaths.split(",");
 	ns.tprint("Got faction server paths");
+	ns.tprint("--")
 
 	for (let faction of factionServerNames) {
 		//get faction hacking level requirement
@@ -99,7 +102,7 @@ export async function main(ns) {
 					await checkTerminal()
 					terminalInput(factionPaths[count]);
 					await ns.sleep(100);
-					ns.tprint("Installing backdoor...");
+					ns.tprint("Installing backdoor on " + factionServerNames[count] + "...");
 					await checkTerminal();
 					await ns.installBackdoor();
 					if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
