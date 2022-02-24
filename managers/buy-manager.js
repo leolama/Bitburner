@@ -13,11 +13,10 @@ export async function main(ns) {
 	var buyPrompt;
 	var serverRam = [];
 
-	let ramData = ns.read("/data/purchasedservers.txt"); //read data file and split it into an array
-	let ramDataSplit = ramData.split(",").map(Number);
+	let ramData = ns.read("/data/purchased-servers.txt").split(",").map(Number); //read data file and split it into an array
 	
-	for (let split in ramDataSplit) {
-		serverRam.push(ramDataSplit[split]); //push the array into a var
+	for (let split in ramData) {
+		serverRam.push(ramData[split]); //push the array into a var
 	}
 	for (let ram of serverRam) {
 		serverCost.push(ns.getPurchasedServerCost(ram)); //push server costs corrosponding to the ram into an array
