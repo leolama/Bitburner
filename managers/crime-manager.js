@@ -86,6 +86,6 @@ export async function main(ns) {
 			}
 		}
 		await ns.sleep(500);
-		oldKarma = karma; //move karma into another var
+		oldKarma = karma; //copy karma into another var
 	}
 }
