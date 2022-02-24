@@ -3,10 +3,11 @@
 		"scope": "javascript",
 		"prefix": "ns-template",
 		"body": [
-		"/** @param {import('../.').NS} ns */",
-		"import { hackTools, nukeServer } from 'util.js'",
+		"import {  } from 'util.js'",
 		"",
+		"/** @param {import('../.').NS} ns */",
 		"export async function main(ns) {",
+		"ns.print('Script started');",
 		"\t//",
 		"}"
 		]
