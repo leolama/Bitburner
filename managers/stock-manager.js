@@ -1,3 +1,5 @@
+import { formatMoney } from "util.js"
+
 //original from havoc_mayhem on reddit
 //Requires access to the TIX API and the 4S Mkt Data API
 let fracL = 0.1; //Fraction of assets to keep as cash in hand
@@ -50,7 +52,7 @@ function refresh(ns, stocks, myStocks) {
 		//yield very little profit due to its low
 		//stock cost or max shares
 		if (cost < 0.015 * cashToSpend && stocks[i].shares == 0) {
-			ns.print(`Removed ${stocks[i].sym} from stocks  Max cost: ${format(cost, true)}`);
+			ns.print(`Removed ${stocks[i].sym} from stocks  Max cost: ${formatMoney(cost)}`);
 			stocks.splice(i, 1);
 			//remove added equity if stock is pruned
 			corpus -= cost;
@@ -73,7 +75,7 @@ function refresh(ns, stocks, myStocks) {
  */
 function buy(ns, stock, numShares) {
 	let actualPrice = ns.stock.buy(stock.sym, numShares);
-	ns.print(`${actualPrice > 0 ? "Bought" : "Failed to buy"} ${format(numShares, false)} shares of ${stock.sym} for ${format(numShares * stock.price, true)}`);
+	ns.print(`${actualPrice > 0 ? "Bought" : "Failed to buy"} ${formatMoney(numShares)} shares of ${stock.sym} for ${formatMoney(numShares * stock.price)}`);
 }
 
 /**
@@ -86,7 +88,7 @@ function sell(ns, stock, numShares) {
 	let profit = numShares * (stock.price - stock.buyPrice) - 2 * commission;
 
 	if (ns.stock.sell(stock.sym, numShares) > 0) {
-		let message = `Sold   ${format(numShares, false)} shares of ${stock.sym} for profit of ${format(profit, true)}`;
+		let message = `Sold   ${formatMoney(numShares)} shares of ${stock.sym} for profit of ${formatMoney(profit)}`;
 		ns.print(message);
 
 		//tally gains/losses for efficiency calculation
@@ -97,24 +99,8 @@ function sell(ns, stock, numShares) {
 			totalLosses += profit;
 		}
 	} else {
-		ns.print(`Failed to sell ${format(numShares, false)} shares of ${stock.sym} for profit of ${format(profit, true)}`);
+		ns.print(`Failed to sell ${formatMoney(numShares)} shares of ${stock.sym} for profit of ${formatMoney(profit)}`);
 	}
-}
-
-/**
- * Formats big numbers into abbreviated versions
- * @param {number} num Number to format
- * @param {boolean} isMonetary Boolean representation
- * if `num` represents a monetary numerical value or not
- */
-function format(num, isMonetary) {
-	//define suffixes
-	let symbols = ["", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc"];
-	let i = 0;
-	//determine correct suffix
-	for (; Math.abs(num) >= 1000 && i < symbols.length; i++) num /= 1000;
-	//return formatted number
-	return (Math.sign(num) < 0 ? "-" : "") + (isMonetary ? "$" : "") + Math.abs(num).toFixed(3) + symbols[i];
 }
 
 /**
@@ -181,8 +167,8 @@ export async function main(ns) {
 		if (isNaN(efficiency)) {
 			efficiency = 0.0;
 		}
-		ns.print(`Efficiency: ${format(efficiency * 100)}%`);
-		ns.print(`Profits: ${format(totalProfit, true)} Losses: ${format(totalLosses, true)}`);
+		ns.print(`Efficiency: ${formatMoney(efficiency * 100)}%`);
+		ns.print(`Profits: ${formatMoney(totalProfit)} Losses: ${formatMoney(totalLosses)}`);
 		await ns.sleep(5 * 1000 * numCycles + 200);
 	}
 }
