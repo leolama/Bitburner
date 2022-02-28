@@ -7,11 +7,6 @@ export async function main(ns) {
 	ns.disableLog("ALL");
 	ns.print("Script started");
 
-	function checkRedPill() {
-		//check if we have The Red Pill
-		return ns.getOwnedAugmentations().includes("The Red Pill");
-	}
-
 	function checkFactionInvites() {
 		//check for invitations from main factions
 		for (let fac of factionNames) {
@@ -34,6 +29,7 @@ export async function main(ns) {
 		if (doc.getElementById("terminal-input") == null) {
 			ns.print("Player isn't on the terminal screen")
 			while (doc.getElementById("terminal-input") == null) {
+				checkFactionInvites();
 				await ns.sleep(500);
 			}
 		}
@@ -72,12 +68,10 @@ export async function main(ns) {
 	var hackingLvl = ns.getPlayer().hacking; //player hacking level
 
 	//get the paths to the faction servers
-	ns.tprint("--")
-	ns.tprint("Getting faction server paths...");
+	ns.print("Getting faction server paths...");
 	var temp_factionPaths = ns.read('/data/faction-paths.txt');
 	var factionPaths = temp_factionPaths.split(",");
-	ns.tprint("Got faction server paths");
-	ns.tprint("--")
+	ns.print("Got faction server paths");
 
 	for (let faction of factionServerNames) {
 		//get faction hacking level requirement
@@ -93,7 +87,7 @@ export async function main(ns) {
 					//if our hacking level and hacking tools are higher than the server needs
 					if (factionServerNames[count] == "w0r1d_d43m0n") {
 						//if we're waiting to backdoor world_daemon, check that we have The Red Pill
-						while (checkRedPill() == false) {
+						while (ns.getOwnedAugmentations().includes("The Red Pill") == false) {
 							checkFactionInvites();
 							await ns.sleep(1000);
 						}
