@@ -4,7 +4,7 @@ export async function main(ns) {
 	var threads;
 	threads = ns.getServerMaxRam("home") - ns.getServerUsedRam("home");
 	threads /= ns.getScriptRam("/src/share.js", "home");
-	threads = Math.floor(threads) - 10; //spares ~40GB RAM (mostly for scan.js)
+	threads = Math.floor(threads) - 8; //spares ~36GB RAM
 
 	ns.run("/src/share.js", threads);
 }
