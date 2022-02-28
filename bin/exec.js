@@ -5,8 +5,8 @@ export async function main(ns) {
 	ns.tprint("--");
 	for (let arg of args) {
 		if (arg == "/managers/corp-manager.js") {
-			if (ns.run(arg,1,"yeet") > 0) {
-				ns.tprint('Started ' + arg + ' with arg: ["yeet"]');
+			if (ns.run(arg,1,"Corp") > 0) {
+				ns.tprint('Started ' + arg + ' with arg: ["Corp"]');
 			}
 		} else if (ns.run(arg) > 0) {
 			ns.tprint("Started " + arg);
