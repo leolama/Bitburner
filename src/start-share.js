@@ -7,6 +7,7 @@ export async function main(ns) {
 	threads = Math.floor(threads) - 8; //spares ~36GB RAM
 	try {
 		ns.run("/src/share.js", threads);
+		ns.tprint('Started share.js with ' + threads + ' threads.')
 	} catch {
 		ns.tprint("Not enough RAM available to run share.js")
 	}
