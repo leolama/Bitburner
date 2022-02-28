@@ -27,9 +27,9 @@ export async function main(ns) {
     //travel to Sector-12
     if (travelPrompt == true) {
         ns.travelToCity("Sector-12")
+        gym = gymNames[0];
     } else {
-        let index = cityNames.indexOf(ns.getPlayer().city);
-        gym = gymNames[index];
+        gym = gymNames[cityNames.indexOf(ns.getPlayer().city)];
     }
 
     //start to train stats
@@ -38,7 +38,7 @@ export async function main(ns) {
         while (statLevels[i] < scriptArg) {
             ns.gymWorkout(gym, statNames[i]);
             await ns.sleep(1000)
-            //check stats again every 5 seconds
+            //check stats again every 1 second
             statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity,ns.getPlayer().agility];
             if (!ns.isBusy()) {
                 //if player has cancelled training then stop the script
