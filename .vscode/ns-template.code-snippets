@@ -7,7 +7,7 @@
 		"",
 		"/** @param {import('../.').NS} ns */",
 		"export async function main(ns) {",
-		"ns.print('Script started');",
+		"\tns.print('Script started');",
 		"\t//",
 		"}"
 		]
