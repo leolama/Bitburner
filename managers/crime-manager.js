@@ -24,6 +24,11 @@ export async function main(ns) {
 				ns.gymWorkout(gym, statNames[i]);
 				await ns.sleep(1000);
 				statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity, ns.getPlayer().agility];
+				if (!ns.isBusy()) {
+					//if player has cancelled training then stop the script
+					ns.print("Cancelled by player");
+					return;
+				}
 			}
 		}
 		ns.stopAction();
