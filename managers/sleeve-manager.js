@@ -4,24 +4,8 @@ import { log } from 'util.js'
 export async function main(ns) {
     ns.print('Script started');
     ns.disableLog('ALL');
-    //rough crime chance algorithm
-    function sleeveCrimeChance(i, crimeName) {
-        let sleeveStats = ns.sleeve.getSleeveStats(i);
-        let crime = ns.getCrimeStats(crimeName);
-        let chance =
-            crime.hacking_success_weight * sleeveStats.hacking +
-            crime.strength_success_weight * sleeveStats.strength +
-            crime.defense_success_weight * sleeveStats.defense +
-            crime.dexterity_success_weight * sleeveStats.dexterity +
-            crime.agility_success_weight * sleeveStats.agility +
-            crime.charisma_success_weight * sleeveStats.charisma;
-        chance /= 975;
-        chance /= crime.difficulty;
-        return Math.min(chance, 1);
-    }
 
     var sleeveNum = ns.sleeve.getNumSleeves();
-
     while (true) {
         for (let i = 0; i < sleeveNum; ++i) {
 
@@ -49,10 +33,11 @@ export async function main(ns) {
             } else if (ns.getPlayer().isWorking && ns.getPlayer().workType == "Working for Company") {
                 ns.sleeve.setToCompanyWork(i, ns.getPlayer().companyName);
                 ns.print('Set task to company work: ' + ns.getPlayer().companyName);
-            } else if (sleeveCrimeChance(i, 'Homicide') > 60) {
+            } else if (sleeveStats.strength > 100 && sleeveStats.defense > 100 && sleeveStats.dexterity > 100 && sleeveStats.agility > 100) {
                 ns.sleeve.setToCommitCrime(i, "Homicide")
                 ns.print('Set task to commit crime: Homicide');
             } else {
+                //if nothing else is happening, just mug people
                 ns.sleeve.setToCommitCrime(i, "Mug")
                 ns.print('Set task to commit crime: Mug');
             }
