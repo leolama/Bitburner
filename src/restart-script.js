@@ -15,6 +15,7 @@ export async function main(ns) {
     if (fileLocation != false) {
         let pid = ns.run(fileLocation, threads);
         if (pid != 0) {
+            ns.tail(pid)
             ns.tprint("Restarted " + fileLocation + " with " + threads + " thread(s), PID " + pid)
         } else {
             ns.tprint("Failed to restart " + fileLocation);
