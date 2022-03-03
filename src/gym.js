@@ -33,13 +33,14 @@ export async function main(ns) {
     }
 
     //start to train stats
-    for (let i = 0; i < statNames.length; ++i) {
-        ns.print("Training " + statNames[i] + " to level " + scriptArg);
+    for (let i = 0; i < statLevels.length;++i) {
         while (statLevels[i] < scriptArg) {
-            ns.gymWorkout(gym, statNames[i]);
-            await ns.sleep(1000)
-            //check stats again every 1 second
-            statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity,ns.getPlayer().agility];
+            if (ns.getPlayer().className != 'training your ' + statNames[i] + ' at a gym') {
+                ns.print("Training " + statNames[i]);
+                ns.gymWorkout(gym, statNames[i]);
+            }
+            await ns.sleep(1000);
+            statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity, ns.getPlayer().agility];
             if (!ns.isBusy()) {
                 //if player has cancelled training then stop the script
                 ns.print("Cancelled by player");
@@ -47,5 +48,6 @@ export async function main(ns) {
             }
         }
     }
-    ns.stopAction();	
+    ns.tprint('Finished stat training');
+    ns.stopAction();
 }
