@@ -84,7 +84,7 @@ export function terminalInput(output) {
  * @param {number=} maxSignificantFigures - (default: 6) The maximum significant figures you wish to see (e.g. 123, 12.3 and 1.23 all have 3 significant figures)
  * @param {number=} maxDecimalPlaces - (default: 3) The maximum decimal places you wish to see, regardless of significant figures. (e.g. 12.3, 1.2, 0.1 all have 1 decimal)
  **/
-export function formatMoney(num, maxSignificantFigures = 6, maxDecimalPlaces = 3) {
+ export function formatMoney(num, maxSignificantFigures = 6, maxDecimalPlaces = 3) {
 	let numberShort = formatNumberShort(num, maxSignificantFigures, maxDecimalPlaces);
 	return num >= 0 ? "$" + numberShort : numberShort.replace("-", "-$");
 }
@@ -233,7 +233,7 @@ export async function getNsDataThroughFile(ns, command, fName, verbose = false, 
 	if (!verbose) disableLogs(ns, ["run", "isRunning"]);
 	return await getNsDataThroughFile_Custom(ns, ns.run, ns.isRunning, command, fName, verbose, maxRetries, retryDelayMs);
 }
-
+	
 /**
  * An advanced version of getNsDataThroughFile that lets you pass your own "fnRun" and "fnIsAlive" implementations to reduce RAM requirements
  * Importing incurs no RAM (now that ns.read is free) plus whatever fnRun / fnIsAlive you provide it
@@ -246,8 +246,8 @@ export async function getNsDataThroughFile_Custom(ns, fnRun, fnIsAlive, command,
 	checkNsInstance(ns, '"getNsDataThroughFile_Custom"');
 	if (!verbose) disableLogs(ns, ["read"]);
 	const commandHash = hashCode(command);
-	fName = fName || `/Temp/${commandHash}-data.txt`;
-	const fNameCommand = (fName || `/Temp/${commandHash}-command`) + ".js";
+	fName = fName || `/data/${commandHash}-data.txt`;
+	const fNameCommand = (fName || `/data/${commandHash}-command`) + ".js";
 	// Prepare a command that will write out a new file containing the results of the command
 	// unless it already exists with the same contents (saves time/ram to check first)
 	// If an error occurs, it will write an empty file to avoid old results being misread.
@@ -276,7 +276,7 @@ export async function getNsDataThroughFile_Custom(ns, fnRun, fnIsAlive, command,
 /** Evaluate an arbitrary ns command by writing it to a new script and then running or executing it.
  * @param {NS} ns - The nestcript instance passed to your script's main entry point
  * @param {string} command - The ns command that should be invoked to get the desired data (e.g. "ns.getServer('home')" )
- * @param {string=} fileName - (default "/Temp/{commandhash}-data.txt") The name of the file to which data will be written to disk by a temporary process
+ * @param {string=} fileName - (default "/data/{commandhash}-data.txt") The name of the file to which data will be written to disk by a temporary process
  * @param {bool=} verbose - (default false) If set to true, the evaluation result of the command is printed to the terminal
  * @param {...args} args - args to be passed in as arguments to command being run as a new script.
  */
@@ -300,7 +300,7 @@ export async function runCommand_Custom(ns, fnRun, command, fileName, verbose = 
 		`export async function main(ns) { try { ` +
 		(verbose ? `let output = ${command}; ns.tprint(output)` : command) +
 		`; } catch(err) { ns.tprint(String(err)); throw(err); } }`;
-	fileName = fileName || `/Temp/${hashCode(command)}-command.js`;
+	fileName = fileName || `/data/${hashCode(command)}-command.js`;
 	// To improve performance and save on garbage collection, we can skip writing this exact same script was previously written (common for repeatedly-queried data)
 	if (ns.read(fileName) != script) await ns.write(fileName, script, "w");
 	return await autoRetry(
@@ -419,7 +419,7 @@ export async function getActiveSourceFiles(ns) {
  * getActiveSourceFiles Helper that allows the user to pass in their chosen implementation of getNsDataThroughFile to minimize RAM usage **/
 export async function getActiveSourceFiles_Custom(ns, fnGetNsDataThroughFile) {
 	checkNsInstance(ns, '"getActiveSourceFiles"');
-	let tempFile = "/Temp/owned-source-files.txt";
+	let tempFile = "/data/owned-source-files.txt";
 	// Find out what source files the user has unlocked
 	let dictSourceFiles;
 	try {
@@ -431,7 +431,7 @@ export async function getActiveSourceFiles_Custom(ns, fnGetNsDataThroughFile) {
 		dictSourceFiles = dictSourceFiles ? JSON.parse(dictSourceFiles) : {};
 	}
 	// If the user is currently in a given bitnode, they will have its features unlocked
-	dictSourceFiles[(await fnGetNsDataThroughFile(ns, "ns.getPlayer()", "/Temp/player-info.txt")).bitNodeN] = 3;
+	dictSourceFiles[(await fnGetNsDataThroughFile(ns, "ns.getPlayer()", "/data/player-info.txt")).bitNodeN] = 3;
 	return dictSourceFiles;
 }
 
@@ -451,7 +451,7 @@ export async function tryGetBitNodeMultipliers_Custom(ns, fnGetNsDataThroughFile
 	} catch {}
 	if (!canGetBitNodeMultipliers) return null;
 	try {
-		return await fnGetNsDataThroughFile(ns, "ns.getBitNodeMultipliers()", "/Temp/bitnode-multipliers.txt");
+		return await fnGetNsDataThroughFile(ns, "ns.getBitNodeMultipliers()", "/data/bitnode-multipliers.txt");
 	} catch {}
 	return null;
 }
