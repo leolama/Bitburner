@@ -20,8 +20,10 @@ export async function main(ns) {
 
 		for (let i = 0; i < statLevels.length;++i) {
 			while (statLevels[i] < 15) {
-				ns.print("Training " + statNames[i]);
-				ns.gymWorkout(gym, statNames[i]);
+				if (ns.getPlayer().className != 'training your ' + statNames[i] + ' at a gym') {
+					ns.print("Training " + statNames[i]);
+					ns.gymWorkout(gym, statNames[i]);
+				}
 				await ns.sleep(1000);
 				statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity, ns.getPlayer().agility];
 				if (!ns.isBusy()) {
