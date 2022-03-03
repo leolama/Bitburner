@@ -5,9 +5,9 @@ export async function main(ns) {
     var playerFac = ns.getPlayer().factions
 
     ns.tprintf("\n");
-    ns.tprintf("---------\n");
+    ns.tprintf("------------\n");
     ns.tprintf("PLAYER STATS\n");
-    ns.tprintf("---------\n");
+    ns.tprintf("------------\n");
     ns.tprintf("\n");
     ns.tprintf("City: " + ns.getPlayer().city);
     ns.tprintf("\n");
@@ -35,9 +35,9 @@ export async function main(ns) {
     ns.tprintf("Current BitNode: " + ns.getPlayer().bitNodeN);
     ns.tprintf("Total play time: " + formatDuration(ns.getPlayer().totalPlaytime));
     ns.tprintf("\n");
-    ns.tprintf("---------\n");
+    ns.tprintf("----------\n");
     ns.tprintf("NODE STATS\n");
-    ns.tprintf("---------\n");
+    ns.tprintf("----------\n");
     ns.tprintf("\n");
     ns.tprintf("Servers required hacking level:");
     ns.tprintf("CSEC: " + ns.getServerRequiredHackingLevel("CSEC"));
