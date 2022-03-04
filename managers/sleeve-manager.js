@@ -23,20 +23,20 @@ export async function main(ns) {
             } else if (getSleeveStats.sync < 90) {
                 command = `ns.sleeve.setToSynchronize(${i})`;
                 task = 'syncronizing';
-            } else if (getSleeveStats.strength < 25) {
+            } else if (getSleeveStats.strength < 100) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","strength")`;
                 task = 'self strength training';
-            } else if (getSleeveStats.defense < 25) {
+            } else if (getSleeveStats.defense < 100) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","defense")`;
                 task = 'self defense training';
-            } else if (getSleeveStats.dexterity < 25) {
+            } else if (getSleeveStats.dexterity < 100) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","dexterity")`;
                 task = 'self dexterity training';
-            } else if (getSleeveStats.agility < 25) {
+            } else if (getSleeveStats.agility < 100) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","agility")`;
                 task = 'self agility training';
             } else if (i == 0 && ns.getPlayer().isWorking && ns.getPlayer().workType == "Working for Faction") {
-                //prioritise security work since sleeves are combat stat heavy
+                //prioritise security work since sleeves are typically combat stat heavy
                 command = `ns.sleeve.setToFactionWork(0, ns.getPlayer().currentWorkFactionName, "Security Work")`;
                 task = 'security work for faction';
             } else if (i == 0 && ns.getPlayer().isWorking && ns.getPlayer().workType == "Working for Company") {
@@ -52,31 +52,31 @@ export async function main(ns) {
                 } else if (ns.getPlayer().className.startsWith("training")) {
                     if (ns.getPlayer().className.startsWith("strength",14)) {
                         command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","strength")`;
-                        task = 'str training';
+                        task = 'strength training';
                     } else if (ns.getPlayer().className.startsWith("defense",14)) {
                         command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","defense")`;
-                        task = 'def training';
+                        task = 'defense training';
                     } else if (ns.getPlayer().className.startsWith("dexterity",14)) {
                         command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","dexterity")`;
-                        task = 'dex training';
+                        task = 'dexterity training';
                     } else if (ns.getPlayer().className.startsWith("agility",14)) {
                         command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","agility")`;
-                        task = 'agi training';
+                        task = 'agility training';
                     }
                 }
-            } else if (getSleeveStats.strength > 100 && getSleeveStats.defense > 100 && getSleeveStats.dexterity > 100 && getSleeveStats.agility > 100) {
+            } else {
+                //if nothing else is happening, just murder
                 command = `ns.sleeve.setToCommitCrime(${i}, "Homicide")`;
                 task = 'homiciding';
-            } else {
-                //if nothing else is happening, just mug people
-                command = `ns.sleeve.setToCommitCrime(${i}, "Mug")`;
-                task = 'mugging';
             }
+
+            //starting tasks
             if (currentTasks[i] == task) continue;
             if (await getNsDataThroughFile(ns, command, tempFile)) {
                 ns.print('Sleeve ' + i + ': ' + task);
                 currentTasks[i] = task;
             } else {
+                //assuming we're working for a faction and that security work doesn't exist for them
                 command = `ns.sleeve.setToFactionWork(${i}, ns.getPlayer().currentWorkFactionName, "Field Work")`;
                 task = 'field work for faction';
                 if (await getNsDataThroughFile(ns, command, tempFile)) {
