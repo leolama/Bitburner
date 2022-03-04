@@ -4,7 +4,7 @@ import { getServerPath } from 'util.js';
 export async function main(ns) {
 	ns.print("Script started");
 	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
-	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "sleeve-manager.js", "gang-manager.js", "corp-manager.js", "stock-manager.js"];
+	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "sleeve-manager.js", "gang-manager.js", "stock-manager.js"];
     var scriptsRam = [];
     var execRam = ns.getScriptRam("bin/exec.js");
     var playerRam = ns.getServerMaxRam("home") - execRam;
