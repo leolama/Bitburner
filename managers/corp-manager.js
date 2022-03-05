@@ -449,10 +449,10 @@ async function timeToGrow(ns, waitForEmployees) {
         await trickInvestors(ns);
         while (CorpAPI.getInvestmentOffer().funds < 210e9) {
             ns.print(`Waiting for the first investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/210b).`);
-            await ns.sleep(5000);
+            await ns.sleep(1000);
         }
         CorpAPI.acceptInvestmentOffer();
-        ns.print('Accepted investment offer, returning employees to normal jobs');
+        ns.print('Returning employees to normal jobs');
         for (let c of CITIES) {
             // set employees back to normal operation
             await increaseOfficeTo(ns, Divisions[0], c, [1, 1, 1, 0, 0, 0]);
@@ -465,7 +465,6 @@ async function timeToGrow(ns, waitForEmployees) {
         await increaseOfficeTo(ns, Divisions[0], city, [2, 2, 1, 2, 2, 0]);
         ns.print(`Upgraded the ${city} office to [2, 2, 1, 2, 2, 0]`);
     }
-
     // Upgrade Smart Factories and Smart Storage to 10.
     await buyUpgradeLevel(ns, "Smart Factories", 10);
     await buyUpgradeLevel(ns, "Smart Storage", 10);
@@ -486,9 +485,9 @@ async function timeToGrow(ns, waitForEmployees) {
             await ns.sleep(5000);
         }
         CorpAPI.acceptInvestmentOffer();
-        ns.print('Accepted investment offer, returning employees to normal jobs');
+        ns.print('Returning employees to normal jobs');
         for (let c of CITIES) {
-            // set employees back to normal operation
+            //set employees back to normal operation
             await increaseOfficeTo(ns, Divisions[0], c, [2, 2, 1, 2, 2, 0]);
         }
     } else {
@@ -568,7 +567,7 @@ async function trickInvestors(ns) {
 
 	ns.print('Tricking the investors...');
 	
-    if (Divisions[1] == NULL) {
+    if (CorpAPI.getCorporation().divisions[1] == null) {
         //AgriWorks
         for (let c of CITIES) {
             //stopping selling and moving employees into production
@@ -600,9 +599,9 @@ async function trickInvestors(ns) {
         for (let c of CITIES) {
             //moving employees into business and starting selling
             if (CorpAPI.getInvestmentOffer().round == 1) {
-                await increaseOfficeTo(ns, Divisions[0], c, [0, 0, 3, 0, 0, 0]);
+                await increaseOfficeTo(ns, Divisions[0], c, [0, 1, 2, 0, 0, 0]);
             } else {
-                await increaseOfficeTo(ns, Divisions[0], c, [0, 0, 9, 0, 0, 0]);
+                await increaseOfficeTo(ns, Divisions[0], c, [0, 2, 7, 0, 0, 0]);
             }
 
             CorpAPI.sellMaterial(Divisions[0], c, 'Food', 'MAX', 'MP');
@@ -640,7 +639,7 @@ async function trickInvestors(ns) {
         for (let p of products) {
             for (let c of CITIES) {
                 //moving employees into business and starting selling
-                await increaseOfficeTo(ns, Divisions[1], c, [0, 0, 9, 0, 0, 0]);
+                await increaseOfficeTo(ns, Divisions[1], c, [0, 2, 7, 0, 0, 0]);
 
                 CorpAPI.sellProduct(Divisions[1], c, p, '0', 'MP');
                 CorpAPI.sellProduct(Divisions[1], c, p, '0', 'MP');
@@ -667,20 +666,24 @@ export async function main(ns) {
         case 0:
         case 1:
             ns.print(`--- STARTING STAGE 1: INITIAL SETUP ---`);
+            ns.tprint(`--- STARTING STAGE 1: INITIAL SETUP ---`);
             await initialSetup(ns, corpName);
         case 2:
             ns.print(`--- STARTING STAGE 2: TIME TO GROW ---`);
+            ns.tprint(`--- STARTING STAGE 2: TIME TO GROW ---`);
             if (Divisions.length < 1) {
                 Divisions.push("AgriWorks");
             }
             await timeToGrow(ns, waitForMorale);
         case 3:
             ns.print(`--- STARTING STAGE 3: FIRST PRODUCT ---`);
+            ns.tprint(`--- STARTING STAGE 3: FIRST PRODUCT ---`);
             if (Divisions.length < 1) {
                 Divisions.push("AgriWorks");
             }
             await firstProduct(ns);
             ns.print(`--- SETUP COMPLETE. ---`);
+            ns.tprint(`--- SETUP COMPLETE. ---`);
             break;
         default:
             ns.print(`--- SKIPPING ALL SETUP STAGES ---`);
