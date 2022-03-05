@@ -94,6 +94,6 @@ export async function main(ns) {
                 }
             }
         }
-        await ns.sleep(5000);
+        await ns.sleep(1000);
     }
 }
