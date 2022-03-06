@@ -28,7 +28,7 @@ const LEVEL_UPGRADES = {
     "ABC SalesBots": Number.POSITIVE_INFINITY
 };
 // Product Names to cycle through
-const PRODUCT_NAMES = ['The (re)boot', 'Sequel', 'Trilogy', 'Oh God, Another One', 'The Last One'];
+const PRODUCT_NAMES = ['Tobacco 1', 'Tobacco 2', 'Tobacco 3', 'Tobacco 4', 'Tobacco 5', 'Tobacco 6', 'Tobacco 7', 'Tobacco 8', 'Tobacco 9'];
 let latestProductIndex = -1;
 
 const Divisions = Array();
