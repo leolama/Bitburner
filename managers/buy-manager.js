@@ -66,7 +66,7 @@ export async function main(ns) {
 			} else if (buyPrompt == true) {
 				continue;
 			}
-			await ns.write("/data/purchasedservers.txt", serverRam, "w");
+			await ns.write("/data/purchased-servers.txt", serverRam, "w");
 			while (currentServers.length < maxServers) {
 				if (availMoney > serverCost[0]) {
 					ns.run("src/buyserver.js", 1, serverRam[0]);
@@ -94,11 +94,11 @@ export async function main(ns) {
 
 		if (availMoney > serverCost[0]) {
 			//if we have more money than the server cost, buy it and update data file
-			ns.run("src/buyserver.js", 1, serverRam[0]);
+			ns.run("src/buy-server.js", 1, serverRam[0]);
 			ns.print("Bought a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 			serverRam.splice(0, 1);
 			serverCost.splice(0, 1);
-			await ns.write("/data/purchasedservers.txt", serverRam, "w");
+			await ns.write("/data/purchased-servers.txt", serverRam, "w");
 			await ns.sleep(1000);
 		} else {
 			ns.print("Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
