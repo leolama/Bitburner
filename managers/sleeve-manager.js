@@ -20,19 +20,19 @@ export async function main(ns) {
             if (getSleeveStats.shock > 0) {
                 command = `ns.sleeve.setToShockRecovery(${i})`;
                 task = 'shock recovery';
-            } else if (getSleeveStats.sync < 90) {
+            } else if (getSleeveStats.sync < 100) {
                 command = `ns.sleeve.setToSynchronize(${i})`;
                 task = 'syncronizing';
-            } else if (getSleeveStats.strength < 100) {
+            } else if (getSleeveStats.strength < 75) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","strength")`;
                 task = 'self strength training';
-            } else if (getSleeveStats.defense < 100) {
+            } else if (getSleeveStats.defense < 75) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","defense")`;
                 task = 'self defense training';
-            } else if (getSleeveStats.dexterity < 100) {
+            } else if (getSleeveStats.dexterity < 75) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","dexterity")`;
                 task = 'self dexterity training';
-            } else if (getSleeveStats.agility < 100) {
+            } else if (getSleeveStats.agility < 75) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","agility")`;
                 task = 'self agility training';
             } else if (i == 0 && ns.getPlayer().isWorking && ns.getPlayer().workType == "Working for Faction") {
