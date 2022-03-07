@@ -1,5 +1,9 @@
 /*
     original from https://github.com/tyrope/bitburner
+ 
+
+    --Args--
+    ["corp name", 1-4]
 
     1 = initial setup
     2 = time to grow
@@ -565,7 +569,7 @@ async function firstProduct(ns) {
 async function trickInvestors(ns) {
     const CorpAPI = eval('ns.corporation');
 
-	ns.print('Tricking the investors...');
+	ns.print('Stopping sales and moving employees into operations');
 	
     if (CorpAPI.getCorporation().divisions[1] == null) {
         //AgriWorks
@@ -593,16 +597,22 @@ async function trickInvestors(ns) {
             }
             await ns.sleep(5000);
         }
-        ns.print("Warehouses are full, start selling");
 
         var initialInvestFunds = CorpAPI.getInvestmentOffer().funds;
         for (let c of CITIES) {
             //moving employees into business and starting selling
+            ns.print("Warehouses are full, moving employees into business");
+
             if (CorpAPI.getInvestmentOffer().round == 1) {
                 await increaseOfficeTo(ns, Divisions[0], c, [0, 1, 2, 0, 0, 0]);
             } else {
                 await increaseOfficeTo(ns, Divisions[0], c, [0, 2, 7, 0, 0, 0]);
             }
+
+        }
+        for (let c of CITIES) {
+            //moving employees into business and starting selling
+            ns.print("Employees have been moved, starting to sell");
 
             CorpAPI.sellMaterial(Divisions[0], c, 'Food', 'MAX', 'MP');
             CorpAPI.sellMaterial(Divisions[0], c, 'Plants', 'MAX', 'MP');
@@ -633,14 +643,17 @@ async function trickInvestors(ns) {
             }
             await ns.sleep(5000);
         }
-        ns.print("Warehouses are full, start selling");
 
         var initialInvestFunds = CorpAPI.getInvestmentOffer().funds;
         for (let p of products) {
             for (let c of CITIES) {
-                //moving employees into business and starting selling
-                await increaseOfficeTo(ns, Divisions[1], c, [0, 2, 7, 0, 0, 0]);
+                //move employees into business and start to sell
+                ns.print("Warehouses are full, moving employees into business");
 
+                await increaseOfficeTo(ns, Divisions[1], c, [0, 2, 7, 0, 0, 0]);
+            }
+            for (let c of CITIES) {
+                ns.print("Employees have been moved, starting to sell");
                 CorpAPI.sellProduct(Divisions[1], c, p, '0', 'MP');
                 CorpAPI.sellProduct(Divisions[1], c, p, '0', 'MP');
             }
