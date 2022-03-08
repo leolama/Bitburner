@@ -1,4 +1,4 @@
-import { hackTools, nukeServer, terminalInput } from 'util.js';
+import { hackTools, nukeServer, terminalInput, log } from 'util.js';
 
 const doc = eval("document")
 
@@ -27,7 +27,7 @@ export async function main(ns) {
 	async function checkTerminal() {
 		//check if we're on the terminal screen
 		if (doc.getElementById("terminal-input") == null) {
-			ns.print("Player isn't on the terminal screen")
+			log(ns, "WARN: Player isn't on the terminal screen")
 			while (doc.getElementById("terminal-input") == null) {
 				checkFactionInvites();
 				await ns.sleep(500);
@@ -58,7 +58,7 @@ export async function main(ns) {
 		"The Dark Army",
 		"The Syndicate",
 		"The Covenant",
-		"Illuminati",
+		"Illuminati"
 	]; //factions that don't stop us from joining other factions
 	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"]; //backdoor based faction server names
 	const factionHackLvl = []; //required hacking levels
@@ -68,10 +68,10 @@ export async function main(ns) {
 	var hackingLvl = ns.getPlayer().hacking; //player hacking level
 
 	//get the paths to the faction servers
-	ns.print("Getting faction server paths...");
+	log(ns, "INFO: Getting faction server paths...");
 	var temp_factionPaths = ns.read('/data/faction-paths.txt');
 	var factionPaths = temp_factionPaths.split(",");
-	ns.print("Got faction server paths");
+	log(ns, "SUCCESS: Got faction server paths");
 
 	for (let faction of factionServerNames) {
 		//get faction hacking level requirement
@@ -79,8 +79,8 @@ export async function main(ns) {
 	}
 
 	while (count < factionServerNames.length) {
-		ns.print("Trying to backdoor " + factionServerNames[count] + ". Need hacking level " + factionHackLvl[count] + ", have " + hackingLvl + ". Need " + factionTools[count] + " tools, have " + numTools);
 		if (ns.getServer(factionServerNames[count]).backdoorInstalled === false) {
+			log(ns, "WARN: Trying to backdoor " + factionServerNames[count] + ". Need hacking level " + factionHackLvl[count] + ", have " + hackingLvl + ". Need " + factionTools[count] + " tools, have " + numTools);
 			//if backdoor hasn't been installed, start a loop
 			while (ns.getServer(factionServerNames[count]).backdoorInstalled === false) {
 				if (factionHackLvl[count] <= hackingLvl && numTools >= factionTools[count]) {
@@ -96,17 +96,17 @@ export async function main(ns) {
 					await checkTerminal()
 					terminalInput(factionPaths[count]);
 					await ns.sleep(100);
-					ns.tprint("Installing backdoor on " + factionServerNames[count] + "...");
+					log(ns, "INFO: Installing backdoor on " + factionServerNames[count] + "...");
 					await checkTerminal();
 					await ns.installBackdoor();
 					if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
-						ns.tprint("Successful backdoor");
-						ns.tprint("Returning home");
+						log(ns, "SUCCESS: Successfully backdoored " + factionServerNames[count]);
+						log(ns, "INFO: Returning home");
 						terminalInput("home");
 						++count;
 					} else {
-						ns.tprint("Failed backdoor");
-						ns.tprint("Returning home and retrying")
+						log(ns, "ERROR: Failed backdoor");
+						log(ns, "INFO: Returning home and retrying")
 						terminalInput("home");
 					}
 				}
@@ -117,7 +117,7 @@ export async function main(ns) {
 				await ns.sleep(1000);
 			}
 		} else {
-			ns.print("Already backdoored " + factionServerNames[count]);
+			log(ns, "INFO: Already backdoored " + factionServerNames[count]);
 			++count;
 		}
 	}

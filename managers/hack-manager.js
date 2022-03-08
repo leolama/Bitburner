@@ -1,6 +1,6 @@
 //original from MurataMain on reddit
 //accepts an argument to specify target server
-import { hackTools, nukeServer } from "util.js";
+import { hackTools, nukeServer, log } from "util.js";
 
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
@@ -26,7 +26,7 @@ export async function main(ns) {
 
 		//weak/grow/hack optimal
 		if (ns.getServerSecurityLevel(target) > securityThresh) {
-			ns.print("Weakening " + target);
+			log(ns, "INFO: Weakening " + target);
 			for (let i = 0; i < rootableServers.length; i++) {
 				ns.killall(rootableServers[i]);
 				numThreads = ns.getServerMaxRam(rootableServers[i]) - ns.getServerUsedRam(rootableServers[i]); //free ram of the server
@@ -38,7 +38,7 @@ export async function main(ns) {
 			}
 			await ns.sleep(numTimesToHack * ns.getWeakenTime(target) + 300);
 		} else if (ns.getServerMoneyAvailable(target) < moneyThresh) {
-			ns.print("Growing " + target);
+			log(ns, "INFO: Growing " + target);
 			for (let i = 0; i < rootableServers.length; i++) {
 				ns.killall(rootableServers[i]);
 				numThreads = ns.getServerMaxRam(rootableServers[i]) - ns.getServerUsedRam(rootableServers[i]);
@@ -49,7 +49,7 @@ export async function main(ns) {
 			}
 			await ns.sleep(numTimesToHack * ns.getGrowTime(target) + 300);
 		} else {
-			ns.print("Hacking " + target);
+			log(ns, "INFO: Hacking " + target);
 			for (let i = 0; i < rootableServers.length; i++) {
 				ns.killall(rootableServers[i]);
 				numThreads = ns.getServerMaxRam(rootableServers[i]) - ns.getServerUsedRam(rootableServers[i]);

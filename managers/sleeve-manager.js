@@ -1,4 +1,4 @@
-import { getNsDataThroughFile } from 'util.js'
+import { getNsDataThroughFile, log } from 'util.js'
 
 /** @param {import('../.').NS} ns */
 export async function main(ns) {
@@ -73,23 +73,23 @@ export async function main(ns) {
             //starting tasks
             if (currentTasks[i] == task) continue;
             if (await getNsDataThroughFile(ns, command, tempFile)) {
-                ns.print('Sleeve ' + i + ': ' + task);
+                log(ns, 'SUCCESS: Sleeve ' + i + ': ' + task);
                 currentTasks[i] = task;
             } else {
                 //assuming we're working for a faction and that security work doesn't exist for them
                 command = `ns.sleeve.setToFactionWork(${i}, ns.getPlayer().currentWorkFactionName, "Field Work")`;
                 task = 'field work for faction';
                 if (await getNsDataThroughFile(ns, command, tempFile)) {
-                    ns.print('Sleeve ' + i + ': ' + task);
+                    log(ns, 'SUCCESS: Sleeve ' + i + ': ' + task);
                     currentTasks[i] = task;
                 } else {
                     command = `ns.sleeve.setToFactionWork(${i}, ns.getPlayer().currentWorkFactionName, "Hacking Contracts")`;
                     task = 'hacking contracts for faction';
                     if (await getNsDataThroughFile(ns, command, tempFile)) {
-                        ns.print('Sleeve ' + i + ': ' + task);
+                        log(ns, 'SUCCESS: Sleeve ' + i + ': ' + task);
                         currentTasks[i] = task;
                     } else {
-                        ns.print('???');
+                        log(ns, 'ERROR: Failed to set take for sleeve ' + i);
                     }
                 }
             }

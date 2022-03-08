@@ -1,9 +1,11 @@
-const statNames = ["strength", "defense", "dexterity", "agility"];
+import { log } from 'util.js'
 
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
 	ns.disableLog("ALL");
+
+	const statNames = ["strength", "defense", "dexterity", "agility"];
 
 	function crime() {
 		if (ns.getCrimeChance("homicide") < 0.6) {
@@ -21,14 +23,14 @@ export async function main(ns) {
 		for (let i = 0; i < statLevels.length;++i) {
 			while (statLevels[i] < 15) {
 				if (ns.getPlayer().className != 'training your ' + statNames[i] + ' at a gym') {
-					ns.print("Training " + statNames[i]);
+					log(ns, "SUCCESS: Training " + statNames[i]);
 					ns.gymWorkout(gym, statNames[i]);
 				}
 				await ns.sleep(1000);
 				statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity, ns.getPlayer().agility];
 				if (!ns.isBusy()) {
 					//if player has cancelled training then stop the script
-					ns.print("Cancelled by player");
+					log(ns, "INFO: Cancelled by player");
 					return;
 				}
 			}
@@ -56,9 +58,9 @@ export async function main(ns) {
 		if (karma < -54000 && !ns.isRunning("/managers/gang-manager.js","home")) {
 			let pid = ns.run("/managers/gang-manager.js")
 			if (pid > 0) {
-				ns.print("Started /managers/gang-manager.js with PID " + pid)
+				log(ns, "SUCCESS: Started /managers/gang-manager.js with PID " + pid)
 			} else {
-				ns.print("Failed to start /managers/gang-manager.js")
+				log(ns, "ERROR: Failed to start /managers/gang-manager.js")
 			}
 		}
 		
@@ -67,22 +69,22 @@ export async function main(ns) {
 		var time = ns.nFormat(date.getHours(), "00") + ":" + ns.nFormat(date.getMinutes(), "00") + ":" + ns.nFormat(date.getSeconds(), "00");
 
 		if (!ns.isBusy()) {
-			ns.print("Attempting to commit " + bestCrime + ". Expecting finish at " + time);
+			log(ns, "INFO: Attempting to commit " + bestCrime + ". Expecting finish at " + time);
 			await ns.sleep(ns.commitCrime(bestCrime) - 500);
 			if (!ns.isBusy()) {
 				//if the player cancels the crime, stop the script and print current karma into the terminal
-				ns.tprint("Karma: " + karma);
-				ns.print("Cancelled by player");
+				log(ns, "INFO: Current karma: " + karma, true);
+				log(ns, "INFO: Cancelled by player");
 				return;
 			}
 			if (oldKarma > karma) {
-				ns.print("Success!");
-				ns.print("Current karma " + karma);
+				log(ns, "SUCCESS: Completed crime");
+				log(ns, "INFO: Current karma: " + karma);
 			} else {
-				ns.print("Failed!");
+				log(ns, "WARN: Failed crime");
 			}
 		} else {
-			ns.print("Player is busy");
+			log(ns, "INFO: Player is busy");
 			busy = 0;
 			while (busy < 1) {
 				if (!ns.isBusy()) ++busy;
