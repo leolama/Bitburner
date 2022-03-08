@@ -3,7 +3,7 @@
  
 
     --Args--
-    ["corp name", 1-4]
+    [1-4]
 
     1 = initial setup
     2 = time to grow
@@ -32,7 +32,7 @@ const LEVEL_UPGRADES = {
     "ABC SalesBots": Number.POSITIVE_INFINITY
 };
 // Product Names to cycle through
-const PRODUCT_NAMES = ['Tobacco 1', 'Tobacco 2', 'Tobacco 3', 'Tobacco 4', 'Tobacco 5', 'Tobacco 6', 'Tobacco 7', 'Tobacco 8', 'Tobacco 9'];
+const PRODUCT_NAMES = ['Tobacco 1', 'Tobacco 2', 'Tobacco 3'];
 let latestProductIndex = -1;
 
 const Divisions = Array();
@@ -304,7 +304,7 @@ function createProduct(ns, division, investment) {
     const CorpAPI = eval("ns.corporation");
 
     // Step 1: Find any in-progress product.
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
         if (
             CorpAPI.getDivision(division).products.includes(PRODUCT_NAMES[i]) &&
             CorpAPI.getProduct(division, PRODUCT_NAMES[i]).developmentProgress < 100
@@ -315,16 +315,18 @@ function createProduct(ns, division, investment) {
     }
 
     // Step 2: Find the first non-existant product.
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
         if (!CorpAPI.getDivision(division).products.includes(PRODUCT_NAMES[i])) {
             latestProductIndex = i;
             CorpAPI.makeProduct(division, 'Aevum', PRODUCT_NAMES[i], investment, investment);
             CorpAPI.sellProduct(division, 'Aevum', PRODUCT_NAMES[i], "MAX", "MP", true);
-            CorpAPI.setProductMarketTA2(division, PRODUCT_NAMES[i], true);
+            if (CorpAPI.hasResearched(division, "Market-TA.II")) {
+                CorpAPI.setProductMarketTA2(division, PRODUCT_NAMES[i], true);
+            }
             return ns.print(`SUCCESS: ${division} is creating ${PRODUCT_NAMES[i]} with a $${formatNumber(investment * 2)} budget.`);
         }
     }
-    if (latestProductIndex == 4) {
+    if (latestProductIndex == 2) {
         latestProductIndex = 0;
     } else {
         latestProductIndex++;
@@ -334,7 +336,9 @@ function createProduct(ns, division, investment) {
     CorpAPI.discontinueProduct(division, PRODUCT_NAMES[latestProductIndex]);
     CorpAPI.makeProduct(division, 'Aevum', PRODUCT_NAMES[latestProductIndex], investment, investment);
     CorpAPI.sellProduct(division, 'Aevum', PRODUCT_NAMES[latestProductIndex], "MAX", "MP", true);
-    CorpAPI.setProductMarketTA2(division, PRODUCT_NAMES[latestProductIndex], true);
+    if (CorpAPI.hasResearched(division, "Market-TA.II")) {
+        CorpAPI.setProductMarketTA2(division, PRODUCT_NAMES[latestProductIndex], true);
+    }
     ns.print(investment);
     return ns.print(`SUCCESS: ${division} is re-creating ${PRODUCT_NAMES[latestProductIndex]} with a $${formatNumber(investment * 2)} budget.`);
 }
@@ -346,7 +350,7 @@ function createProduct(ns, division, investment) {
 function cycleToNextAvailProduct(ns, division) {
     const CorpAPI = eval("ns.corporation");
 
-    for (let i = 4; i >= 0; i--) {
+    for (let i = 2; i >= 0; i--) {
         if (CorpAPI.getDivision(division).products.includes(PRODUCT_NAMES[i])) {
             if (CorpAPI.getProduct(division, PRODUCT_NAMES[i]).developmentProgress < 100) {
                 return latestProductIndex = i - 1;
@@ -661,20 +665,46 @@ async function trickInvestors(ns) {
     }
 }
 
+function checkDivisionResearch(ns, division) {
+    const CorpAPI = eval('ns.corporation');
+    const RESEARCH = ["Hi-Tech R&D Laboratory", "Market-TA.I", "Market-TA.II", "uPgrade: Fulcrum", "uPgrade: Capacity.I", "uPgrade: Capacity.II"];
+    var NEED_RESEARCH = [];
+    var RESEARCH_COST = [];
+
+    for (let i = 0; i < RESEARCH.length; ++i) {
+        if (!CorpAPI.hasResearched(division, RESEARCH[i])) {
+            NEED_RESEARCH.push(RESEARCH[i])
+        }
+    }
+    //if we have all research, skip the checks
+    if (RESEARCH_COST.length == 0) {
+        return;
+    }
+    
+    if (RESEARCH_COST.length < NEED_RESEARCH.length) {
+        for (let i = 0; i < NEED_RESEARCH.length; ++i) {
+            RESEARCH_COST.push(CorpAPI.getResearchCost(division, NEED_RESEARCH[i]) * 2); //double the price to leave some research left
+        }
+    }
+
+    for (let i = 0; i < NEED_RESEARCH.length; ++i) {
+        if (CorpAPI.getDivision(division).research > RESEARCH_COST[i]) {
+            CorpAPI.research(division, RESEARCH[i]);
+            ns.print('SUCCESS: Researched ' + RESEARCH[i]);
+        }
+    }
+}
+
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
     const CorpAPI = eval("ns.corporation");
 
-    if (ns.args.length < 1) {
-        return ns.tprint("INFO: Usage: corporationName(string), setupStage(Number, optional).");
-    }
-
     ns.disableLog('ALL');
     ns.clearLog();
-    const corpName = ns.args[0];
-    const waitForMorale = ns.args[2] != undefined ? ns.args[2] : true;
+    const corpName = "Corp";
+    const waitForMorale = ns.args[1] != undefined ? ns.args[1] : true;
     
-    switch (ns.args[1]) {
+    switch (ns.args[0]) {
         case undefined:
         case 0:
         case 1:
@@ -703,7 +733,6 @@ export async function main(ns) {
             // We should assume we've got an Agriculture and Tobacco division.
             Divisions.push("AgriWorks");
             Divisions.push("TobaWorks");
-            ns.print(Divisions);
             cycleToNextAvailProduct(ns, Divisions[1]);
             ns.print(`Starting with product name ${PRODUCT_NAMES[latestProductIndex]}`);
             break;
@@ -712,6 +741,10 @@ export async function main(ns) {
 
     // Start main loop.
     while (true) {
+        //check if we can afford any research without losing too much profit
+        checkDivisionResearch(ns, Divisions[1]);
+
+        //check current investor or go public
         if (CorpAPI.getInvestmentOffer().round == 3) {
             ns.print(`--- INVESTOR 3. ---`);
             let offer = CorpAPI.getInvestmentOffer().funds;
@@ -730,6 +763,9 @@ export async function main(ns) {
                 CorpAPI.acceptInvestmentOffer();
                 ns.print("SUCCESS: Accepted investor 4's offer of " + ns.nFormat(offer, "0.00a"));
             }
+        } else if (CorpAPI.getInvestmentOffer().round == 4) {
+            CorpAPI.goPublic(50000000);
+            CorpAPI.issueDividends(5);
         }
 
         // Determine proper investment.
