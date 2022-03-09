@@ -15,7 +15,7 @@ export async function main(ns) {
 	var buyPrompt;
 	var serverRam = [];
 
-	let ramData = ns.read("/data/purchased-servers.txt").split(",").map(Number); //read data file and split it into an array
+	let ramData = ns.read("/data/purchased-servers.txt").split(","); //read data file and split it into an array
 	
 	for (let split in ramData) {
 		serverRam.push(ramData[split]); //push the array into a var
@@ -65,8 +65,6 @@ export async function main(ns) {
 			//highest ram server
 			if (buyPrompt == false) {
 				return;
-			} else if (buyPrompt == true) {
-				continue;
 			}
 			await ns.write("/data/purchased-servers.txt", serverRam, "w");
 			while (currentServers.length < maxServers) {
@@ -76,16 +74,12 @@ export async function main(ns) {
 					if (buyPrompt == null) {
 						buyPrompt = await ns.prompt("Keep buying servers?");
 					}
-					await ns.sleep(1000);
 				} else {
 					log(ns, "INFO: Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 					cantAfford = true;
 					while (cantAfford == true) {
 						if (availMoney > serverCost[0]) cantAfford = false;
-						else {
-							await ns.sleep(10000);
-						}
-						await ns.sleep(1000);
+						await ns.sleep(5000);
 					}
 				}
 				availMoney = ns.getPlayer().money;
@@ -101,16 +95,12 @@ export async function main(ns) {
 			serverRam.splice(0, 1);
 			serverCost.splice(0, 1);
 			await ns.write("/data/purchased-servers.txt", serverRam, "w");
-			await ns.sleep(1000);
 		} else {
 			log(ns, "INFO: Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
 			cantAfford = true;
 			while (cantAfford == true) {
 				if (availMoney < serverCost[0]) cantAfford = false;
-				else {
-					await ns.sleep(10000);
-				}
-				await ns.sleep(1000);
+				await ns.sleep(5000);
 			}
 		}
 		//refresh vars
