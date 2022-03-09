@@ -1,3 +1,5 @@
+import { log } from 'util.js'
+
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
@@ -8,8 +10,8 @@ export async function main(ns) {
 
 	//try to delete the server
 	if (ns.deleteServer(server)) {
-		ns.tprint("Deleted " + server);
+		log(ns, "SUCCESS: Deleted " + server);
 	} else {
-		ns.tprint("Failed to delete " + server + ". The server might not exist");
+		log(ns, "ERROR: Failed to delete " + server + ". The server might not exist");
 	}
 }

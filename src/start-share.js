@@ -1,3 +1,5 @@
+import { log } from 'util.js'
+
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
@@ -6,9 +8,10 @@ export async function main(ns) {
 	threads /= ns.getScriptRam("/src/share.js", "home");
 	threads = Math.floor(threads) - 8; //spares ~36GB RAM
 	try {
-		ns.run("/src/share.js", threads);
-		ns.tprint('Started share.js with ' + threads + ' threads.')
+		if (ns.run("/src/share.js", threads) > 0) {
+			log(ns, 'SUCCESS: Started share.js with ' + threads + ' threads.')
+		}
 	} catch {
-		ns.tprint("Not enough RAM available to run share.js")
+		log(ns, "ERROR: Not enough RAM available to run share.js")
 	}
 }

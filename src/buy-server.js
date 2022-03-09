@@ -1,3 +1,5 @@
+import { log } from 'util.js'
+
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
@@ -8,12 +10,10 @@ export async function main(ns) {
 	for (let multiple of multipleOf) {
 		if (ram === multiple) {
 			//if ram equals a multiple of 2
-			ns.tprint("Buying " + ram + "GB server...");
 			if (ns.purchaseServer(hName, ram)) {
-				//check if we can buy the server
-				ns.tprint("Bought " + ram + "GB server");
+				log(ns, "SUCCESS: Bought " + ram + "GB server", true);
 			} else {
-				ns.tprint("Failed to buy a server");
+				log(ns, "ERROR: Failed to buy a server", true);
 			}
 			return;
 		}

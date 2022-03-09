@@ -1,3 +1,5 @@
+import { log } from 'util.js'
+
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.disableLog("ALL");
@@ -12,11 +14,10 @@ export async function main(ns) {
 	//if player has enough money and reputation
 	if (availMoney >= augPrice && playerFactionRep >= augRep) {
 		while (availMoney >= augPrice && playerFactionRep >= augRep) {
-			ns.print(faction);
 			if (ns.purchaseAugmentation(faction, "NeuroFlux Governor")) {
 				++count;
 			} else {
-				ns.print("Failed to buy NeuroFlux");
+				log(ns, "ERROR: Failed to buy NeuroFlux");
 			}
 			//refresh money and rep
 			availMoney = ns.getPlayer().money;
@@ -25,9 +26,9 @@ export async function main(ns) {
 			playerFactionRep = ns.getFactionRep(faction);
 		}
 	} else {
-		ns.print("Not enough money and/or reputation");
+		log(ns, "WARN: Not enough money and/or reputation");
 	}
-	ns.print("Bought " + count + " level(s) of NeuroFlux");
+	log(ns, "SUCCESS: Bought " + count + " level(s) of NeuroFlux");
 }
 
 export function autocomplete(data, args) {

@@ -1,3 +1,5 @@
+import { log } from 'util.js'
+
 /** @param {import('../.').NS} ns */
 export async function main(ns) {
     ns.disableLog("ALL");
@@ -19,7 +21,7 @@ export async function main(ns) {
     } else if (noGymCities.includes(ns.getPlayer().city)) {
         noGymPrompt = await ns.prompt("Your current city hasn't got a gym, travel to Sector-12?")
         if (noGymPrompt == false) {
-            ns.print("No gym available");
+            log(ns, "ERROR: No gym available");
             return;
         }
     }
@@ -36,7 +38,7 @@ export async function main(ns) {
     for (let i = 0; i < statLevels.length;++i) {
         while (statLevels[i] < scriptArg) {
             if (ns.getPlayer().className != 'training your ' + statNames[i] + ' at a gym') {
-                ns.print("Training " + statNames[i]);
+                log(ns, "INFO: Training " + statNames[i]);
                 ns.gymWorkout(gym, statNames[i]);
             }
             await ns.sleep(1000);
@@ -48,6 +50,6 @@ export async function main(ns) {
             }
         }
     }
-    ns.tprint('Finished stat training');
+    log(ns, 'SUCCESS: Finished stat training');
     ns.stopAction();
 }
