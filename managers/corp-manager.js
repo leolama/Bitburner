@@ -56,7 +56,7 @@ async function getUnlockUpgrade(ns, upgradeName, tryOnce = false) {
         }
         if (tryOnce) {
             if (!CorpAPI.hasUnlockUpgrade(upgradeName)) {
-                return ns.print(`WARN: Couldn't afford unlock ${upgradeName}`);
+                return ns.print(`INFO: Couldn't afford unlock ${upgradeName}`);
             }
         }
         await ns.sleep(10000);
@@ -749,7 +749,7 @@ export async function main(ns) {
             ns.print(`--- INVESTOR 3. ---`);
             let offer = CorpAPI.getInvestmentOffer().funds;
             if (offer < 8e14) {
-                ns.print(`WARN: Offer too low (${ns.nFormat(offer, "0.00a")}/800t).`);
+                ns.print(`INFO: Offer too low (${ns.nFormat(offer, "0.00a")}/800t).`);
             } else {
                 CorpAPI.acceptInvestmentOffer();
                 ns.print("SUCCESS: Accepted investor 3's offer of " + ns.nFormat(offer, "0.00a"));
@@ -758,7 +758,7 @@ export async function main(ns) {
             ns.print(`--- INVESTOR 4. ---`);
             let offer = CorpAPI.getInvestmentOffer().funds;
             if (offer < 1e18) {
-                ns.print(`WARN: Offer too low (${ns.nFormat(offer, "0.00a")}/1Q).`);
+                ns.print(`INFO: Offer too low (${ns.nFormat(offer, "0.00a")}/1Q).`);
             } else {
                 CorpAPI.acceptInvestmentOffer();
                 ns.print("SUCCESS: Accepted investor 4's offer of " + ns.nFormat(offer, "0.00a"));
@@ -848,7 +848,7 @@ export async function main(ns) {
             }
 
             if (adverts == 0) {
-                ns.print(`WARN: Couldn't afford adverts.`);
+                ns.print(`INFO: Couldn't afford adverts.`);
             } else {
                 ns.print(`SUCCESS: bought ${adverts} adverts.`);
             }
