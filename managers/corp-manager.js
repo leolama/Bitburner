@@ -1,17 +1,8 @@
 /*
     original from https://github.com/tyrope/bitburner
- 
-
-    --Args--
-    [1-4]
-
-    1 = initial setup
-    2 = time to grow
-    3 = first product
-    4 = skip setup
 */
 
-import { formatNumber } from 'util.js'
+import { formatNumber, log } from 'util.js'
 
 
 // Cities in which you can have Offices/warehouses.
@@ -38,14 +29,14 @@ let latestProductIndex = -1;
 const Divisions = Array();
 
 /** Try and buy an Unlock for the corp.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} upgradeName name of the upgrade to unlock
  * @param {Boolean?} tryOnce if true, won't loop (also won't need awaiting).
  **/
 async function getUnlockUpgrade(ns, upgradeName, tryOnce = false) {
     const CorpAPI = eval("ns.corporation");
     if (CorpAPI.hasUnlockUpgrade(upgradeName)) {
-        return ns.print(`INFO: Trying to buy unlock ${upgradeName} but we already have it.`);
+        return log(ns, `INFO: Trying to buy unlock ${upgradeName} but we already have it.`);
     }
     while (true) {
         if (CorpAPI.getCorporation().funds > CorpAPI.getUnlockUpgradeCost(upgradeName)) {
@@ -56,16 +47,16 @@ async function getUnlockUpgrade(ns, upgradeName, tryOnce = false) {
         }
         if (tryOnce) {
             if (!CorpAPI.hasUnlockUpgrade(upgradeName)) {
-                return ns.print(`INFO: Couldn't afford unlock ${upgradeName}`);
+                return log(ns, `INFO: Couldn't afford unlock ${upgradeName}`);
             }
         }
         await ns.sleep(10000);
     }
-    return ns.print(`SUCCESS: Unlocked ${upgradeName}.`);
+    return log(ns, `SUCCESS: Unlocked ${upgradeName}.`);
 }
 
 /** Try and buy a levelled upgrade for the corp.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} upgradeName name of the upgrade to unlock
  * @param {Number?} maximum level to upgrade to. (Default: 1)
  * @param {Boolean?} buyNow if true, won't wait for more money to upgrade. (also won't need awaiting).
@@ -74,7 +65,7 @@ async function buyUpgradeLevel(ns, upgradeName, maxLevel = 1, buyNow = false) {
     const CorpAPI = eval("ns.corporation");
     const oldLevel = CorpAPI.getUpgradeLevel(upgradeName);
     if (CorpAPI.getUpgradeLevel(upgradeName) >= maxLevel) {
-        return ns.print(`INFO: Trying to upgrade ${upgradeName} to ${maxLevel} but we're already level ${CorpAPI.getUpgradeLevel(upgradeName)}`);
+        return log(ns, `INFO: Trying to upgrade ${upgradeName} to ${maxLevel} but we're already level ${CorpAPI.getUpgradeLevel(upgradeName)}`);
     }
     while (CorpAPI.getUpgradeLevel(upgradeName) < maxLevel) {
         if (CorpAPI.getUpgradeLevelCost(upgradeName) <= CorpAPI.getCorporation().funds) {
@@ -86,12 +77,12 @@ async function buyUpgradeLevel(ns, upgradeName, maxLevel = 1, buyNow = false) {
         }
     }
     if (CorpAPI.getUpgradeLevel(upgradeName) != oldLevel) {
-        return ns.print(`SUCCESS: Upgraded ${upgradeName} to ${CorpAPI.getUpgradeLevel(upgradeName)}.`);
+        return log(ns, `SUCCESS: Upgraded ${upgradeName} to ${CorpAPI.getUpgradeLevel(upgradeName)}.`);
     }
 }
 
 /** Form a division in a new industry.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} industry The industry this division's working.
  */
 async function formDivision(ns, industry) {
@@ -102,7 +93,7 @@ async function formDivision(ns, industry) {
         // This Division already exists.
         CorpAPI.getDivision(DivName);
         Divisions.push(DivName);
-        return ns.print(`INFO: Using pre-established ${industry} division: ${DivName}.`);
+        return log(ns, `INFO: Using pre-established ${industry} division: ${DivName}.`);
     } else {
         // Create the division.
         while (CorpAPI.getExpandCityCost() > CorpAPI.getCorporation().funds) {
@@ -110,13 +101,13 @@ async function formDivision(ns, industry) {
         }
         CorpAPI.expandIndustry(industry, DivName);
         Divisions.push(DivName);
-        return ns.print(`SUCCESS: Formed ${industry} division ${DivName}.`);
+        return log(ns, `SUCCESS: Formed ${industry} division ${DivName}.`);
     }
 
 }
 
 /** Expand a division to a new city.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} division The division we're expanding.
  * @param {String} city The city we're expanding to.
  */
@@ -124,17 +115,17 @@ async function tryExpandDivision(ns, division, city) {
     const CorpAPI = eval("ns.corporation");
     const Corp = CorpAPI.getCorporation();
     if (CorpAPI.getDivision(division).cities.includes(city)) {
-        return ns.print(`INFO: ${division} trying to expand into ${city} but it's already there.`);
+        return log(ns, `INFO: ${division} trying to expand into ${city} but it's already there.`);
     }
     while (CorpAPI.getExpandCityCost() > Corp.funds) {
         await ns.sleep(10000);
     }
     CorpAPI.expandCity(division, city);
-    return ns.print(`SUCCESS: ${division} expanded into ${city}.`);
+    return log(ns, `SUCCESS: ${division} expanded into ${city}.`);
 }
 
 /** Upgrade, or buy a warehouse, to a specific size.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} division The division we're expanding.
  * @param {String} city The city we're expanding in.
  * @param {Number} size the new maximum size we want.
@@ -142,7 +133,7 @@ async function tryExpandDivision(ns, division, city) {
 async function upgradeWarehouseTo(ns, division, city, size) {
     const CorpAPI = eval("ns.corporation");
     if (CorpAPI.hasWarehouse(division, city) && CorpAPI.getWarehouse(division, city).size >= size) {
-        return ns.print(`INFO: ${division}'s Warehouse in ${city} is already big enough (${CorpAPI.getWarehouse(division, city).size} > ${size})`);
+        return log(ns, `INFO: ${division}'s Warehouse in ${city} is already big enough (${CorpAPI.getWarehouse(division, city).size} > ${size})`);
     }
 
     // Get a warehouse
@@ -151,18 +142,18 @@ async function upgradeWarehouseTo(ns, division, city, size) {
             await ns.sleep(10000);
         }
         CorpAPI.purchaseWarehouse(division, city);
-        ns.print(`SUCCESS: ${division} bought a warehouse in ${city}`);
+        log(ns, `SUCCESS: ${division} bought a warehouse in ${city}`);
     }
 
     // Upgrade the warehouse to size.
     while (CorpAPI.getWarehouse(division, city).size < size) {
         CorpAPI.upgradeWarehouse(division, city);
     }
-    ns.print(`SUCCESS: ${division} upgraded the warehouse in ${city} to size ${CorpAPI.getWarehouse(division, city).size}`);
+    log(ns, `SUCCESS: ${division} upgraded the warehouse in ${city} to size ${CorpAPI.getWarehouse(division, city).size}`);
 }
 
 /** Buy a list of materials to a certain amount within a warehouse.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} division
  * @param {String} city
  * @param {String[]} material
@@ -170,19 +161,19 @@ async function upgradeWarehouseTo(ns, division, city, size) {
  */
 async function buyMaterialsToLimit(ns, division, city, material, limit) {
     if (material.length != limit.length) {
-        return ns.print(`ERROR: buyMaterialsToLimit material and limit lists differ in length (${material.length}/${limit.length}).`);
+        return log(ns, `ERROR: buyMaterialsToLimit material and limit lists differ in length (${material.length}/${limit.length}).`);
     }
 
     const CorpAPI = eval("ns.corporation");
 
     if (CorpAPI.hasWarehouse(division, city) == false) {
-        return ns.print(`ERROR: ${division} is trying to buy materials in ${city}, but doesn't have a warehouse.`);
+        return log(ns, `ERROR: ${division} is trying to buy materials in ${city}, but doesn't have a warehouse.`);
     }
 
     let stopBuying;
     while (true) {
         if (CorpAPI.getWarehouse(division, city).size - CorpAPI.getWarehouse(division, city).sizeUsed == 0) {
-            return ns.print(`WARN: ${division}'s warehouse in ${city} is full, but we're trying to buy more mats.`);
+            return log(ns, `WARN: ${division}'s warehouse in ${city} is full, but we're trying to buy more mats.`);
         }
         stopBuying = true;
         for (let i in material) {
@@ -203,11 +194,11 @@ async function buyMaterialsToLimit(ns, division, city, material, limit) {
     for (let i = 0; i < limit.length; i++) {
         shopping.push(`${limit[i]}x ${material[i]}`);
     }
-    return ns.print(`SUCCESS: ${division}@${city} bought: ${shopping.join(', ')}`);
+    return log(ns, `SUCCESS: ${division}@${city} bought: ${shopping.join(', ')}`);
 }
 
 /** Increase the size of the office until we've filled all of these positions.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} division
  * @param {String} city
  * @param {Number[]} positions the amount of employees in each position, in the order of JOBS
@@ -290,13 +281,13 @@ async function increaseOfficeTo(ns, division, city, positions) {
                 }
                 await CorpAPI.assignJob(division, city, emp, "Unassigned");
             }
-            return ns.print(`SUCCESS: ${division}'s ${city} office expanded to ${CorpAPI.getOffice(division, city).size} employees.`);
+            return log(ns, `SUCCESS: ${division}'s ${city} office expanded to ${CorpAPI.getOffice(division, city).size} employees.`);
         }
     }
 }
 
 /** Create a product.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} division The division that's creating the product
  * @param {Number} investment The amount of money to invest (NOTE: will spend 2x investment)!
  */
@@ -310,7 +301,7 @@ function createProduct(ns, division, investment) {
             CorpAPI.getProduct(division, PRODUCT_NAMES[i]).developmentProgress < 100
         ) {
             latestProductIndex = i;
-            return ns.print(`INFO: ${division} is already working on ${PRODUCT_NAMES[i]}`);
+            return log(ns, `INFO: ${division} is already working on ${PRODUCT_NAMES[i]}`);
         }
     }
 
@@ -323,7 +314,7 @@ function createProduct(ns, division, investment) {
             if (CorpAPI.hasResearched(division, "Market-TA.II")) {
                 CorpAPI.setProductMarketTA2(division, PRODUCT_NAMES[i], true);
             }
-            return ns.print(`SUCCESS: ${division} is creating ${PRODUCT_NAMES[i]} with a $${formatNumber(investment * 2)} budget.`);
+            return log(ns, `SUCCESS: ${division} is creating ${PRODUCT_NAMES[i]} with a $${formatNumber(investment * 2)} budget.`);
         }
     }
     if (latestProductIndex == 2) {
@@ -339,12 +330,11 @@ function createProduct(ns, division, investment) {
     if (CorpAPI.hasResearched(division, "Market-TA.II")) {
         CorpAPI.setProductMarketTA2(division, PRODUCT_NAMES[latestProductIndex], true);
     }
-    ns.print(investment);
-    return ns.print(`SUCCESS: ${division} is re-creating ${PRODUCT_NAMES[latestProductIndex]} with a $${formatNumber(investment * 2)} budget.`);
+    return log(ns, `SUCCESS: ${division} is re-creating ${PRODUCT_NAMES[latestProductIndex]} with a $${formatNumber(investment * 2)} budget.`);
 }
 
 /** Cycle the latestProductIndex to whichever value is to be created next.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} division
  */
 function cycleToNextAvailProduct(ns, division) {
@@ -362,7 +352,7 @@ function cycleToNextAvailProduct(ns, division) {
 }
 
 /** Start and build stage 1 of a corporation.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {String} corpName
  */
 async function initialSetup(ns, corpName) {
@@ -370,12 +360,12 @@ async function initialSetup(ns, corpName) {
 
     // If we don't have a corp. Make one.
     if (ns.getPlayer().hasCorporation) {
-        ns.print(`INFO: Using pre-established corporation ${CorpAPI.getCorporation().name}`);
+        log(ns, `INFO: Using pre-established corporation ${CorpAPI.getCorporation().name}`);
     } else {
         while (CorpAPI.createCorporation(corpName, true) == false) {
             await ns.asleep(60000);
         }
-        ns.print(`SUCCESS: Established ${corpName}`);
+        log(ns, `SUCCESS: Established ${corpName}`);
     }
 
     // Get the APIs and create the Agriculture Division.
@@ -406,7 +396,7 @@ async function initialSetup(ns, corpName) {
 }
 
 /** Phase 2 of corporation management: Investors and maximum material profit.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  * @param {Boolean} waitForEmployees Whether to wait on the 100/99.998/99.998 employee stats. (Default: true)
  */
 async function timeToGrow(ns, waitForEmployees) {
@@ -449,29 +439,29 @@ async function timeToGrow(ns, waitForEmployees) {
         if (morale >= 100 && happiness >= 99.998 && energy >= 99.998) {
             break;
         }
-        ns.print(`Waiting for employees to get their shit together (mor: ${ns.nFormat(morale, "0.0[00]")}, hap: ${ns.nFormat(happiness, "0.0[00]")}, ene: ${ns.nFormat(energy, "0.0[00]")}).`);
+        log(ns, `INFO: Waiting for employees to get their shit together (mor: ${ns.nFormat(morale, "0.0[00]")}, hap: ${ns.nFormat(happiness, "0.0[00]")}, ene: ${ns.nFormat(energy, "0.0[00]")}).`);
         await ns.sleep(10000);
     }
     if (CorpAPI.getInvestmentOffer().round == 1) {
         // Get 210b from an investor.
         await trickInvestors(ns);
         while (CorpAPI.getInvestmentOffer().funds < 210e9) {
-            ns.print(`Waiting for the first investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/210b).`);
+            log(ns, `INFO: Waiting for the first investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/210b).`);
             await ns.sleep(1000);
         }
         CorpAPI.acceptInvestmentOffer();
-        ns.print('Returning employees to normal jobs');
+        log(ns, 'INFO: Returning employees to normal jobs');
         for (let c of CITIES) {
             // set employees back to normal operation
             await increaseOfficeTo(ns, Divisions[0], c, [1, 1, 1, 0, 0, 0]);
         }
     } else {
-        ns.print('INFO: Skipped first investor, it\'s already done.');
+        log(ns, 'INFO: Skipped first investor, it\'s already done.');
     }
     // Upgrade offices to 9. (2Ops,2Eng,1Bus,2Mng,2R&D)
     for (let city of CITIES) {
         await increaseOfficeTo(ns, Divisions[0], city, [2, 2, 1, 2, 2, 0]);
-        ns.print(`Upgraded the ${city} office to [2, 2, 1, 2, 2, 0]`);
+        log(ns, `SUCCESS: Upgraded the ${city} office to [2, 2, 1, 2, 2, 0]`);
     }
     // Upgrade Smart Factories and Smart Storage to 10.
     await buyUpgradeLevel(ns, "Smart Factories", 10);
@@ -489,17 +479,17 @@ async function timeToGrow(ns, waitForEmployees) {
         // Get 5t from an investor.
         await trickInvestors(ns);
         while (CorpAPI.getInvestmentOffer().funds < 5e12) {
-            ns.print(`Waiting for the second investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/5t).`);
+            log(ns, `INFO: Waiting for the second investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/5t).`);
             await ns.sleep(5000);
         }
         CorpAPI.acceptInvestmentOffer();
-        ns.print('Returning employees to normal jobs');
+        log(ns, 'INFO: Returning employees to normal jobs');
         for (let c of CITIES) {
             //set employees back to normal operation
             await increaseOfficeTo(ns, Divisions[0], c, [2, 2, 1, 2, 2, 0]);
         }
     } else {
-        ns.print('INFO: Skipped second investor, it\'s already done.');
+        log(ns, 'INFO: Skipped second investor, it\'s already done.');
     }
     //Upgrade Storage to 3800 in all cities.
     //Buy mats: HW + 6500 = 9300, Robots + 630 = 726, AI + 3750 = 6270, RE + 84k = 230.4k.
@@ -512,7 +502,7 @@ async function timeToGrow(ns, waitForEmployees) {
 }
 
 /** Phase 3 of corporation management: Products.
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  */
 async function firstProduct(ns) {
     const CorpAPI = eval("ns.corporation");
@@ -541,7 +531,7 @@ async function firstProduct(ns) {
         'Nuoptimal Nootropic Injector Implants'
     ];
     while (CorpAPI.getProduct(Divisions[1], PRODUCT_NAMES[latestProductIndex]).developmentProgress < 100) {
-        ns.print("INFO: Waiting for product completion.");
+        log(ns, "INFO: Waiting for product completion.");
         // Wilson Analytics (~Lv14)
         if (CorpAPI.getUpgradeLevel("Wilson Analytics") < 14) {
             buyUpgradeLevel(ns, "Wilson Analytics", 14, true);
@@ -568,12 +558,12 @@ async function firstProduct(ns) {
 }
 
 /** Trick the investors to offer us more money at once
- * @param {NS} ns
+ * @param {import("../.").NS} ns
  */
 async function trickInvestors(ns) {
     const CorpAPI = eval('ns.corporation');
 
-	ns.print('Stopping sales and moving employees into operations');
+	log(ns, 'INFO: Stopping sales and moving employees into operations');
 	
     if (CorpAPI.getCorporation().divisions[1] == null) {
         //AgriWorks
@@ -588,7 +578,7 @@ async function trickInvestors(ns) {
                 await increaseOfficeTo(ns, Divisions[0], c, [9, 0, 0, 0, 0, 0]);
             }
         }
-        ns.print("Waiting for warehouses to be full");
+        log(ns, "INFO: Waiting for warehouses to be full");
 
         let allWarehousesFull = false;
         while (!allWarehousesFull) {
@@ -605,7 +595,7 @@ async function trickInvestors(ns) {
         var initialInvestFunds = CorpAPI.getInvestmentOffer().funds;
         for (let c of CITIES) {
             //moving employees into business and starting selling
-            ns.print("Warehouses are full, moving employees into business");
+            log(ns, "INFO: Warehouses are full, moving employees into business");
 
             if (CorpAPI.getInvestmentOffer().round == 1) {
                 await increaseOfficeTo(ns, Divisions[0], c, [0, 1, 2, 0, 0, 0]);
@@ -616,7 +606,7 @@ async function trickInvestors(ns) {
         }
         for (let c of CITIES) {
             //moving employees into business and starting selling
-            ns.print("Employees have been moved, starting to sell");
+            log(ns, "INFO: Employees have been moved, starting to sell");
 
             CorpAPI.sellMaterial(Divisions[0], c, 'Food', 'MAX', 'MP');
             CorpAPI.sellMaterial(Divisions[0], c, 'Plants', 'MAX', 'MP');
@@ -634,7 +624,7 @@ async function trickInvestors(ns) {
                 await increaseOfficeTo(ns, Divisions[1], c, [9, 0, 0, 0, 0, 0]);
             }
         }
-        ns.print("Waiting for warehouses to be full");
+        log(ns, "INFO: Waiting for warehouses to be full");
 
         let allWarehousesFull = false;
         while (!allWarehousesFull) {
@@ -652,19 +642,22 @@ async function trickInvestors(ns) {
         for (let p of products) {
             for (let c of CITIES) {
                 //move employees into business and start to sell
-                ns.print("Warehouses are full, moving employees into business");
+                log(ns, "INFO: Warehouses are full, moving employees into business");
 
                 await increaseOfficeTo(ns, Divisions[1], c, [0, 2, 7, 0, 0, 0]);
             }
             for (let c of CITIES) {
-                ns.print("Employees have been moved, starting to sell");
+                log(ns, "INFO: Employees have been moved, starting to sell");
                 CorpAPI.sellProduct(Divisions[1], c, p, '0', 'MP');
                 CorpAPI.sellProduct(Divisions[1], c, p, '0', 'MP');
             }
         }
     }
 }
-
+/** Check research for the specified division and try to research them
+ * @param {import("../.").NS} ns
+ * @param {String} division Name of the division
+ */
 function checkDivisionResearch(ns, division) {
     const CorpAPI = eval('ns.corporation');
     const RESEARCH = ["Hi-Tech R&D Laboratory", "Market-TA.I", "Market-TA.II", "uPgrade: Fulcrum", "uPgrade: Capacity.I", "uPgrade: Capacity.II"];
@@ -690,7 +683,7 @@ function checkDivisionResearch(ns, division) {
     for (let i = 0; i < NEED_RESEARCH.length; ++i) {
         if (CorpAPI.getDivision(division).research > RESEARCH_COST[i]) {
             CorpAPI.research(division, RESEARCH[i]);
-            ns.print('SUCCESS: Researched ' + RESEARCH[i]);
+            log(ns, 'SUCCESS: Researched ' + RESEARCH[i]);
         }
     }
 }
@@ -702,41 +695,46 @@ export async function main(ns) {
     ns.disableLog('ALL');
     ns.clearLog();
     const corpName = "Corp";
+    const stage = ns.read('/data/corp-stage.txt')
     const waitForMorale = ns.args[1] != undefined ? ns.args[1] : true;
+
+    if (stage == '') {
+        stage = 0;
+        await ns.write('/data/corp-stage.txt', '0', 'w')
+    }
     
-    switch (ns.args[0]) {
+    switch (stage) {
         case undefined:
         case 0:
         case 1:
-            ns.print(`--- STARTING STAGE 1: INITIAL SETUP ---`);
-            ns.tprint(`--- STARTING STAGE 1: INITIAL SETUP ---`);
+            log(ns, `--- STARTING STAGE 1: INITIAL SETUP ---`);
+            await ns.write('/data/corp-stage.txt', '1', 'w');
             await initialSetup(ns, corpName);
         case 2:
-            ns.print(`--- STARTING STAGE 2: TIME TO GROW ---`);
-            ns.tprint(`--- STARTING STAGE 2: TIME TO GROW ---`);
+            log(ns, `--- STARTING STAGE 2: TIME TO GROW ---`);
+            await ns.write('/data/corp-stage.txt', '2', 'w');
             if (Divisions.length < 1) {
                 Divisions.push("AgriWorks");
             }
             await timeToGrow(ns, waitForMorale);
         case 3:
-            ns.print(`--- STARTING STAGE 3: FIRST PRODUCT ---`);
-            ns.tprint(`--- STARTING STAGE 3: FIRST PRODUCT ---`);
+            log(ns, `--- STARTING STAGE 3: FIRST PRODUCT ---`);
+            await ns.write('/data/corp-stage.txt', '3', 'w');
             if (Divisions.length < 1) {
                 Divisions.push("AgriWorks");
             }
             await firstProduct(ns);
-            ns.print(`--- SETUP COMPLETE. ---`);
-            ns.tprint(`--- SETUP COMPLETE. ---`);
+            log(ns, `--- SETUP COMPLETE. ---`);
+            await ns.write('/data/corp-stage.txt', '4', 'w')
             break;
         default:
-            ns.print(`--- SKIPPING ALL SETUP STAGES ---`);
+            log(ns, `--- SKIPPING ALL SETUP STAGES ---`);
             // We should assume we've got an Agriculture and Tobacco division.
             Divisions.push("AgriWorks");
             Divisions.push("TobaWorks");
             cycleToNextAvailProduct(ns, Divisions[1]);
-            ns.print(`Starting with product name ${PRODUCT_NAMES[latestProductIndex]}`);
+            log(ns, `INFO: Starting with product name ${PRODUCT_NAMES[latestProductIndex]}`);
             break;
-        // End switch.
     }
 
     // Start main loop.
@@ -746,22 +744,22 @@ export async function main(ns) {
 
         //check current investor or go public
         if (CorpAPI.getInvestmentOffer().round == 3) {
-            ns.print(`--- INVESTOR 3. ---`);
+            log(ns, `--- INVESTOR 3. ---`);
             let offer = CorpAPI.getInvestmentOffer().funds;
             if (offer < 8e14) {
-                ns.print(`INFO: Offer too low (${ns.nFormat(offer, "0.00a")}/800t).`);
+                log(ns, `INFO: Offer too low (${ns.nFormat(offer, "0.00a")}/800t).`);
             } else {
                 CorpAPI.acceptInvestmentOffer();
-                ns.print("SUCCESS: Accepted investor 3's offer of " + ns.nFormat(offer, "0.00a"));
+                log(ns, "SUCCESS: Accepted investor 3's offer of " + ns.nFormat(offer, "0.00a"));
             }
         } else if (CorpAPI.getInvestmentOffer().round == 4) {
-            ns.print(`--- INVESTOR 4. ---`);
+            log(ns, `--- INVESTOR 4. ---`);
             let offer = CorpAPI.getInvestmentOffer().funds;
             if (offer < 1e18) {
-                ns.print(`INFO: Offer too low (${ns.nFormat(offer, "0.00a")}/1Q).`);
+                log(ns, `INFO: Offer too low (${ns.nFormat(offer, "0.00a")}/1Q).`);
             } else {
                 CorpAPI.acceptInvestmentOffer();
-                ns.print("SUCCESS: Accepted investor 4's offer of " + ns.nFormat(offer, "0.00a"));
+                log(ns, "SUCCESS: Accepted investor 4's offer of " + ns.nFormat(offer, "0.00a"));
             }
         } else if (CorpAPI.getInvestmentOffer().round == 4) {
             CorpAPI.goPublic(50000000);
@@ -769,7 +767,7 @@ export async function main(ns) {
         }
 
         // Determine proper investment.
-        ns.print(`--- MAKING PRODUCTS. ---`);
+        log(ns, `--- MAKING PRODUCTS. ---`);
         let exp = Math.floor(Math.log10(CorpAPI.getCorporation().funds));
         if (CorpAPI.getCorporation().funds / 10 ** exp < 2) {
             exp--;
@@ -804,16 +802,16 @@ export async function main(ns) {
                 numEmp = Math.min(numEmp, maxSize);
                 if (!hasPrintedHeader) {
                     hasPrintedHeader = true;
-                    ns.print(`--- UPGRADING OFFICES. ---`);
+                    log(ns, `--- UPGRADING OFFICES. ---`);
                 }
-                ns.print(`Upgrading ${city} from ${startSize} to ${numEmp} (max: ${maxSize})`);
+                log(ns, `INFO: Upgrading ${city} from ${startSize} to ${numEmp} (max: ${maxSize})`);
                 numPerPos = numEmp / 5;
                 await increaseOfficeTo(ns, Divisions[1], city, [numPerPos, numPerPos, numPerPos, numPerPos, numPerPos, 0]);
             }
         }
 
         // Buy upgrades.
-        ns.print(`--- BUYING UPGRADES. ---`);
+        log(ns, `--- BUYING UPGRADES. ---`);
         for (let upg in LEVEL_UPGRADES) {
             if (upg == "Wilson Analytics") {
                 // Special case, this one we stop when we're max awareness/popularity.
@@ -839,7 +837,7 @@ export async function main(ns) {
             CorpAPI.getDivision(Divisions[1]).awareness < Number.MAX_VALUE ||
             CorpAPI.getDivision(Divisions[1]).popularity < Number.MAX_VALUE
         ) {
-            ns.print(`--- BUYING ADVERTS. ---`);
+            log(ns, `--- BUYING ADVERTS. ---`);
 
             let adverts = 0;
             while (CorpAPI.getHireAdVertCost(Divisions[1]) < CorpAPI.getCorporation().funds) {
@@ -848,9 +846,9 @@ export async function main(ns) {
             }
 
             if (adverts == 0) {
-                ns.print(`INFO: Couldn't afford adverts.`);
+                log(ns, `INFO: Couldn't afford adverts.`);
             } else {
-                ns.print(`SUCCESS: bought ${adverts} adverts.`);
+                log(ns, `SUCCESS: bought ${adverts} adverts.`);
             }
         }
 
@@ -859,7 +857,7 @@ export async function main(ns) {
         let h = delayEnd.getHours();
         let m = delayEnd.getMinutes() < 10 ? "0" + delayEnd.getMinutes() : delayEnd.getMinutes();
         let s = delayEnd.getSeconds() < 10 ? "0" + delayEnd.getSeconds() : delayEnd.getSeconds();
-        ns.print(`--- WAITING UNTIL ${h}:${m}:${s}. ---`);
+        log(ns, `--- WAITING UNTIL ${h}:${m}:${s}. ---`);
         await ns.sleep(10000);
     }
 }
