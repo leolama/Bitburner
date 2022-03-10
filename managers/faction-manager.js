@@ -92,7 +92,7 @@ export async function main(ns) {
 					}
 					await nukeServer(ns, factionServerNames[count]); //make sure we have root access on the target
 					await checkTerminal(); //check that we're on the terminal
-					terminalInput(factionPaths[count]);
+					await terminalInput(factionPaths[count]);
 					await ns.sleep(100);
 					log(ns, "INFO: Installing backdoor on " + factionServerNames[count] + "...");
 					await checkTerminal();
@@ -100,12 +100,12 @@ export async function main(ns) {
 					if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
 						log(ns, "SUCCESS: Successfully backdoored " + factionServerNames[count]);
 						log(ns, "INFO: Returning home");
-						terminalInput("home");
+						await terminalInput("home");
 						++count;
 					} else {
 						log(ns, "ERROR: Failed backdoor");
 						log(ns, "INFO: Returning home and retrying")
-						terminalInput("home");
+						await terminalInput("home");
 					}
 				} else {
 					log(ns, "WARN: Trying to backdoor " + factionServerNames[count] + ". Need hacking level " + factionHackLvl[count] + ", have " + hackingLvl + ". Need " + factionTools[count] + " tools, have " + numTools);
