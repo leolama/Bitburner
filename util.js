@@ -89,7 +89,7 @@ export function getServerPath(ns, target) {
  * Put a command into the terminal and send it
  * @param {String} output The command to input
  */
-export function terminalInput(output) {
+export async function terminalInput(output) {
 	const doc = eval("document")
 	const terminalInput = doc.getElementById("terminal-input");
 	terminalInput.value = output;
@@ -98,7 +98,30 @@ export function terminalInput(output) {
 	terminalInput[handler].onKeyDown({ keyCode: 13, preventDefault: () => null });
 }
 
-//rest of this from https://github.com/alainbryden/bitburner-scripts
+/** 
+ * Buy a personal server
+ * @param {import("../.").NS} ns NetScript
+ * @param {Number} ram RAM of the server
+**/
+export async function buyServer(ns, ram) {
+	var multipleOf = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576];
+	var hName = "personal-server-" + ram;
+
+	for (let multiple of multipleOf) {
+		if (ram === multiple) {
+			//if ram equals a multiple of 2
+			if (ns.purchaseServer(hName, ram)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+}
+
+/**
+ * rest of this from https://github.com/alainbryden/bitburner-scripts
+**/
 
 /**
  * Return a formatted representation of the monetary amount using scale sympols (e.g. $6.50M)
