@@ -1,4 +1,7 @@
-/** @param {import(".").NS} ns */
+/** 
+ * Get how many hack tools we have and return the value
+ * @param {import(".").NS} ns NetScript 
+**/ 
 export function hackTools(ns) {
 	var programs = ["brutessh.exe", "ftpcrack.exe", "relaysmtp.exe", "httpworm.exe", "sqlinject.exe"];
 	var numTools = 0;
@@ -11,6 +14,11 @@ export function hackTools(ns) {
 	return numTools;
 }
 
+/** 
+ * Use all available hacking tools on a server and nuke it
+ * @param {import(".").NS} ns NetScript
+ * @param {String} server The server to nuke
+**/ 
 export function nukeServer(ns, server) {
 	if (ns.fileExists("brutessh.exe")) {
 		ns.brutessh(server);
@@ -31,6 +39,11 @@ export function nukeServer(ns, server) {
 	ns.print("Got root on " + server);
 }
 
+/** 
+ * Find a file on the current server
+ * @param {import(".").NS} ns NetScript
+ * @param {String} file The name of the file to look for, not including any folders
+**/
 export function findFile(ns, file) {
 	var file = ns.args[0];
 	var folders = ["","/bin/","/managers/","/src/","/src/achievements/"]
@@ -43,6 +56,11 @@ export function findFile(ns, file) {
 	return false;
 }
 
+/** 
+ * Get the path to a server from home
+ * @param {import(".").NS} ns NetScript
+ * @param {String} target The target server to look for
+**/
 export function getServerPath(ns, target) {
 	let paths = { home: "" };
 	let queue = Object.keys(paths);
@@ -67,6 +85,10 @@ export function getServerPath(ns, target) {
 	return output;	
 }
 
+/**
+ * Put a command into the terminal and send it
+ * @param {String} output The command to input
+ */
 export function terminalInput(output) {
 	const doc = eval("document")
 	const terminalInput = doc.getElementById("terminal-input");
@@ -225,7 +247,7 @@ export function getFnIsAliveViaNsPs(ns) {
  * Has the capacity to retry if there is a failure (e.g. due to lack of RAM available). Not recommended for performance-critical code.
  * @param {NS} ns - The nestcript instance passed to your script's main entry point
  * @param {string} command - The ns command that should be invoked to get the desired data (e.g. "ns.getServer('home')" )
- * @param {string=} fName - (default "/Temp/{commandhash}-data.txt") The name of the file to which data will be written to disk by a temporary process
+ * @param {string=} fName - (default "/data/{commandhash}-data.txt") The name of the file to which data will be written to disk by a temporary process
  * @param {bool=} verbose - (default false) If set to true, pid and result of command are logged.
  **/
 export async function getNsDataThroughFile(ns, command, fName, verbose = false, maxRetries = 5, retryDelayMs = 50) {
@@ -381,7 +403,12 @@ export async function autoRetry(
 }
 
 /** Helper to log a message, and optionally also tprint it and toast it
- * @param {NS} ns - The nestcript instance passed to your script's main entry point */
+ * @param {NS} ns - The nestcript instance passed to your script's main entry point 
+ * @param {String} message
+ * @param {Boolean} alsoPrintToTerminal (defaults to false)
+ * @param {String} toastStyle
+ * @param {Number} maxToastLength
+**/
 export function log(ns, message = "", alsoPrintToTerminal = false, toastStyle = "", maxToastLength = 100) {
 	checkNsInstance(ns, '"log"');
 	ns.print(message);
