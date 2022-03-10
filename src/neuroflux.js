@@ -26,9 +26,10 @@ export async function main(ns) {
 			playerFactionRep = ns.getFactionRep(faction);
 		}
 	} else {
-		log(ns, "WARN: Not enough money and/or reputation");
+		log(ns, "ERROR: Not enough money and/or reputation", true);
+		return;
 	}
-	log(ns, "SUCCESS: Bought " + count + " level(s) of NeuroFlux");
+	log(ns, "SUCCESS: Bought " + count + " level(s) of NeuroFlux", true);
 }
 
 export function autocomplete(data, args) {
