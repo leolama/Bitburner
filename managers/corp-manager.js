@@ -283,7 +283,7 @@ function createProduct(ns, division, investment) {
 	const CorpAPI = eval("ns.corporation");
 
 	// Step 1: Find any in-progress product.
-	for (let i = 0; i < 3; i++) {
+	for (let i = 0; i < PRODUCT_NAMES.length; i++) {
 		if (CorpAPI.getDivision(division).products.includes(PRODUCT_NAMES[i]) && CorpAPI.getProduct(division, PRODUCT_NAMES[i]).developmentProgress < 100) {
 			latestProductIndex = i;
 			return log(ns, `INFO: ${division} is already working on ${PRODUCT_NAMES[i]}`);
@@ -291,7 +291,7 @@ function createProduct(ns, division, investment) {
 	}
 
 	// Step 2: Find the first non-existant product.
-	for (let i = 0; i < 3; i++) {
+	for (let i = 0; i < PRODUCT_NAMES.length; i++) {
 		if (!CorpAPI.getDivision(division).products.includes(PRODUCT_NAMES[i])) {
 			latestProductIndex = i;
 			CorpAPI.makeProduct(division, "Aevum", PRODUCT_NAMES[i], investment, investment);
@@ -302,7 +302,7 @@ function createProduct(ns, division, investment) {
 			return log(ns, `SUCCESS: ${division} is creating ${PRODUCT_NAMES[i]} with a $${formatNumber(investment * 2)} budget.`);
 		}
 	}
-	if (latestProductIndex == 2) {
+	if (latestProductIndex == PRODUCT_NAMES.length - 1) {
 		latestProductIndex = 0;
 	} else {
 		latestProductIndex++;
@@ -646,21 +646,43 @@ async function trickInvestors(ns) {
  */
 function checkDivisionResearch(ns, division) {
 	const CorpAPI = eval("ns.corporation");
-	const RESEARCH = ["Hi-Tech R&D Laboratory", "Market-TA.I", "Market-TA.II", "uPgrade: Fulcrum", "uPgrade: Capacity.I", "uPgrade: Capacity.II"];
+	const RESEARCH = ["uPgrade: Fulcrum", "uPgrade: Capacity.I", "uPgrade: Capacity.II"]; 
 	var NEED_RESEARCH = [];
 	var RESEARCH_COST = [];
+
+	if (!CorpAPI.hasResearched(division, "Market-TA.II")) {
+		if (CorpAPI.getDivision(division).research > 150000) {
+			CorpAPI.research(division, "Hi-Tech R&D Laboratory");
+			log(ns, 'SUCCESS: Researched Hi-Tech R&D Laboratory');
+			CorpAPI.research(division, "Market-TA.I");
+			log(ns, 'SUCCESS: Researched Market-TA.I');
+			CorpAPI.research(division, "Market-TA.II");
+			log(ns, 'SUCCESS: Researched Market-TA.II');
+		} else {
+			log(ns, 'INFO: Waiting for 150k research');
+			return;
+		}
+	}
+
+	// Check how many products we can have
+	if (CorpAPI.hasResearched(division, 'uPgrade: Capacity.I') && PRODUCT_NAMES.length < 4) {
+		PRODUCT_NAMES.push('Tobacco 4');
+	}
+	if (CorpAPI.hasResearched(division, 'uPgrade: Capacity.II') && PRODUCT_NAMES.length < 5) {
+		PRODUCT_NAMES.push('Tobacco 5');
+	}
 
 	for (let i = 0; i < RESEARCH.length; ++i) {
 		if (!CorpAPI.hasResearched(division, RESEARCH[i])) {
 			NEED_RESEARCH.push(RESEARCH[i]);
 		}
 	}
-	//if we have all research, skip the checks
-	if (RESEARCH_COST.length == 0) {
-		return;
-	}
 
-	if (RESEARCH_COST.length < NEED_RESEARCH.length) {
+	//if we have all research, skip the rest
+	if (NEED_RESEARCH.length == 0) {
+		log(ns, 'INFO: Have all research');
+		return;
+	} else {
 		for (let i = 0; i < NEED_RESEARCH.length; ++i) {
 			RESEARCH_COST.push(CorpAPI.getResearchCost(division, NEED_RESEARCH[i]) * 2); //double the price to leave some research left
 		}
@@ -668,8 +690,8 @@ function checkDivisionResearch(ns, division) {
 
 	for (let i = 0; i < NEED_RESEARCH.length; ++i) {
 		if (CorpAPI.getDivision(division).research > RESEARCH_COST[i]) {
-			CorpAPI.research(division, RESEARCH[i]);
-			log(ns, "SUCCESS: Researched " + RESEARCH[i]);
+			CorpAPI.research(division, NEED_RESEARCH[i]);
+			log(ns, "SUCCESS: Researched " + NEED_RESEARCH[i]);
 		}
 	}
 }
@@ -719,9 +741,6 @@ export async function main(ns) {
 
 	// Start main loop.
 	while (true) {
-		//check if we can afford any research without losing too much profit
-		checkDivisionResearch(ns, Divisions[1]);
-
 		//check current investor or go public
 		if (CorpAPI.getInvestmentOffer().round == 3) {
 			log(ns, `--- INVESTOR 3. ---`);
@@ -780,7 +799,7 @@ export async function main(ns) {
 				numEmp = Math.min(numEmp, maxSize);
 				if (!hasPrintedHeader) {
 					hasPrintedHeader = true;
-					log(ns, `--- UPGRADING OFFICES. ---`);
+					log(ns, `--- UPGRADING OFFICES ---`);
 				}
 				log(ns, `INFO: Upgrading ${city} from ${startSize} to ${numEmp} (max: ${maxSize})`);
 				numPerPos = numEmp / 5;
@@ -789,7 +808,7 @@ export async function main(ns) {
 		}
 
 		// Buy upgrades.
-		log(ns, `--- BUYING UPGRADES. ---`);
+		log(ns, `--- BUYING UPGRADES ---`);
 		for (let upg in LEVEL_UPGRADES) {
 			if (upg == "Wilson Analytics") {
 				// Special case, this one we stop when we're max awareness/popularity.
@@ -811,7 +830,7 @@ export async function main(ns) {
 
 		//Buy AdVerts
 		if (CorpAPI.getDivision(Divisions[1]).awareness < Number.MAX_VALUE || CorpAPI.getDivision(Divisions[1]).popularity < Number.MAX_VALUE) {
-			log(ns, `--- BUYING ADVERTS. ---`);
+			log(ns, `--- BUYING ADVERTS ---`);
 
 			let adverts = 0;
 			while (CorpAPI.getHireAdVertCost(Divisions[1]) < CorpAPI.getCorporation().funds) {
@@ -825,6 +844,11 @@ export async function main(ns) {
 				log(ns, `SUCCESS: bought ${adverts} adverts.`);
 			}
 		}
+
+		//Research research
+		log(ns, '--- RESEARCHING RESEARCH ---');
+		checkDivisionResearch(ns, Divisions[1]);
+
 
 		// Wait for next cycle.
 		let delayEnd = new Date(Date.now() + 10000);
