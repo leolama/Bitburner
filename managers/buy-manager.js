@@ -1,4 +1,4 @@
-import { log } from 'util.js'
+import { buyServer, log } from 'util.js'
 
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
@@ -10,16 +10,12 @@ export async function main(ns) {
 	var availMoney = ns.getPlayer().money;
 	var maxServers = ns.getPurchasedServerLimit();
 	var currentServers = ns.getPurchasedServers();
-	var serverCost = [];
 	var cantAfford = false;
 	var buyPrompt;
-	var serverRam = [];
+	var serverRam = [128,1024,16384,1048576]
+	var serverCost = [];
+	var serverRamIndex = ns.read('/data/purchased-servers.txt');
 
-	let ramData = ns.read("/data/purchased-servers.txt").split(","); //read data file and split it into an array
-	
-	for (let split in ramData) {
-		serverRam.push(ramData[split]); //push the array into a var
-	}
 	for (let ram of serverRam) {
 		serverCost.push(ns.getPurchasedServerCost(ram)); //push server costs corrosponding to the ram into an array
 	}
@@ -61,45 +57,39 @@ export async function main(ns) {
 	*/
 	log(ns, "INFO: Started server autobuy");
 	while (currentServers.length < maxServers) {
-		if (serverRam[0] == 1048576) {
-			//highest ram server
-			if (buyPrompt == false) {
-				return;
-			}
-			await ns.write("/data/purchased-servers.txt", serverRam, "w");
-			while (currentServers.length < maxServers) {
-				if (availMoney > serverCost[0]) {
-					ns.run("src/buyserver.js", 1, serverRam[0]);
-					log(ns, "SUCCESS: Bought a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
-					if (buyPrompt == null) {
-						buyPrompt = await ns.prompt("Keep buying servers?");
-					}
-				} else {
-					log(ns, "INFO: Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
-					cantAfford = true;
-					while (cantAfford == true) {
-						if (availMoney > serverCost[0]) cantAfford = false;
-						await ns.sleep(5000);
-					}
-				}
-				availMoney = ns.getPlayer().money;
-				maxServers = ns.getPurchasedServerLimit();
-				currentServers = ns.getPurchasedServers();
-			}
+		if (serverCost[serverRamIndex] == 'Infinity' || serverCost[serverRamIndex] == null) {
+			log(ns, 'WARN: Next server RAM not available, retrying previous amount');
+			serverRam.splice(serverRamIndex, 1)
+			serverCost.splice(serverRamIndex, 1)
+			--serverRamIndex;
 		}
-
-		if (availMoney > serverCost[0]) {
+		if (availMoney > serverCost[serverRamIndex]) {
 			//if we have more money than the server cost, buy it and update data file
-			ns.run("src/buy-server.js", 1, serverRam[0]);
-			log(ns, "SUCCESS: Bought a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
-			serverRam.splice(0, 1);
-			serverCost.splice(0, 1);
-			await ns.write("/data/purchased-servers.txt", serverRam, "w");
+			if (await buyServer(ns, serverRam[serverRamIndex])) {
+				await ns.write("/data/purchased-servers.txt", serverRamIndex, "w");
+				log(ns, 'SUCCESS: Bought a ' + serverRam[serverRamIndex] + 'GB server');
+				if (serverRamIndex < serverRam.length - 1) {
+					++serverRamIndex;
+				} else {
+					if (buyPrompt == null) {
+						if (await ns.prompt('Keep buying servers?')) {
+							log(ns, 'Buying servers to limit');
+							buyPrompt = true;
+						} else {
+							log(ns, 'Stopped by player');
+							return;
+						}
+					}
+					
+				}
+			} else {
+				log(ns, 'ERROR: Failed to buy a ' + serverRam[serverRamIndex] + 'GB server, retrying');
+			}
 		} else {
-			log(ns, "INFO: Need " + ns.nFormat(serverCost[0], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[0], "0,0") + "GB server");
+			log(ns, "INFO: Need " + ns.nFormat(serverCost[serverRamIndex], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[serverRamIndex], "0,0") + "GB server");
 			cantAfford = true;
 			while (cantAfford == true) {
-				if (availMoney < serverCost[0]) cantAfford = false;
+				if (availMoney < serverCost[serverRamIndex]) cantAfford = false;
 				await ns.sleep(5000);
 			}
 		}
