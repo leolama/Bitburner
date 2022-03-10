@@ -5,13 +5,20 @@ export async function main(ns) {
     ns.print('Script started');
     ns.disableLog('disableLog');
     ns.disableLog('sleep');
+    ns.disableLog('run');
 
     const tempFile = '/data/sleeve-task.txt';
-    const crimeAugs = ['BitWire', 'PCMatrix', 'INFRARET Enhancement', 'Graphene BrachiBlades Upgrade', 'BrachiBlades']; //setting up for auto augs
     var sleeveNum = ns.sleeve.getNumSleeves();
     var currentTasks = [];
 
     while (true) {
+        //since we use sleeves for karma farming, we use this to run the gang manager when needed
+        if (ns.heart.break() < -54000) {
+            if (ns.run('/managers/gang-manager.js') > 0) {
+                log(ns, 'INFO: Starting gang-manager.js');
+            }
+        }
+
         for (let i = 0; i < sleeveNum; ++i) {
             //getting sleeve stats
             let getSleeveStats = ns.sleeve.getSleeveStats(i);
@@ -76,7 +83,7 @@ export async function main(ns) {
                 log(ns, 'SUCCESS: Sleeve ' + i + ': ' + task);
                 currentTasks[i] = task;
             } else {
-                //assuming we're working for a faction and that security work doesn't exist for them
+                //workaround for faction work types
                 command = `ns.sleeve.setToFactionWork(${i}, ns.getPlayer().currentWorkFactionName, "Field Work")`;
                 task = 'field work for faction';
                 if (await getNsDataThroughFile(ns, command, tempFile)) {
@@ -89,7 +96,7 @@ export async function main(ns) {
                         log(ns, 'SUCCESS: Sleeve ' + i + ': ' + task);
                         currentTasks[i] = task;
                     } else {
-                        log(ns, 'ERROR: Failed to set take for sleeve ' + i);
+                        log(ns, 'ERROR: Failed to set task for sleeve ' + i);
                     }
                 }
             }
