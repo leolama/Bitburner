@@ -3,15 +3,20 @@ import { log } from 'util.js'
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
-	var server = ns.args[0];
 
-	//kill any running scripts on the server
-	ns.killall(server);
+	//kill any running scripts on the server(s)
+	for (let server of ns.args) {
+		try {
+			ns.killall(server);
 
-	//try to delete the server
-	if (ns.deleteServer(server)) {
-		log(ns, "SUCCESS: Deleted " + server, true);
-	} else {
-		log(ns, "ERROR: Failed to delete " + server + ". The server might not exist", true);
+		} catch {
+			log(ns, 'ERROR: Failed to find a server called ' + server, true);
+			return;
+		}
+
+		//try to delete the server(s)
+		if (ns.deleteServer(server)) {
+			log(ns, "SUCCESS: Deleted " + server, true);
+		}
 	}
 }
