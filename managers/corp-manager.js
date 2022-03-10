@@ -28,8 +28,9 @@ let latestProductIndex = -1;
 
 const Divisions = Array();
 
-/** Try and buy an Unlock for the corp.
- * @param {import("../.").NS} ns
+/** 
+ * Try and buy an Unlock for the corp.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} upgradeName name of the upgrade to unlock
  * @param {Boolean?} tryOnce if true, won't loop (also won't need awaiting).
  **/
@@ -55,8 +56,9 @@ async function getUnlockUpgrade(ns, upgradeName, tryOnce = false) {
     return log(ns, `SUCCESS: Unlocked ${upgradeName}.`);
 }
 
-/** Try and buy a levelled upgrade for the corp.
- * @param {import("../.").NS} ns
+/** 
+ * Try and buy a levelled upgrade for the corp.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} upgradeName name of the upgrade to unlock
  * @param {Number?} maximum level to upgrade to. (Default: 1)
  * @param {Boolean?} buyNow if true, won't wait for more money to upgrade. (also won't need awaiting).
@@ -81,8 +83,9 @@ async function buyUpgradeLevel(ns, upgradeName, maxLevel = 1, buyNow = false) {
     }
 }
 
-/** Form a division in a new industry.
- * @param {import("../.").NS} ns
+/** 
+ * Form a division in a new industry.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} industry The industry this division's working.
  */
 async function formDivision(ns, industry) {
@@ -106,8 +109,9 @@ async function formDivision(ns, industry) {
 
 }
 
-/** Expand a division to a new city.
- * @param {import("../.").NS} ns
+/** 
+ * Expand a division to a new city.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} division The division we're expanding.
  * @param {String} city The city we're expanding to.
  */
@@ -124,8 +128,9 @@ async function tryExpandDivision(ns, division, city) {
     return log(ns, `SUCCESS: ${division} expanded into ${city}.`);
 }
 
-/** Upgrade, or buy a warehouse, to a specific size.
- * @param {import("../.").NS} ns
+/** 
+ * Upgrade, or buy a warehouse, to a specific size.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} division The division we're expanding.
  * @param {String} city The city we're expanding in.
  * @param {Number} size the new maximum size we want.
@@ -152,8 +157,9 @@ async function upgradeWarehouseTo(ns, division, city, size) {
     log(ns, `SUCCESS: ${division} upgraded the warehouse in ${city} to size ${CorpAPI.getWarehouse(division, city).size}`);
 }
 
-/** Buy a list of materials to a certain amount within a warehouse.
- * @param {import("../.").NS} ns
+/** 
+ * Buy a list of materials to a certain amount within a warehouse.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} division
  * @param {String} city
  * @param {String[]} material
@@ -197,8 +203,9 @@ async function buyMaterialsToLimit(ns, division, city, material, limit) {
     return log(ns, `SUCCESS: ${division}@${city} bought: ${shopping.join(', ')}`);
 }
 
-/** Increase the size of the office until we've filled all of these positions.
- * @param {import("../.").NS} ns
+/** 
+ * Increase the size of the office until we've filled all of these positions.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} division
  * @param {String} city
  * @param {Number[]} positions the amount of employees in each position, in the order of JOBS
@@ -286,8 +293,9 @@ async function increaseOfficeTo(ns, division, city, positions) {
     }
 }
 
-/** Create a product.
- * @param {import("../.").NS} ns
+/** 
+ * Create a product.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} division The division that's creating the product
  * @param {Number} investment The amount of money to invest (NOTE: will spend 2x investment)!
  */
@@ -333,8 +341,9 @@ function createProduct(ns, division, investment) {
     return log(ns, `SUCCESS: ${division} is re-creating ${PRODUCT_NAMES[latestProductIndex]} with a $${formatNumber(investment * 2)} budget.`);
 }
 
-/** Cycle the latestProductIndex to whichever value is to be created next.
- * @param {import("../.").NS} ns
+/** 
+ * Cycle the latestProductIndex to whichever value is to be created next.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} division
  */
 function cycleToNextAvailProduct(ns, division) {
@@ -351,8 +360,9 @@ function cycleToNextAvailProduct(ns, division) {
     latestProductIndex = 0;
 }
 
-/** Start and build stage 1 of a corporation.
- * @param {import("../.").NS} ns
+/** 
+ * Start and build stage 1 of a corporation.
+ * @param {import("../.").NS} ns NetScript
  * @param {String} corpName
  */
 async function initialSetup(ns, corpName) {
@@ -395,8 +405,9 @@ async function initialSetup(ns, corpName) {
     }
 }
 
-/** Phase 2 of corporation management: Investors and maximum material profit.
- * @param {import("../.").NS} ns
+/** 
+ * Phase 2 of corporation management: Investors and maximum material profit.
+ * @param {import("../.").NS} ns NetScript
  * @param {Boolean} waitForEmployees Whether to wait on the 100/99.998/99.998 employee stats. (Default: true)
  */
 async function timeToGrow(ns, waitForEmployees) {
@@ -501,8 +512,9 @@ async function timeToGrow(ns, waitForEmployees) {
     }
 }
 
-/** Phase 3 of corporation management: Products.
- * @param {import("../.").NS} ns
+/** 
+ * Phase 3 of corporation management: Products.
+ * @param {import("../.").NS} ns NetScript
  */
 async function firstProduct(ns) {
     const CorpAPI = eval("ns.corporation");
@@ -557,8 +569,9 @@ async function firstProduct(ns) {
     CorpAPI.sellProduct(Divisions[1], 'Aevum', PRODUCT_NAMES[latestProductIndex], "MAX", "MP", true);
 }
 
-/** Trick the investors to offer us more money at once
- * @param {import("../.").NS} ns
+/** 
+ * Trick the investors to offer us more money at once
+ * @param {import("../.").NS} ns NetScript
  */
 async function trickInvestors(ns) {
     const CorpAPI = eval('ns.corporation');
@@ -654,8 +667,9 @@ async function trickInvestors(ns) {
         }
     }
 }
-/** Check research for the specified division and try to research them
- * @param {import("../.").NS} ns
+/** 
+ * Check research for the specified division and try to research them
+ * @param {import("../.").NS} ns NetScript
  * @param {String} division Name of the division
  */
 function checkDivisionResearch(ns, division) {
@@ -688,7 +702,7 @@ function checkDivisionResearch(ns, division) {
     }
 }
 
-/** @param {import("../.").NS} ns */
+/** @param {import("../.").NS} ns NetScript */
 export async function main(ns) {
     const CorpAPI = eval("ns.corporation");
 
@@ -697,11 +711,6 @@ export async function main(ns) {
     const corpName = "Corp";
     const stage = ns.read('/data/corp-stage.txt')
     const waitForMorale = ns.args[1] != undefined ? ns.args[1] : true;
-
-    if (stage == '') {
-        stage = 0;
-        await ns.write('/data/corp-stage.txt', '0', 'w')
-    }
     
     switch (stage) {
         case undefined:
