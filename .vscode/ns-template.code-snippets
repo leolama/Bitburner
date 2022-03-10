@@ -12,26 +12,26 @@
 		"}"
 		]
   	},
-	"ns.tprint": {
+	"log": {
 		"scope": "javascript",
-		"prefix": "tprint",
-		"body": ["ns.tprint('')"]
+		"prefix": "log",
+		"body": ["log(ns, '')"]
   	},
-	"while loop": {
+	"while-loop": {
 		"scope": "javascript",
 		"prefix": "while",
 		"body": [
 			"while () {",
-			"",
+			"\t//",
 			"}"
 		]
   	},
-	"for loop": {
+	"for-loop": {
 		"scope": "javascript",
 		"prefix": "for",
 		"body": [
-			"for (let i = 0; i < .length; ++i) {",
-			"",
+			"for (let i = 0; i < #; ++i) {",
+			"\t//",
 			"}"
 		]
   	},
