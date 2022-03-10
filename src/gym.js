@@ -21,7 +21,7 @@ export async function main(ns) {
     } else if (noGymCities.includes(ns.getPlayer().city)) {
         noGymPrompt = await ns.prompt("Your current city hasn't got a gym, travel to Sector-12?")
         if (noGymPrompt == false) {
-            log(ns, "ERROR: No gym available");
+            log(ns, "ERROR: No gym available", true);
             return;
         }
     }

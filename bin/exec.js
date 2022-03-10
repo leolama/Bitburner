@@ -1,15 +1,17 @@
+import { log } from "util.js";
+
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	var args = ns.args.toString().split(",");
 	ns.print("Script started");
-	ns.tprint("--");
+	log(ns, "--", true);
 	for (let arg of args) {
 		if (ns.run(arg) > 0) {
-			ns.tprint("Started " + arg);
+			log(ns, "Started " + arg, true);
 		} else {
-			ns.tprint("Failed to start " + arg);
+			log(ns, "Failed to start " + arg, true);
 		}
 		
 	}
-	ns.tprint("--");
+	log(ns, "--", true);
 }

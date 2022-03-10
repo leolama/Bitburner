@@ -16,9 +16,9 @@ export async function main(ns) {
         let pid = ns.run(fileLocation, threads);
         if (pid != 0) {
             ns.tail(pid)
-            log(ns, "SUCCESS: Restarted " + fileLocation + " with " + threads + " thread(s), PID " + pid)
+            log(ns, "SUCCESS: Restarted " + fileLocation + " with " + threads + " thread(s), PID " + pid, true)
         } else {
-            log(ns, "Failed to restart " + fileLocation);
+            log(ns, "Failed to restart " + fileLocation, true);
         }
     }
 }

@@ -10,8 +10,8 @@ export async function main(ns) {
 
 	//try to delete the server
 	if (ns.deleteServer(server)) {
-		log(ns, "SUCCESS: Deleted " + server);
+		log(ns, "SUCCESS: Deleted " + server, true);
 	} else {
-		log(ns, "ERROR: Failed to delete " + server + ". The server might not exist");
+		log(ns, "ERROR: Failed to delete " + server + ". The server might not exist", true);
 	}
 }
