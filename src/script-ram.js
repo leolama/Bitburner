@@ -7,9 +7,9 @@ export async function main(ns) {
 	var ram = ns.getScriptRam(fileLocation)
 
 	if (fileLocation != false) {
-			log(ns, 'INFO: ' + fileLocation + " needs " + ram + "GB of RAM");
+			log(ns, 'INFO: ' + fileLocation + " needs " + ram + "GB of RAM", true);
 			return;
 	} else {
-		log(ns, "ERROR: Cannot find " + ns.args[0] + " on this system");
+		log(ns, "ERROR: Cannot find " + ns.args[0] + " on this system", true);
 	}
 }
