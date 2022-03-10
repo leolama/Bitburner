@@ -17,7 +17,7 @@ export async function main(ns) {
 			if (ns.purchaseAugmentation(faction, "NeuroFlux Governor")) {
 				++count;
 			} else {
-				log(ns, "ERROR: Failed to buy NeuroFlux");
+				log(ns, "ERROR: Failed to buy NeuroFlux", true);
 			}
 			//refresh money and rep
 			availMoney = ns.getPlayer().money;
@@ -26,7 +26,7 @@ export async function main(ns) {
 			playerFactionRep = ns.getFactionRep(faction);
 		}
 	} else {
-		log(ns, "ERROR: Not enough money and/or reputation", true);
+		log(ns, "WARN: Not enough money and/or reputation", true);
 		return;
 	}
 	log(ns, "SUCCESS: Bought " + count + " level(s) of NeuroFlux", true);
