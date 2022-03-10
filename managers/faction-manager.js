@@ -63,12 +63,11 @@ export async function main(ns) {
 	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"]; //backdoor based faction server names
 	const factionHackLvl = []; //required hacking levels
 	const factionTools = ["1", "2", "3", "4", "5"]; //number of programs needed to root
-	var numTools = hackTools(ns); //number of hacking tools we have
+	var numTools = hackTools(ns); //number of hacking tools that we have
 	var count = 0;
 	var hackingLvl = ns.getPlayer().hacking; //player hacking level
 
 	//get the paths to the faction servers
-	log(ns, "INFO: Getting faction server paths...");
 	var temp_factionPaths = ns.read('/data/faction-paths.txt');
 	var factionPaths = temp_factionPaths.split(",");
 	log(ns, "SUCCESS: Got faction server paths");
@@ -80,7 +79,6 @@ export async function main(ns) {
 
 	while (count < factionServerNames.length) {
 		if (ns.getServer(factionServerNames[count]).backdoorInstalled === false) {
-			log(ns, "WARN: Trying to backdoor " + factionServerNames[count] + ". Need hacking level " + factionHackLvl[count] + ", have " + hackingLvl + ". Need " + factionTools[count] + " tools, have " + numTools);
 			//if backdoor hasn't been installed, start a loop
 			while (ns.getServer(factionServerNames[count]).backdoorInstalled === false) {
 				if (factionHackLvl[count] <= hackingLvl && numTools >= factionTools[count]) {
@@ -93,7 +91,7 @@ export async function main(ns) {
 						}
 					}
 					await nukeServer(ns, factionServerNames[count]); //make sure we have root access on the target
-					await checkTerminal()
+					await checkTerminal(); //check that we're on the terminal
 					terminalInput(factionPaths[count]);
 					await ns.sleep(100);
 					log(ns, "INFO: Installing backdoor on " + factionServerNames[count] + "...");
@@ -109,6 +107,8 @@ export async function main(ns) {
 						log(ns, "INFO: Returning home and retrying")
 						terminalInput("home");
 					}
+				} else {
+					log(ns, "WARN: Trying to backdoor " + factionServerNames[count] + ". Need hacking level " + factionHackLvl[count] + ", have " + hackingLvl + ". Need " + factionTools[count] + " tools, have " + numTools);
 				}
 				//refresh vars
 				numTools = hackTools(ns);
