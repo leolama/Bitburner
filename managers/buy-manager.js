@@ -83,7 +83,8 @@ export async function main(ns) {
 					
 				}
 			} else {
-				log(ns, 'ERROR: Failed to buy a ' + serverRam[serverRamIndex] + 'GB server, retrying');
+				log(ns, 'ERROR: Failed to buy a ' + serverRam[serverRamIndex] + 'GB server', true);
+				return;
 			}
 		} else {
 			log(ns, "INFO: Need " + ns.nFormat(serverCost[serverRamIndex], "($0.000a)") + " to buy a " + ns.nFormat(serverRam[serverRamIndex], "0,0") + "GB server");
