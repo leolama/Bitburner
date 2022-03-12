@@ -62,6 +62,9 @@ export function findFile(ns, file) {
  * @param {String} target The target server to look for
 **/
 export function getServerPath(ns, target) {
+	ns.disableLog('disableLog');
+	ns.disableLog('scan');
+
 	let paths = { home: "" };
 	let queue = Object.keys(paths);
 	let name;
