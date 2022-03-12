@@ -5,7 +5,16 @@
 		"body": [
 		"import {  } from 'util.js'",
 		"",
-		"/** @param {import('../.').NS} ns */",
+		"const scriptArgs = [",
+		"\t['', ]",
+		"];",
+		"",
+		"export function autocomplete(data, args) {",
+		"\tdata.flags(scriptArgs);",
+		"\treturn [];",
+		"}",
+		"",
+		"/** @param {import('../.').NS} ns NetScript */",
 		"export async function main(ns) {",
 		"\tns.print('Script started');",
 		"\t//",
@@ -17,22 +26,22 @@
 		"prefix": "log",
 		"body": ["log(ns, '')"]
   	},
-	"while-loop": {
+	"While loop": {
 		"scope": "javascript",
-		"prefix": "while",
+		"prefix": "while-loop",
 		"body": [
 			"while () {",
 			"\t//",
 			"}"
 		]
   	},
-	"for-loop": {
+	"For loop": {
 		"scope": "javascript",
-		"prefix": "for",
+		"prefix": "for-loop",
 		"body": [
 			"for (let i = 0; i < #; ++i) {",
 			"\t//",
 			"}"
 		]
-  	},
+  	}
 }
