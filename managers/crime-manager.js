@@ -1,17 +1,31 @@
 import { log } from 'util.js'
 
+const scriptArgs = [
+    ['crime', '']
+];
+
+export function autocomplete(data, args) {
+    data.flags(scriptArgs);
+    return [];
+}
+
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
 	ns.disableLog("ALL");
 
+	const flags = ns.flags(scriptArgs);
 	const statNames = ["strength", "defense", "dexterity", "agility"];
 
 	function crime() {
-		if (ns.getCrimeChance("homicide") < 0.6) {
+		if (ns.getCrimeChance("homicide") > 0.6 && flags.crime == '') {
+			return "homicide";
+		} else if (ns.getCrimeChance("heist") > 0.6 && flags.crime == '') {
+			return "heist";
+		} else if (flags.crime == '') {
 			return "mug someone";
 		} else {
-			return "homicide";
+			return flags.crime;
 		}
 	}
 
@@ -54,15 +68,6 @@ export async function main(ns) {
 	while (true) {
 		var karma = ns.heart.break();
 		var bestCrime = crime();
-
-		if (karma < -54000 && !ns.isRunning("/managers/gang-manager.js","home")) {
-			let pid = ns.run("/managers/gang-manager.js")
-			if (pid > 0) {
-				log(ns, "SUCCESS: Started /managers/gang-manager.js with PID " + pid)
-			} else {
-				log(ns, "ERROR: Failed to start /managers/gang-manager.js")
-			}
-		}
 		
 		//get and format the time into 24h
 		var date = new Date(Date.now() + ns.getCrimeStats(bestCrime).time);

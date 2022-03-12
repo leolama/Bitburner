@@ -1,12 +1,25 @@
-//original from MurataMain on reddit
-//accepts an argument to specify target server
+/**
+ * original from MurataMain on reddit
+ * accepts an argument to specify target server
+ * eg: run hack-manager.js --target foodnstuff
+**/
 import { hackTools, nukeServer, log } from "util.js";
+
+const scriptArgs = [
+	['target', '']
+];
+
+export function autocomplete(data, args) {
+	data.flags(scriptArgs);
+	return [];
+}
 
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
 	ns.disableLog("ALL");
 	ns.enableLog("sleep");
+	const flags = ns.flags(scriptArgs);
 	while (true) {
 		var allServers = await findAllServers(ns);
 		var multiarray = await findHackable(ns, allServers);
@@ -14,9 +27,10 @@ export async function main(ns) {
 		var rootableServers = multiarray[1];
 		var optimalServer = multiarray[2];
 		var target = optimalServer;
-		if (ns.args[0] != null) {
+		if (flags.target != '') {
 			//override the algorithm
-			target = ns.args[0];
+			log(ns, 'INFO: Overriding target server with: ' + flags.target);
+			target = flags.target;
 		}
 		var moneyThresh = ns.getServerMaxMoney(target) * 0.9;
 		var securityThresh = ns.getServerMinSecurityLevel(target) + 5;

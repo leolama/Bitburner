@@ -1,12 +1,35 @@
-import { getServerPath } from 'util.js';
+/**
+ * Manages the launching of scripts and managers
+ * accepts arguments to skip launching a specific program
+ * eg: run setup.js --no_hack --no_corp
+**/
+
+import { getServerPath, log } from 'util.js';
+
+const scriptArgs = [
+    ['no_hack', false],
+    ['no_buy', false],
+    ['no_faction', false],
+    ['no_crime', false],
+    ['no_sleeve', false],
+    ['no_stock', false],
+    ['no_corp', false]
+];
+
+export function autocomplete(data, args) {
+    data.flags(scriptArgs);
+    return [];
+}
 
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
+    //ns.disableLog('ALL');
+    const flags = ns.flags(scriptArgs);
 	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
 	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "sleeve-manager.js", "stock-manager.js"];
-    var scriptsRam = [];
-    var execRam = ns.getScriptRam("bin/exec.js");
+    const scriptsRam = [];
+    const execRam = ns.getScriptRam("bin/exec.js");
     var playerRam = ns.getServerMaxRam("home") - execRam;
 	var scriptsToStart = [];
 	var factionPaths = [];
@@ -16,7 +39,31 @@ export async function main(ns) {
         scripts.push('corp-manager.js')
     } else {
         //else overwrite the data file so we don't start from stage 4
-        await ns.write('/data/corp-stage.txt', '0', 'w')
+        await ns.write('/data/corp-stage.txt', '1', 'w')
+    }
+
+    //argument processing
+    if (flags.no_hack) {
+        scripts.splice(0,1);
+        log(ns, 'INFO: Skipping hack-manager.js');
+    } if (flags.no_buy) {
+        scripts.splice(1,1);
+        log(ns, 'INFO: Skipping buy-manager.js');
+    } if (flags.no_faction) {
+        scripts.splice(2,1);
+        log(ns, 'INFO: Skipping faction-manager.js');
+    } if (flags.no_crime) {
+        scripts.splice(3,1);
+        log(ns, 'INFO: Skipping crime-manager.js');
+    } if (flags.no_sleeve) {
+        scripts.splice(4,1);
+        log(ns, 'INFO: Skipping sleeve-manager.js');
+    } if (flags.no_stock) {
+        scripts.splice(5,1);
+        log(ns, 'INFO: Skipping stock-manager.js');
+    } if (flags.no_corp && scripts.length > 6) {
+        scripts.splice(6,1);
+        log(ns, 'INFO: Skipping corp-manager.js');
     }
 
 	//get required ram of each script
@@ -35,7 +82,7 @@ export async function main(ns) {
     }
 
     if (scriptsToStart.includes("/managers/buy-manager.js")) {
-        await ns.write("/data/purchased-servers.txt", "128,1024,16384,1048576", "w");
+        await ns.write("/data/purchased-servers.txt", "0", "w");
     }
 
     if (scriptsToStart.includes("/managers/faction-manager.js")) {
