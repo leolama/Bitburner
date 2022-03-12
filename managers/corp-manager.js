@@ -349,10 +349,13 @@ async function initialSetup(ns, corpName) {
 	if (ns.getPlayer().hasCorporation) {
 		log(ns, `INFO: Using pre-established corporation ${CorpAPI.getCorporation().name}`);
 	} else {
-		while (CorpAPI.createCorporation(corpName, true) == false) {
-			await ns.asleep(60000);
+		log(ns, 'INFO: No corporation found, trying to create one', true);
+		if (CorpAPI.createCorporation(corpName, true)) {
+			log(ns, `SUCCESS: Established ${corpName}`, true);
+		} else {
+			log(ns, 'WARN: You can not afford to create a corporation', true);
+			return;
 		}
-		log(ns, `SUCCESS: Established ${corpName}`);
 	}
 
 	// Get the APIs and create the Agriculture Division.
@@ -550,6 +553,7 @@ async function firstProduct(ns) {
 async function trickInvestors(ns) {
 	const CorpAPI = eval("ns.corporation");
 
+	log(ns, 'INFO: Tricking the investors');
 	log(ns, "INFO: Stopping sales and moving employees into operations");
 
 	if (CorpAPI.getCorporation().divisions[1] == null) {
@@ -561,7 +565,7 @@ async function trickInvestors(ns) {
 
 			if (CorpAPI.getInvestmentOffer().round == 1) {
 				await increaseOfficeTo(ns, Divisions[0], c, [3, 0, 0, 0, 0, 0]);
-			} else {
+			} else {-
 				await increaseOfficeTo(ns, Divisions[0], c, [9, 0, 0, 0, 0, 0]);
 			}
 		}
@@ -579,7 +583,6 @@ async function trickInvestors(ns) {
 			await ns.sleep(5000);
 		}
 
-		var initialInvestFunds = CorpAPI.getInvestmentOffer().funds;
 		for (let c of CITIES) {
 			//moving employees into business and starting selling
 			log(ns, "INFO: Warehouses are full, moving employees into business");
@@ -623,7 +626,6 @@ async function trickInvestors(ns) {
 			await ns.sleep(5000);
 		}
 
-		var initialInvestFunds = CorpAPI.getInvestmentOffer().funds;
 		for (let p of products) {
 			for (let c of CITIES) {
 				//move employees into business and start to sell
@@ -642,7 +644,7 @@ async function trickInvestors(ns) {
 /**
  * Check research for the specified division and try to research them
  * @param {import("../.").NS} ns NetScript
- * @param {String} division Name of the division
+ * @param {String} division 
  */
 function checkDivisionResearch(ns, division) {
 	const CorpAPI = eval("ns.corporation");
@@ -664,7 +666,7 @@ function checkDivisionResearch(ns, division) {
 		}
 	}
 
-	// Check how many products we can have
+	// Check how many products we can have and increase the product names array
 	if (CorpAPI.hasResearched(division, 'uPgrade: Capacity.I') && PRODUCT_NAMES.length < 4) {
 		PRODUCT_NAMES.push('Tobacco 4');
 	}
@@ -726,6 +728,7 @@ export async function main(ns) {
 				Divisions.push("AgriWorks");
 			}
 			await firstProduct(ns);
+		case 4:
 			log(ns, `--- SETUP COMPLETE. ---`);
 			await ns.write("/data/corp-stage.txt", "4", "w");
 			break;
@@ -760,7 +763,7 @@ export async function main(ns) {
 				CorpAPI.acceptInvestmentOffer();
 				log(ns, "SUCCESS: Accepted investor 4's offer of " + ns.nFormat(offer, "0.00a"));
 			}
-		} else if (CorpAPI.getInvestmentOffer().round == 4) {
+		} else if (CorpAPI.getInvestmentOffer().round > 4) {
 			CorpAPI.goPublic(50000000);
 			CorpAPI.issueDividends(5);
 		}
