@@ -729,7 +729,6 @@ export async function main(ns) {
 				Divisions.push("AgriWorks");
 			}
 			await firstProduct(ns);
-		case 4:
 			log(ns, `--- SETUP COMPLETE. ---`);
 			await ns.write("/data/corp-stage.txt", "4", "w");
 			break;
