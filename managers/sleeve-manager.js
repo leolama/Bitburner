@@ -8,12 +8,12 @@ export async function main(ns) {
     ns.disableLog('run');
 
     const tempFile = '/data/sleeve-task.txt';
-    var sleeveNum = ns.sleeve.getNumSleeves();
+    var sleeveNum = await getNsDataThroughFile(ns, `ns.sleeve.getNumSleeves()`, '/data/sleeve-num.txt');
     var currentTasks = [];
-
     while (true) {
+        let karma = ns.heart.break();
         //since we use sleeves for karma farming, we use this to run the gang manager when needed
-        if (ns.heart.break() < -54000) {
+        if (karma < -54000) {
             if (ns.run('/managers/gang-manager.js') > 0) {
                 log(ns, 'INFO: Starting gang-manager.js');
             }
@@ -21,7 +21,7 @@ export async function main(ns) {
 
         for (let i = 0; i < sleeveNum; ++i) {
             //getting sleeve stats
-            let getSleeveStats = ns.sleeve.getSleeveStats(i);
+            let getSleeveStats = await getNsDataThroughFile(ns, `ns.sleeve.getSleeveStats(${i})`, '/data/sleeve-stats.txt');
             let command, task;
 
             if (getSleeveStats.shock > 0) {
@@ -53,7 +53,7 @@ export async function main(ns) {
                 if (ns.getPlayer().className.startsWith("Algorithms",10)) {
                     command = `ns.sleeve.setToUniversityCourse(${i}, "rothman university", "Algorithms")`;
                     task = 'algorithm course';
-                } else if (ns.getPlayer().className.startsWith("Leadership",10)) {
+                } else if (ns.getPlayer().className.startsWith("Leadership",9)) {
                     command = `ns.sleeve.setToUniversityCourse(${i}, "rothman university", "Leadership")`;
                     task = 'leadership course';
                 } else if (ns.getPlayer().className.startsWith("training")) {
@@ -71,6 +71,9 @@ export async function main(ns) {
                         task = 'agility training';
                     }
                 }
+            } else if (getSleeveStats.hacking > 200 && getSleeveStats.strength > 200 && getSleeveStats.defense > 200 && getSleeveStats.dexterity > 200 && getSleeveStats.agility > 200 && getSleeveStats.charisma > 200) {
+                command = `ns.sleeve.setToCommitCrime(${i}, "Heist")`;
+                task = 'heisting';
             } else {
                 //if nothing else is happening, just murder
                 command = `ns.sleeve.setToCommitCrime(${i}, "Homicide")`;

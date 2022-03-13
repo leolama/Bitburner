@@ -1,4 +1,4 @@
-import { hackTools, nukeServer, terminalInput, log } from 'util.js';
+import { hackTools, nukeServer, terminalInput, log, getNsDataThroughFile } from 'util.js';
 
 const doc = eval("document")
 
@@ -66,6 +66,7 @@ export async function main(ns) {
 	var numTools = hackTools(ns); //number of hacking tools that we have
 	var count = 0;
 	var hackingLvl = ns.getPlayer().hacking; //player hacking level
+	var playerAugs = ns.read('/data/player-augs-purchased.txt');
 
 	//get the paths to the faction servers
 	var temp_factionPaths = ns.read('/data/faction-paths.txt');
@@ -85,7 +86,7 @@ export async function main(ns) {
 					//if our hacking level and hacking tools are higher than the server needs
 					if (factionServerNames[count] == "w0r1d_d43m0n") {
 						//if we're waiting to backdoor world_daemon, check that we have The Red Pill
-						while (ns.getOwnedAugmentations().includes("The Red Pill") == false) {
+						while (!playerAugs.includes("The Red Pill")) {
 							checkFactionInvites();
 							await ns.sleep(1000);
 						}

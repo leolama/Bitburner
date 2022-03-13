@@ -1,4 +1,4 @@
-import { buyServer, log } from 'util.js'
+import { buyServer, log, getNsDataThroughFile } from 'util.js'
 
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
@@ -9,12 +9,13 @@ export async function main(ns) {
 
 	var availMoney = ns.getPlayer().money;
 	var maxServers = ns.getPurchasedServerLimit();
-	var currentServers = ns.getPurchasedServers();
+	var currentServers = await getNsDataThroughFile(ns, 'ns.getPurchasedServers()', '/data/purchased-server-ram.txt');
 	var cantAfford = false;
 	var buyPrompt;
 	var serverRam = [128,1024,16384,1048576]
 	var serverCost = [];
-	var serverRamIndex = ns.read('/data/purchased-servers.txt');
+	var serverRamIndex = ns.read('/data/purchased-server-ram.txt');
+	
 
 	for (let ram of serverRam) {
 		serverCost.push(ns.getPurchasedServerCost(ram)); //push server costs corrosponding to the ram into an array
@@ -65,11 +66,11 @@ export async function main(ns) {
 		}
 		if (availMoney > serverCost[serverRamIndex]) {
 			//if we have more money than the server cost, buy it and update data file
-			if (await buyServer(ns, serverRam[serverRamIndex])) {
-				await ns.write("/data/purchased-servers.txt", serverRamIndex, "w");
+			if (await buyServer(ns, serverRam[serverRamIndex], serverRamIndex + 1)) {
 				log(ns, 'SUCCESS: Bought a ' + serverRam[serverRamIndex] + 'GB server');
-				if (serverRamIndex < serverRam.length - 1) {
+				if (serverRamIndex < serverRam.length) {
 					++serverRamIndex;
+					await ns.write("/data/purchased-server-ram.txt", serverRamIndex, "w");
 				} else {
 					if (buyPrompt == null) {
 						if (await ns.prompt('Keep buying servers?')) {
@@ -97,6 +98,6 @@ export async function main(ns) {
 		//refresh vars
 		availMoney = ns.getPlayer().money;
 		maxServers = ns.getPurchasedServerLimit();
-		currentServers = ns.getPurchasedServers();
+		currentServers = await getNsDataThroughFile(ns, 'ns.getPurchasedServers()', '/data/purchased-server-ram.txt');
 	}
 }
