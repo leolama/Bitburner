@@ -365,7 +365,7 @@ async function initialSetup(ns, corpName) {
 
 	// Get Smart Supply
 	await getUnlockUpgrade(ns, "Smart Supply");
-	//CorpAPI.setSmartSupply(Divisions[0], CITIES[2], true);
+	CorpAPI.setSmartSupply(Divisions[0], CITIES[2], true);
 
 	// Get Advertising.
 	CorpAPI.hireAdVert(Divisions[0]);
@@ -509,7 +509,7 @@ async function firstProduct(ns) {
 		}
 		await tryExpandDivision(ns, Divisions[1], city);
 		await upgradeWarehouseTo(ns, Divisions[1], city, 1);
-		//CorpAPI.setSmartSupply(Divisions[1], city, true);
+		CorpAPI.setSmartSupply(Divisions[1], city, true);
 		await increaseOfficeTo(ns, Divisions[1], city, employees);
 	}
 
@@ -583,20 +583,19 @@ async function trickInvestors(ns) {
 			await ns.sleep(5000);
 		}
 
+		log(ns, "INFO: Warehouses are full, moving employees into business");
 		for (let c of CITIES) {
 			//moving employees into business and starting selling
-			log(ns, "INFO: Warehouses are full, moving employees into business");
-
 			if (CorpAPI.getInvestmentOffer().round == 1) {
 				await increaseOfficeTo(ns, Divisions[0], c, [0, 1, 2, 0, 0, 0]);
 			} else {
 				await increaseOfficeTo(ns, Divisions[0], c, [0, 2, 7, 0, 0, 0]);
 			}
 		}
+
+		log(ns, "INFO: Employees have been moved, starting to sell");
 		for (let c of CITIES) {
 			//moving employees into business and starting selling
-			log(ns, "INFO: Employees have been moved, starting to sell");
-
 			CorpAPI.sellMaterial(Divisions[0], c, "Food", "MAX", "MP");
 			CorpAPI.sellMaterial(Divisions[0], c, "Plants", "MAX", "MP");
 		}
@@ -626,15 +625,17 @@ async function trickInvestors(ns) {
 			await ns.sleep(5000);
 		}
 
+		log(ns, "INFO: Warehouses are full, moving employees into business");
 		for (let p of products) {
 			for (let c of CITIES) {
 				//move employees into business and start to sell
-				log(ns, "INFO: Warehouses are full, moving employees into business");
 
 				await increaseOfficeTo(ns, Divisions[1], c, [0, 2, 7, 0, 0, 0]);
 			}
+
+			log(ns, "INFO: Employees have been moved, starting to sell");
 			for (let c of CITIES) {
-				log(ns, "INFO: Employees have been moved, starting to sell");
+				//moving employees into business and starting selling
 				CorpAPI.sellProduct(Divisions[1], c, p, "0", "MP");
 				CorpAPI.sellProduct(Divisions[1], c, p, "0", "MP");
 			}
