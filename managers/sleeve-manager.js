@@ -11,35 +11,27 @@ export async function main(ns) {
     var sleeveNum = await getNsDataThroughFile(ns, `ns.sleeve.getNumSleeves()`, '/data/sleeve-num.txt');
     var currentTasks = [];
     while (true) {
-        let karma = ns.heart.break();
-        //since we use sleeves for karma farming, we use this to run the gang manager when needed
-        if (karma < -54000) {
-            if (ns.run('/managers/gang-manager.js') > 0) {
-                log(ns, 'INFO: Starting gang-manager.js');
-            }
-        }
-
         for (let i = 0; i < sleeveNum; ++i) {
             //getting sleeve stats
-            let getSleeveStats = await getNsDataThroughFile(ns, `ns.sleeve.getSleeveStats(${i})`, '/data/sleeve-stats.txt');
+            let sleeveStats = await getNsDataThroughFile(ns, `ns.sleeve.getSleeveStats(${i})`, '/data/sleeve-stats.txt');
             let command, task;
 
-            if (getSleeveStats.shock > 0) {
+            if (sleeveStats.shock > 0) {
                 command = `ns.sleeve.setToShockRecovery(${i})`;
                 task = 'shock recovery';
-            } else if (getSleeveStats.sync < 100) {
+            } else if (sleeveStats.sync < 100) {
                 command = `ns.sleeve.setToSynchronize(${i})`;
                 task = 'syncronizing';
-            } else if (getSleeveStats.strength < 75) {
+            } else if (sleeveStats.strength < 75) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","strength")`;
                 task = 'self strength training';
-            } else if (getSleeveStats.defense < 75) {
+            } else if (sleeveStats.defense < 75) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","defense")`;
                 task = 'self defense training';
-            } else if (getSleeveStats.dexterity < 75) {
+            } else if (sleeveStats.dexterity < 75) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","dexterity")`;
                 task = 'self dexterity training';
-            } else if (getSleeveStats.agility < 75) {
+            } else if (sleeveStats.agility < 75) {
                 command = `ns.sleeve.setToGymWorkout(${i}, "powerhouse gym","agility")`;
                 task = 'self agility training';
             } else if (i == 0 && ns.getPlayer().isWorking && ns.getPlayer().workType == "Working for Faction") {
@@ -71,7 +63,7 @@ export async function main(ns) {
                         task = 'agility training';
                     }
                 }
-            } else if (getSleeveStats.hacking > 200 && getSleeveStats.strength > 200 && getSleeveStats.defense > 200 && getSleeveStats.dexterity > 200 && getSleeveStats.agility > 200 && getSleeveStats.charisma > 200) {
+            } else if (sleeveStats.hacking > 200 && sleeveStats.strength > 200 && sleeveStats.defense > 200 && sleeveStats.dexterity > 200 && sleeveStats.agility > 200 && sleeveStats.charisma > 200) {
                 command = `ns.sleeve.setToCommitCrime(${i}, "Heist")`;
                 task = 'heisting';
             } else {
