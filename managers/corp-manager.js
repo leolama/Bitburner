@@ -436,16 +436,26 @@ async function timeToGrow(ns, waitForEmployees) {
 	if (CorpAPI.getInvestmentOffer().round == 1) {
 		// Get 210b from an investor.
 		await trickInvestors(ns);
+		let cycle = 0;
+		while (CorpAPI.getInvestmentOffer().funds < 210e9) {
+			log(ns, `INFO: Waiting for the second investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/210t).`);
+			await ns.sleep(5000);
+			++cycle
+			if (cycle > 6) {
+				log(ns, 'ERROR: trickInvestors() failed to increase investment, returning employees to normal jobs', true);
+				for (let c of CITIES) {
+					//set employees back to normal operation
+					await increaseOfficeTo(ns, Divisions[0], c, [1, 1, 1, 0, 0, 0]);
+				}
+				break;
+			}
+		}
 		while (CorpAPI.getInvestmentOffer().funds < 210e9) {
 			log(ns, `INFO: Waiting for the first investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/210b).`);
 			await ns.sleep(1000);
 		}
 		CorpAPI.acceptInvestmentOffer();
-		log(ns, "INFO: Returning employees to normal jobs");
-		for (let c of CITIES) {
-			// set employees back to normal operation
-			await increaseOfficeTo(ns, Divisions[0], c, [1, 1, 1, 0, 0, 0]);
-		}
+		log(ns, "SUCCESS: Accepted investor's offer");
 	} else {
 		log(ns, "INFO: Skipped first investor, it's already done.");
 	}
@@ -469,16 +479,26 @@ async function timeToGrow(ns, waitForEmployees) {
 	if (CorpAPI.getInvestmentOffer().round == 2) {
 		// Get 5t from an investor.
 		await trickInvestors(ns);
+		let cycle = 0;
+		while (CorpAPI.getInvestmentOffer().funds < 5e12) {
+			log(ns, `INFO: Waiting for the second investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/5t).`);
+			await ns.sleep(5000);
+			++cycle
+			if (cycle > 6) {
+				log(ns, 'ERROR: trickInvestors() failed to increase investment, returning employees to normal jobs', true);
+				for (let c of CITIES) {
+					//set employees back to normal operation
+					await increaseOfficeTo(ns, Divisions[0], c, [2, 2, 1, 2, 2, 0]);
+				}
+				break;
+			}
+		}
 		while (CorpAPI.getInvestmentOffer().funds < 5e12) {
 			log(ns, `INFO: Waiting for the second investment opportunity (${ns.nFormat(CorpAPI.getInvestmentOffer().funds, "0.00a")}/5t).`);
 			await ns.sleep(5000);
 		}
 		CorpAPI.acceptInvestmentOffer();
-		log(ns, "INFO: Returning employees to normal jobs");
-		for (let c of CITIES) {
-			//set employees back to normal operation
-			await increaseOfficeTo(ns, Divisions[0], c, [2, 2, 1, 2, 2, 0]);
-		}
+		log(ns, "SUCCESS: Accepted investor's offer");
 	} else {
 		log(ns, "INFO: Skipped second investor, it's already done.");
 	}
@@ -565,8 +585,8 @@ async function trickInvestors(ns) {
 
 			if (CorpAPI.getInvestmentOffer().round == 1) {
 				await increaseOfficeTo(ns, Divisions[0], c, [3, 0, 0, 0, 0, 0]);
-			} else {-
-				await increaseOfficeTo(ns, Divisions[0], c, [9, 0, 0, 0, 0, 0]);
+			} else {
+				await increaseOfficeTo(ns, Divisions[0], c, [7, 2, 0, 0, 0, 0]);
 			}
 		}
 		log(ns, "INFO: Waiting for warehouses to be full");
@@ -587,9 +607,9 @@ async function trickInvestors(ns) {
 		for (let c of CITIES) {
 			//moving employees into business and starting selling
 			if (CorpAPI.getInvestmentOffer().round == 1) {
-				await increaseOfficeTo(ns, Divisions[0], c, [0, 1, 2, 0, 0, 0]);
+				await increaseOfficeTo(ns, Divisions[0], c, [0, 0, 3, 0, 0, 0]);
 			} else {
-				await increaseOfficeTo(ns, Divisions[0], c, [0, 2, 7, 0, 0, 0]);
+				await increaseOfficeTo(ns, Divisions[0], c, [0, 0, 9, 0, 0, 0]);
 			}
 		}
 
@@ -608,7 +628,7 @@ async function trickInvestors(ns) {
 				CorpAPI.sellProduct(Divisions[1], c, p, "0", "MP");
 				CorpAPI.sellProduct(Divisions[1], c, p, "0", "MP");
 
-				await increaseOfficeTo(ns, Divisions[1], c, [9, 0, 0, 0, 0, 0]);
+				await increaseOfficeTo(ns, Divisions[1], c, [2, 7, 0, 0, 0, 0]);
 			}
 		}
 		log(ns, "INFO: Waiting for warehouses to be full");
@@ -630,7 +650,7 @@ async function trickInvestors(ns) {
 			for (let c of CITIES) {
 				//move employees into business and start to sell
 
-				await increaseOfficeTo(ns, Divisions[1], c, [0, 2, 7, 0, 0, 0]);
+				await increaseOfficeTo(ns, Divisions[1], c, [0, 0, 9, 0, 0, 0]);
 			}
 
 			log(ns, "INFO: Employees have been moved, starting to sell");
