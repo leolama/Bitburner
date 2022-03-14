@@ -18,7 +18,6 @@ export function autocomplete(data, args) {
 export async function main(ns) {
 	ns.print("Script started");
 	ns.disableLog("ALL");
-	ns.enableLog("sleep");
 	const flags = ns.flags(scriptArgs);
 	while (true) {
 		var allServers = await findAllServers(ns);
@@ -50,6 +49,9 @@ export async function main(ns) {
 					ns.exec("weak.js", rootableServers[i], numThreads, target);
 				}
 			}
+			var date = new Date(Date.now() + numTimesToHack * ns.getWeakenTime(target) + 300);
+			var time = ns.nFormat(date.getHours(), "00") + ":" + ns.nFormat(date.getMinutes(), "00") + ":" + ns.nFormat(date.getSeconds(), "00");
+			log(ns, 'INFO: Expecting finish at: ' + time);
 			await ns.sleep(numTimesToHack * ns.getWeakenTime(target) + 300);
 		} else if (ns.getServerMoneyAvailable(target) < moneyThresh) {
 			log(ns, "INFO: Growing " + target);
@@ -61,6 +63,9 @@ export async function main(ns) {
 					ns.exec("grow.js", rootableServers[i], numThreads, target);
 				}
 			}
+			var date = new Date(Date.now() + numTimesToHack * ns.getGrowTime(target) + 300);
+			var time = ns.nFormat(date.getHours(), "00") + ":" + ns.nFormat(date.getMinutes(), "00") + ":" + ns.nFormat(date.getSeconds(), "00");
+			log(ns, 'INFO: Expecting finish at: ' + time);
 			await ns.sleep(numTimesToHack * ns.getGrowTime(target) + 300);
 		} else {
 			log(ns, "INFO: Hacking " + target);
@@ -72,6 +77,10 @@ export async function main(ns) {
 					ns.exec("hack.js", rootableServers[i], numThreads, target);
 				}
 			}
+			//get and format the time into 24h
+			var date = new Date(Date.now() + numTimesToHack * ns.getHackTime(target) + 300);
+			var time = ns.nFormat(date.getHours(), "00") + ":" + ns.nFormat(date.getMinutes(), "00") + ":" + ns.nFormat(date.getSeconds(), "00");
+			log(ns, 'INFO: Expecting finish at: ' + time);
 			await ns.sleep(numTimesToHack * ns.getHackTime(target) + 300);
 		}
 	}
