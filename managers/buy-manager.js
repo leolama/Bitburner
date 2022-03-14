@@ -12,9 +12,9 @@ export async function main(ns) {
 	var currentServers = await getNsDataThroughFile(ns, 'ns.getPurchasedServers()', '/data/purchased-server-ram.txt');
 	var cantAfford = false;
 	var buyPrompt;
-	var serverRam = [128,1024,16384,1048576]
+	var serverRam = [128,1024,16384,131072,1048576]
 	var serverCost = [];
-	var serverRamIndex = ns.read('/data/purchased-server-ram.txt');
+	var serverRamIndex = currentServers.length;
 	
 
 	for (let ram of serverRam) {
@@ -30,7 +30,7 @@ export async function main(ns) {
 			//check if we have a tor router
 			if (ns.getPlayer().tor === true) {
 				if (!ns.fileExists(programs[0])) {
-					if (ns.purchaseProgram(programs[0])) {
+					if (await getNsDataThroughFile(ns, `ns.purchaseProgram(${programs[0]})`)) {
 						//if we don't have the program, try to buy it
 						log(ns, "SUCCESS: Bought " + programs[0]);
 						programs.splice(0, 1);
@@ -44,7 +44,7 @@ export async function main(ns) {
 					programs.splice(0, 1);
 					++count;
 				}
-			} else if (!ns.purchaseTor()) {
+			} else if (!await getNsDataThroughFile(ns, 'ns.purchaseTor()')) {
 				//try to buy a tor router
 				log(ns, "INFO: Cannot afford a TOR router");
 			}
@@ -99,5 +99,6 @@ export async function main(ns) {
 		availMoney = ns.getPlayer().money;
 		maxServers = ns.getPurchasedServerLimit();
 		currentServers = await getNsDataThroughFile(ns, 'ns.getPurchasedServers()', '/data/purchased-server-ram.txt');
+		serverRamIndex = currentServers.length;
 	}
 }
