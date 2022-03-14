@@ -1,4 +1,4 @@
-import { hackTools, nukeServer, terminalInput, log, getNsDataThroughFile } from 'util.js';
+import { hackTools, nukeServer, terminalInput, log, getNsDataThroughFile, runCommand } from 'util.js';
 
 const doc = eval("document")
 
@@ -7,18 +7,19 @@ export async function main(ns) {
 	ns.disableLog("ALL");
 	ns.print("Script started");
 
-	function checkFactionInvites() {
+	async function checkFactionInvites() {
+		let factionInvites = await getNsDataThroughFile(ns, `ns.checkFactionInvitations()`, 'player-faction-invites.txt');
 		//check for invitations from main factions
 		for (let fac of factionNames) {
-			if (ns.checkFactionInvitations().includes(fac)) {
-				ns.joinFaction(fac);
+			if (factionInvites.includes(fac)) {
+				runCommand(ns, `ns.joinFaction(${fac})`)
 				ns.print("Joined " + fac);
 			}
 		}
 		//check for invitations from other factions
 		for (let fac of otherFactionNames) {
-			if (ns.checkFactionInvitations().includes(fac)) {
-				ns.joinFaction(fac);
+			if (factionInvites.includes(fac)) {
+				runCommand(ns, `ns.joinFaction(${fac})`)
 				ns.print("Joined " + fac);
 			}
 		}
@@ -30,9 +31,25 @@ export async function main(ns) {
 			log(ns, "WARN: Player isn't on the terminal screen")
 			while (doc.getElementById("terminal-input") == null) {
 				checkFactionInvites();
-				await ns.sleep(500);
+				await ns.sleep(100);
 			}
 		}
+	}
+
+	function runOtherManagers() {
+		//since this script will be running until we finish the bitnode, we use this to run the gang and corporation managers
+		let karma = ns.heart.break();
+        if (karma < -54000) {
+            if (ns.run('/managers/gang-manager.js') > 0) {
+                log(ns, 'INFO: Starting gang-manager.js');
+            }
+        }
+
+		if (ns.getPlayer().money > 150e9) {
+            if (ns.run('/managers/corp-manager.js') > 0) {
+                log(ns, 'INFO: Starting corp-manager.js');
+            }
+        }
 	}
 
 	const factionNames = ["CyberSec", "NiteSec", "The Black Hand", "BitRunners", "w0r1d_d43m0n"]; //backdoor based factions
@@ -58,7 +75,8 @@ export async function main(ns) {
 		"The Dark Army",
 		"The Syndicate",
 		"The Covenant",
-		"Illuminati"
+		"Illuminati",
+		"Bladeburners"
 	]; //factions that don't stop us from joining other factions
 	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"]; //backdoor based faction server names
 	const factionHackLvl = []; //required hacking levels
@@ -87,7 +105,7 @@ export async function main(ns) {
 					if (factionServerNames[count] == "w0r1d_d43m0n") {
 						//if we're waiting to backdoor world_daemon, check that we have The Red Pill
 						while (!playerAugs.includes("The Red Pill")) {
-							checkFactionInvites();
+							await checkFactionInvites();
 							await ns.sleep(1000);
 						}
 					}
@@ -95,11 +113,11 @@ export async function main(ns) {
 					await checkTerminal(); //check that we're on the terminal
 					await terminalInput(factionPaths[count]);
 					await ns.sleep(100);
-					log(ns, "INFO: Installing backdoor on " + factionServerNames[count] + "...");
+					log(ns, "INFO: Installing backdoor on " + factionServerNames[count] + "...", true);
 					await checkTerminal();
 					await ns.installBackdoor();
 					if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
-						log(ns, "SUCCESS: Successfully backdoored " + factionServerNames[count]);
+						log(ns, "SUCCESS: Successfully backdoored " + factionServerNames[count], true);
 						log(ns, "INFO: Returning home");
 						await terminalInput("home");
 						++count;
@@ -114,7 +132,8 @@ export async function main(ns) {
 				//refresh vars
 				numTools = hackTools(ns);
 				hackingLvl = ns.getPlayer().hacking;
-				checkFactionInvites();
+				await checkFactionInvites();
+				runOtherManagers();
 				await ns.sleep(1000);
 			}
 		} else {
