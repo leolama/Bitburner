@@ -12,14 +12,14 @@ export async function main(ns) {
 		//check for invitations from main factions
 		for (let fac of factionNames) {
 			if (factionInvites.includes(fac)) {
-				runCommand(ns, `ns.joinFaction('${fac}')`)
+				await runCommand(ns, `ns.joinFaction('${fac}')`)
 				ns.print("Joined " + fac);
 			}
 		}
 		//check for invitations from other factions
 		for (let fac of otherFactionNames) {
 			if (factionInvites.includes(fac)) {
-				runCommand(ns, `ns.joinFaction('${fac}')`)
+				await runCommand(ns, `ns.joinFaction('${fac}')`)
 				ns.print("Joined " + fac);
 			}
 		}
@@ -30,7 +30,7 @@ export async function main(ns) {
 		if (doc.getElementById("terminal-input") == null) {
 			log(ns, "WARN: Player isn't on the terminal screen")
 			while (doc.getElementById("terminal-input") == null) {
-				checkFactionInvites();
+				await checkFactionInvites();
 				await ns.sleep(100);
 			}
 		}
@@ -118,12 +118,11 @@ export async function main(ns) {
 					await ns.installBackdoor();
 					if (ns.getServer(factionServerNames[count]).backdoorInstalled === true) {
 						log(ns, "SUCCESS: Successfully backdoored " + factionServerNames[count], true);
-						log(ns, "INFO: Returning home");
 						await terminalInput("home");
 						++count;
 					} else {
-						log(ns, "ERROR: Failed backdoor");
-						log(ns, "INFO: Returning home and retrying")
+						log(ns, "ERROR: Failed backdoor", true);
+						log(ns, "INFO: Returning home and retrying", true);
 						await terminalInput("home");
 					}
 				} else {
