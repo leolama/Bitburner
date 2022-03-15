@@ -27,12 +27,12 @@ export async function main(ns) {
     //ns.disableLog('ALL');
     const flags = ns.flags(scriptArgs);
 	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
-	const scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "sleeve-manager.js", "stock-manager.js"];
     const scriptsRam = [];
     const execRam = ns.getScriptRam("bin/exec.js");
-    var playerRam = ns.getServerMaxRam("home") - execRam;
-	var scriptsToStart = [];
-	var factionPaths = [];
+	let scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "sleeve-manager.js", "stock-manager.js"];
+    let playerRam = ns.getServerMaxRam("home") - execRam;
+	let scriptsToStart = [];
+	let factionPaths = [];
 
     if (ns.getPlayer().hasCorporation) {
         //if we have a corporation start the manager for it
@@ -44,25 +44,25 @@ export async function main(ns) {
 
     //argument processing
     if (flags.no_hack) {
-        scripts.splice(0,1);
+        scripts = scripts.filter(e => e !== 'hack-manager.js');
         log(ns, 'INFO: Skipping hack-manager.js');
     } if (flags.no_buy) {
-        scripts.splice(1,1);
+        scripts = scripts.filter(e => e !== 'buy-manager.js');
         log(ns, 'INFO: Skipping buy-manager.js');
     } if (flags.no_faction) {
-        scripts.splice(2,1);
+        scripts = scripts.filter(e => e !== 'faction-manager.js');
         log(ns, 'INFO: Skipping faction-manager.js');
     } if (flags.no_crime) {
-        scripts.splice(3,1);
+        scripts = scripts.filter(e => e !== 'crime-manager.js');
         log(ns, 'INFO: Skipping crime-manager.js');
     } if (flags.no_sleeve) {
-        scripts.splice(4,1);
+        scripts = scripts.filter(e => e !== 'sleeve-manager.js');
         log(ns, 'INFO: Skipping sleeve-manager.js');
     } if (flags.no_stock) {
-        scripts.splice(5,1);
+        scripts = scripts.filter(e => e !== 'stock-manager.js');
         log(ns, 'INFO: Skipping stock-manager.js');
     } if (flags.no_corp && scripts.length > 6) {
-        scripts.splice(6,1);
+        scripts = scripts.filter(e => e !== 'corp-manager.js');
         log(ns, 'INFO: Skipping corp-manager.js');
     }
 
