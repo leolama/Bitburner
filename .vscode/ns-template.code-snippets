@@ -47,5 +47,21 @@
 			"\t//",
 			"}"
 		]
-  	}
+  	},
+	"NS Flags": {
+		"scope": "javascript",
+		"prefix": "flags",
+		"body": [
+			"const scriptArgs = [",
+			"\t['', false],",
+			"];",
+			"",
+			"export function autocomplete(data, args) {",
+			"\tdata.flags(scriptArgs);",
+			"\treturn [];",
+			"}",
+			"",
+			"const flags = ns.flags(scriptArgs);"
+		]
+	}
 }
