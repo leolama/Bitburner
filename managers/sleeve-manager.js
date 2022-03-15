@@ -1,12 +1,21 @@
 import { getNsDataThroughFile, log } from 'util.js'
 
+const scriptArgs = [
+    ['task', ''],
+];
+
+export function autocomplete(data, args) {
+    data.flags(scriptArgs);
+    return [];
+}
+
 /** @param {import('../.').NS} ns */
 export async function main(ns) {
     ns.print('Script started');
     ns.disableLog('disableLog');
     ns.disableLog('sleep');
     ns.disableLog('run');
-
+    const flags = ns.flags(scriptArgs);
     const tempFile = '/data/sleeve-task.txt';
     var sleeveNum = await getNsDataThroughFile(ns, `ns.sleeve.getNumSleeves()`, '/data/sleeve-num.txt');
     var currentTasks = [];
@@ -16,7 +25,13 @@ export async function main(ns) {
             let sleeveStats = await getNsDataThroughFile(ns, `ns.sleeve.getSleeveStats(${i})`, '/data/sleeve-stats.txt');
             let command, task;
 
-            if (sleeveStats.shock > 0) {
+            if (flags.task != '') {
+                //we don't want two sleeve managers running at the same time
+                //ns.scriptKill('/managers/sleeve-manager.js', 'home');
+
+                command = `ns.sleeve.setToCommitCrime(${i}, "${flags.task}")`;
+                task = 'custom task';
+            } else if (sleeveStats.shock > 0) {
                 command = `ns.sleeve.setToShockRecovery(${i})`;
                 task = 'shock recovery';
             } else if (sleeveStats.sync < 100) {
