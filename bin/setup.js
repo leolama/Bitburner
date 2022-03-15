@@ -29,7 +29,7 @@ export async function main(ns) {
 	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
     const scriptsRam = [];
     const execRam = ns.getScriptRam("bin/exec.js");
-	let scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "sleeve-manager.js", "stock-manager.js"];
+	let scripts = ["hack-manager.js", "buy-manager.js", "faction-manager.js", "crime-manager.js", "sleeve-manager.js"];
     let playerRam = ns.getServerMaxRam("home") - execRam;
 	let scriptsToStart = [];
 	let factionPaths = [];
@@ -45,6 +45,11 @@ export async function main(ns) {
     if (ns.gang.inGang()) {
         //if we have a gang start the manager for it
         scripts.push('gang-manager.js')
+    }
+
+    if (ns.getPlayer().hasWseAccount && ns.getPlayer().hasTixApiAccess) {
+        //if we have a stocks account and API acces then start the manager for it
+        scripts.push('stock-manager.js')
     }
 
     //argument processing
