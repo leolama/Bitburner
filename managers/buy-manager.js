@@ -1,9 +1,21 @@
 import { buyServer, log, getNsDataThroughFile } from 'util.js'
 
+const scriptArgs = [
+    ['program_only', false],
+	['server_only', false]
+];
+
+export function autocomplete(data, args) {
+    data.flags(scriptArgs);
+    return [];
+}
+
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
 	ns.disableLog("ALL");
+
+	const flags = ns.flags(scriptArgs);
 	var count = 0;
 	var programs = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
 
@@ -26,11 +38,14 @@ export async function main(ns) {
 	*/
 	log(ns, "INFO: Started program autobuy");
 	while (count < 5) {
+		if (flags.server_only) {
+			break;
+		}
 		for (let i = 0; i < programs.length; ++i) {
 			//check if we have a tor router
 			if (ns.getPlayer().tor === true) {
 				if (!ns.fileExists(programs[0])) {
-					if (await getNsDataThroughFile(ns, `ns.purchaseProgram(${programs[0]})`)) {
+					if (await getNsDataThroughFile(ns, `ns.purchaseProgram('${programs[0]}')`)) {
 						//if we don't have the program, try to buy it
 						log(ns, "SUCCESS: Bought " + programs[0]);
 						programs.splice(0, 1);
@@ -44,7 +59,7 @@ export async function main(ns) {
 					programs.splice(0, 1);
 					++count;
 				}
-			} else if (!await getNsDataThroughFile(ns, 'ns.purchaseTor()')) {
+			} else if (!await getNsDataThroughFile(ns, 'ns.purchaseTor()', '/data/TEMP-purchasetor.txt')) {
 				//try to buy a tor router
 				log(ns, "INFO: Cannot afford a TOR router");
 			}
@@ -58,6 +73,9 @@ export async function main(ns) {
 	*/
 	log(ns, "INFO: Started server autobuy");
 	while (currentServers.length < maxServers) {
+		if (flags.program_only) {
+			break;
+		}
 		if (serverCost[serverRamIndex] == 'Infinity' || serverCost[serverRamIndex] == null) {
 			log(ns, 'WARN: Next server RAM not available, retrying previous amount');
 			serverRam.splice(serverRamIndex, 1)

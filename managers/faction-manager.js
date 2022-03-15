@@ -12,14 +12,14 @@ export async function main(ns) {
 		//check for invitations from main factions
 		for (let fac of factionNames) {
 			if (factionInvites.includes(fac)) {
-				runCommand(ns, `ns.joinFaction(${fac})`)
+				runCommand(ns, `ns.joinFaction('${fac}')`)
 				ns.print("Joined " + fac);
 			}
 		}
 		//check for invitations from other factions
 		for (let fac of otherFactionNames) {
 			if (factionInvites.includes(fac)) {
-				runCommand(ns, `ns.joinFaction(${fac})`)
+				runCommand(ns, `ns.joinFaction('${fac}')`)
 				ns.print("Joined " + fac);
 			}
 		}
