@@ -29,7 +29,7 @@ export async function main(ns) {
 	//if player has enough money and reputation
 	if (availMoney >= augPrice && playerFactionRep >= augRep) {
 		while (availMoney >= augPrice && playerFactionRep >= augRep) {
-			await ns.sleep(500);
+			await ns.sleep(50);
 			if (ns.purchaseAugmentation(flags.faction, "NeuroFlux Governor")) {
 				++count;
 			} else {
