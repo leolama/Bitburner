@@ -50,6 +50,13 @@ export async function main(ns) {
                 log(ns, 'INFO: Starting corp-manager.js');
             }
         }
+
+		if (ns.getPlayer().hasWseAccount && ns.getPlayer().hasTixApiAccess) {
+			//if we have a stocks account and API acces then start the manager for it
+			if (ns.run('/managers/stock-manager.js') > 0) {
+                log(ns, 'INFO: Starting stock-manager.js');
+			}
+		}
 	}
 
 	const factionNames = ["CyberSec", "NiteSec", "The Black Hand", "BitRunners", "w0r1d_d43m0n"]; //backdoor based factions
