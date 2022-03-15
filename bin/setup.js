@@ -13,7 +13,8 @@ const scriptArgs = [
     ['no_crime', false],
     ['no_sleeve', false],
     ['no_stock', false],
-    ['no_corp', false]
+    ['no_corp', false],
+    ['no_gang', false]
 ];
 
 export function autocomplete(data, args) {
@@ -24,7 +25,6 @@ export function autocomplete(data, args) {
 /** @param {import("../.").NS} ns */
 export async function main(ns) {
 	ns.print("Script started");
-    //ns.disableLog('ALL');
     const flags = ns.flags(scriptArgs);
 	const factionServerNames = ["CSEC", "avmnite-02h", "I.I.I.I", "run4theh111z", "w0r1d_d43m0n"];
     const scriptsRam = [];
@@ -40,6 +40,11 @@ export async function main(ns) {
     } else {
         //else overwrite the data file so we don't start from stage 4
         await ns.write('/data/corp-stage.txt', '1', 'w')
+    }
+
+    if (ns.gang.inGang()) {
+        //if we have a gang start the manager for it
+        scripts.push('gang-manager.js')
     }
 
     //argument processing
@@ -61,9 +66,12 @@ export async function main(ns) {
     } if (flags.no_stock) {
         scripts = scripts.filter(e => e !== 'stock-manager.js');
         log(ns, 'INFO: Skipping stock-manager.js');
-    } if (flags.no_corp && scripts.length > 6) {
+    } if (flags.no_corp) {
         scripts = scripts.filter(e => e !== 'corp-manager.js');
         log(ns, 'INFO: Skipping corp-manager.js');
+    } if (flags.no_corp) {
+        scripts = scripts.filter(e => e !== 'gang-manager.js');
+        log(ns, 'INFO: Skipping gang-manager.js');
     }
 
 	//get required ram of each script
