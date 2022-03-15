@@ -49,18 +49,18 @@ export async function main(ns) {
 				}
 			}
 		}
-		return;
+		ns.stopAction();
 	}
 
 	var str = ns.getPlayer().strength;
 	var def = ns.getPlayer().defense;
-	var agi = ns.getPlayer().agility;
 	var dex = ns.getPlayer().dexterity;
+	var agi = ns.getPlayer().agility;
 	var oldKarma = 0;
 	var busy = 0;
 
 	//if player stats are under 15 then train at the gym until they aren't
-	if (str < 15 || def < 15 || agi < 15 || dex < 15) {
+	if (str < 15 || def < 15 || dex < 15 || agi < 15) {
 		await trainStats();
 	}
 
