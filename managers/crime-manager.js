@@ -1,4 +1,4 @@
-import { log } from 'util.js'
+import { log, getNsDataThroughFile } from 'util.js'
 
 const scriptArgs = [
     ['crime', '']
@@ -17,10 +17,10 @@ export async function main(ns) {
 	const flags = ns.flags(scriptArgs);
 	const statNames = ["strength", "defense", "dexterity", "agility"];
 
-	function crime() {
-		if (ns.getCrimeChance("homicide") > 0.6 && flags.crime == '') {
+	async function crime() {
+		if (await getNsDataThroughFile(ns, `ns.getCrimeChance("homicide")`) > 0.6 && flags.crime == '') {
 			return "homicide";
-		} else if (ns.getCrimeChance("heist") > 0.6 && flags.crime == '') {
+		} else if (await getNsDataThroughFile(ns, `ns.getCrimeChance("heist")`) > 0.6 && flags.crime == '') {
 			return "heist";
 		} else if (flags.crime == '') {
 			return "mug someone";
@@ -49,7 +49,7 @@ export async function main(ns) {
 				}
 			}
 		}
-		ns.stopAction();
+		return;
 	}
 
 	var str = ns.getPlayer().strength;
@@ -67,7 +67,7 @@ export async function main(ns) {
 	//main
 	while (true) {
 		var karma = ns.heart.break();
-		var bestCrime = crime();
+		var bestCrime = await crime();
 		
 		//get and format the time into 24h
 		var date = new Date(Date.now() + ns.getCrimeStats(bestCrime).time);
