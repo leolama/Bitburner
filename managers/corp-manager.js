@@ -782,10 +782,9 @@ export async function main(ns) {
 			} else {
 				CorpAPI.acceptInvestmentOffer();
 				log(ns, "SUCCESS: Accepted investor 4's offer of " + ns.nFormat(offer, "0.00a"));
+				CorpAPI.goPublic(50000000);
+				CorpAPI.issueDividends(0.05);
 			}
-		} else if (CorpAPI.getInvestmentOffer().round > 4) {
-			CorpAPI.goPublic(50000000);
-			CorpAPI.issueDividends(5);
 		}
 
 		// Determine proper investment.
