@@ -53,6 +53,7 @@ export async function main(ns) {
 			var time = ns.nFormat(date.getHours(), "00") + ":" + ns.nFormat(date.getMinutes(), "00") + ":" + ns.nFormat(date.getSeconds(), "00");
 			log(ns, 'INFO: Expecting finish at: ' + time);
 			await ns.sleep(numTimesToHack * ns.getWeakenTime(target) + 300);
+			log(ns, 'SUCCESS: Finished weakening');
 		} else if (ns.getServerMoneyAvailable(target) < moneyThresh) {
 			log(ns, "INFO: Growing " + target);
 			for (let i = 0; i < rootableServers.length; i++) {
@@ -67,6 +68,7 @@ export async function main(ns) {
 			var time = ns.nFormat(date.getHours(), "00") + ":" + ns.nFormat(date.getMinutes(), "00") + ":" + ns.nFormat(date.getSeconds(), "00");
 			log(ns, 'INFO: Expecting finish at: ' + time);
 			await ns.sleep(numTimesToHack * ns.getGrowTime(target) + 300);
+			log(ns, 'SUCCESS: Finished growing');
 		} else {
 			log(ns, "INFO: Hacking " + target);
 			for (let i = 0; i < rootableServers.length; i++) {
@@ -82,6 +84,7 @@ export async function main(ns) {
 			var time = ns.nFormat(date.getHours(), "00") + ":" + ns.nFormat(date.getMinutes(), "00") + ":" + ns.nFormat(date.getSeconds(), "00");
 			log(ns, 'INFO: Expecting finish at: ' + time);
 			await ns.sleep(numTimesToHack * ns.getHackTime(target) + 300);
+			log(ns, 'SUCCESS: Finished hacking');
 		}
 	}
 }
