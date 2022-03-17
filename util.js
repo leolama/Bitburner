@@ -42,12 +42,11 @@ export function nukeServer(ns, server) {
 /** 
  * Find a file on the current server
  * @param {import(".").NS} ns NetScript
- * @param {String} file The name of the file to look for, not including any folders
+ * @param {String} file The name of the file to look for
 **/
 export function findFile(ns, file) {
-	var file = ns.args[0];
+	var file = ns.args[1];
 	var folders = ["","/bin/","/managers/","/src/","/src/achievements/"]
-
 	for (let folder of folders) {
 		if (ns.fileExists(folder + file)) {
 			return folder + file;
@@ -103,12 +102,13 @@ export async function terminalInput(output) {
 
 /** 
  * Buy a personal server
- * @param {import("../.").NS} ns NetScript
- * @param {Number} ram RAM of the server
+ * @param {import(".").NS} ns NetScript
+ * @param {Number} ram RAM of the server. Defaults to 2
+ * @param {Number} number The number of the server. Can be optional but makes the naming weird. Defaults to 1
 **/
-export async function buyServer(ns, ram) {
+export async function buyServer(ns, ram = 2, number = 0) {
 	var multipleOf = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576];
-	var hName = "personal-server-" + ram;
+	var hName = "personal-server-" + ram + '-' + number;
 
 	for (let multiple of multipleOf) {
 		if (ram === multiple) {
