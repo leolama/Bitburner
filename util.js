@@ -97,7 +97,7 @@ export async function terminalInput(output) {
 	terminalInput.value = output;
 	const handler = Object.keys(terminalInput)[1];
 	terminalInput[handler].onChange({ target: terminalInput });
-	terminalInput[handler].onKeyDown({ keyCode: 13, preventDefault: () => null });
+	terminalInput[handler].onKeyDown({ key: "Enter", preventDefault: () => null });
 }
 
 /** 
@@ -476,7 +476,7 @@ export async function getActiveSourceFiles_Custom(ns, fnGetNsDataThroughFile) {
 	// Find out what source files the user has unlocked
 	let dictSourceFiles;
 	try {
-		await fnGetNsDataThroughFile(ns, `Object.fromEntries(ns.getOwnedSourceFiles().map(sf => [sf.n, sf.lvl]))`, tempFile);
+		await fnGetNsDataThroughFile(ns, `Object.fromEntries(ns.singularity.getOwnedSourceFiles().map(sf => [sf.n, sf.lvl]))`, tempFile);
 	} catch {}
 	if (!dictSourceFiles) {
 		// Bit of a hack, but if RAM is so low that this fails, we can fallback to using an older version of this file, and even assuming we have no source files.
