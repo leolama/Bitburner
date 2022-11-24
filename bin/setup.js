@@ -103,7 +103,7 @@ export async function main(ns) {
             let path = getServerPath(ns, faction);
             factionPaths.push(path);
         }
-        await ns.write("/data/faction-paths.txt",factionPaths, "w")	
+        await ns.write("/data/faction-paths.txt", factionPaths.toString(), "w")	
     }
 
     ns.run("bin/exec.js",1,scriptsToStart.join())

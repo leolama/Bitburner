@@ -18,9 +18,9 @@ export async function main(ns) {
 	const statNames = ["strength", "defense", "dexterity", "agility"];
 
 	async function crime() {
-		if (await getNsDataThroughFile(ns, `ns.getCrimeChance("homicide")`) > 0.6 && flags.crime == '') {
+		if (await getNsDataThroughFile(ns, `ns.singularity.getCrimeChance("homicide")`) > 0.6 && flags.crime == '') {
 			return "homicide";
-		} else if (await getNsDataThroughFile(ns, `ns.getCrimeChance("heist")`) > 0.6 && flags.crime == '') {
+		} else if (await getNsDataThroughFile(ns, `ns.singularity.getCrimeChance("heist")`) > 0.6 && flags.crime == '') {
 			return "heist";
 		} else if (flags.crime == '') {
 			return "mug someone";
@@ -42,7 +42,7 @@ export async function main(ns) {
 				}
 				await ns.sleep(1000);
 				statLevels = [ns.getPlayer().strength, ns.getPlayer().defense, ns.getPlayer().dexterity, ns.getPlayer().agility];
-				if (!ns.isBusy()) {
+				if (!ns.singularity.isBusy()) {
 					//if player has cancelled training then stop the script
 					log(ns, "INFO: Cancelled by player");
 					return;
@@ -70,13 +70,13 @@ export async function main(ns) {
 		var bestCrime = await crime();
 		
 		//get and format the time into 24h
-		var date = new Date(Date.now() + ns.getCrimeStats(bestCrime).time);
+		var date = new Date(Date.now() + ns.singularity.getCrimeStats(bestCrime).time);
 		var time = ns.nFormat(date.getHours(), "00") + ":" + ns.nFormat(date.getMinutes(), "00") + ":" + ns.nFormat(date.getSeconds(), "00");
 
-		if (!ns.isBusy()) {
+		if (!ns.singularity.isBusy()) {
 			log(ns, "INFO: Attempting to commit " + bestCrime + ". Expecting finish at " + time);
-			await ns.sleep(ns.commitCrime(bestCrime) - 500);
-			if (!ns.isBusy()) {
+			await ns.sleep(ns.singularity.commitCrime(bestCrime) - 500);
+			if (!ns.singularity.isBusy()) {
 				//if the player cancels the crime, stop the script and print current karma into the terminal
 				log(ns, "INFO: Current karma: " + karma, true);
 				log(ns, "INFO: Cancelled by player");
@@ -92,7 +92,7 @@ export async function main(ns) {
 			log(ns, "INFO: Player is busy");
 			busy = 0;
 			while (busy < 1) {
-				if (!ns.isBusy()) ++busy;
+				if (!ns.singularity.isBusy()) ++busy;
 				//if player is busy then wait a second and try again
 				else {
 					await ns.sleep(1000);
