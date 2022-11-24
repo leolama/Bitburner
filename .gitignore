@@ -1,6 +1,10 @@
 # Ignore scripts made by others that I haven't modified (too much)
 managers/gang-manager.js
 managers/stock-manager.js
+src/stanek-main.js
+src/stanek-reset.js
+src/stanek-main-loop.js
+src/stanek-charge.js
 
 # Ignore achievement/exploit scripts
 src/achievements/*
