@@ -1,3 +1,8 @@
+/**
+ * Requires an argument for a faction
+ * Usage: run src/neuroflux.js Cybersec
+**/
+
 import { log } from 'util.js'
 
 const scriptArgs = [
