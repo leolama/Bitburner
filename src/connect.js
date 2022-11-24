@@ -29,7 +29,7 @@ export async function main(ns) {
 	terminalInput.value = output;
 	const handler = Object.keys(terminalInput)[1];
 	terminalInput[handler].onChange({ target: terminalInput });
-	terminalInput[handler].onKeyDown({ keyCode: 13, preventDefault: () => null });
+	terminalInput[handler].onKeyDown({ key: "Enter", preventDefault: () => null });
 }
 
 export function autocomplete(data, args) {
