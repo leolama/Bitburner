@@ -104,7 +104,7 @@ async function findAllServers(ns) {
 			if (!serverDiscovered[edges[i]]) {
 				serverDiscovered[edges[i]] = true;
 				q.push(edges[i]);
-				await ns.scp(fileList, "home", edges[i]);
+				await ns.scp(fileList, edges[i], "home");
 			}
 		}
 	}
