@@ -284,7 +284,7 @@ function createProduct(ns, division, investment) {
 
 	// Step 1: Find any in-progress product.
 	for (let i = 0; i < PRODUCT_NAMES.length; i++) {
-		if (CorpAPI.getDivision(division).products.includes(PRODUCT_NAMES[i]) && CorpAPI.getProduct(division, PRODUCT_NAMES[i]).developmentProgress < 100) {
+		if (CorpAPI.getDivision(division).products.includes(PRODUCT_NAMES[i]) && CorpAPI.getProduct(division, PRODUCT_NAMES[i]).developmentProgress < 99.9) {
 			latestProductIndex = i;
 			return log(ns, `INFO: ${division} is already working on ${PRODUCT_NAMES[i]}`);
 		}
@@ -293,7 +293,6 @@ function createProduct(ns, division, investment) {
 	// Step 2: Find the first non-existant product.
 	for (let i = 0; i < PRODUCT_NAMES.length; i++) {
 		if (!CorpAPI.getDivision(division).products.includes(PRODUCT_NAMES[i])) {
-			latestProductIndex = i;
 			CorpAPI.makeProduct(division, "Aevum", PRODUCT_NAMES[i], investment, investment);
 			CorpAPI.sellProduct(division, "Aevum", PRODUCT_NAMES[i], "MAX", "MP", true);
 			if (CorpAPI.hasResearched(division, "Market-TA.II")) {
@@ -442,7 +441,7 @@ async function timeToGrow(ns, waitForEmployees) {
 			await ns.sleep(5000);
 			++cycle
 			if (cycle > 6) {
-				log(ns, 'ERROR: trickInvestors() failed to increase investment, returning employees to normal jobs', true);
+				log(ns, 'WARN: trickInvestors() failed to increase investment, returning employees to normal jobs', true);
 				for (let c of CITIES) {
 					//set employees back to normal operation
 					await increaseOfficeTo(ns, Divisions[0], c, [1, 1, 1, 0, 0, 0]);
@@ -485,7 +484,7 @@ async function timeToGrow(ns, waitForEmployees) {
 			await ns.sleep(5000);
 			++cycle
 			if (cycle > 6) {
-				log(ns, 'ERROR: trickInvestors() failed to increase investment, returning employees to normal jobs', true);
+				log(ns, 'WARN: trickInvestors() failed to increase investment, returning employees to normal jobs', true);
 				for (let c of CITIES) {
 					//set employees back to normal operation
 					await increaseOfficeTo(ns, Divisions[0], c, [2, 2, 1, 2, 2, 0]);
